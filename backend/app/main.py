@@ -1,37 +1,64 @@
 from fastapi import FastAPI
+from app.database import get_connection
 
 app = FastAPI()
+
 
 @app.get("/")
 def home():
     return {"message": "MetricMind API is running"}
 
+
 @app.get("/health")
 def health():
     return {"status": "OK"}
-@app.get("/sales")
-def get_sales():
-    return {
-        "sales": [
-            {
-                "month": "January",
-                "revenue": 150000
-            },
-            {
-                "month": "February",
-                "revenue": 185000
-            },
-            {
-                "month": "March",
-                "revenue": 210000
-            }
-        ]
-    }
+
+
 @app.get("/dashboard")
-def get_dashboard():
-    return {
-        "total_sales": 545000,
-        "orders": 324,
-        "customers": 185,
-        "growth": "12%"
-    }
+def dashboard():
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            ROUND(SUM(SalesAmount),2) AS total_sales,
+            COUNT(DISTINCT SalesOrderNumber) AS total_orders,
+            COUNT(DISTINCT CustomerKey) AS total_customers
+        FROM factinternetsales;
+    """)
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return result
+
+
+@app.get("/sales")
+def sales():
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            d.EnglishMonthName AS month,
+            ROUND(SUM(f.SalesAmount),2) AS revenue
+        FROM factinternetsales f
+        JOIN dimdate d
+            ON f.OrderDateKey = d.DateKey
+        GROUP BY
+            d.MonthNumberOfYear,
+            d.EnglishMonthName
+        ORDER BY
+            d.MonthNumberOfYear;
+    """)
+
+    result = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return {"sales": result}
