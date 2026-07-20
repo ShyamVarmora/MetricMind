@@ -2,11 +2,6 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
 import ChartSection from "../components/ChartSection";
-
-
-import ChartSection from "../components/ChartSection";
-
-
 import Footer from "../components/Footer";
 
 function Dashboard() {
