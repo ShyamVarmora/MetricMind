@@ -33,4 +33,4 @@ AI-powered Sales Analytics Dashboard
 ```bash
 pip install -r requirements.txt
 
-##Import `metricmind.sql` into your MySQL server using phpMyAdmin or MySQL Workbench.
+## Import `metricmind.sql` into your MySQL server using phpMyAdmin or MySQL Workbench.
