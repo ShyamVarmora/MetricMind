@@ -10,3 +10,11 @@ MetricMind is a sales analytics dashboard built using FastAPI, React, SQLite, an
 - Himesh – Frontend Developer
 - Yoshita – UI/UX Developer
 - Prashant – QA & Documentation
+
+## Technologies
+
+- FastAPI
+- React
+- SQLite
+- Python
+- GitHub
