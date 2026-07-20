@@ -22,6 +22,7 @@ AI-powered Sales Analytics Dashboard
 - Yoshita – UI/UX Developer
 - Prashant – QA & Documentation
 
+
 ## Installation Guide
 
 1. Clone repository
@@ -34,3 +35,12 @@ AI-powered Sales Analytics Dashboard
 pip install -r requirements.txt
 
 ## Import `metricmind.sql` into your MySQL server using phpMyAdmin or MySQL Workbench.
+=======
+## Technologies
+
+- FastAPI
+- React
+- SQLite
+- Python
+- GitHub
+
