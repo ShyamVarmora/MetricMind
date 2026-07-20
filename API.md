@@ -1,34 +1,55 @@
-# MetricMind API Documentation
+# API Documentation
 
-## Overview
+## 1. Health API
 
-This document provides the API reference for the MetricMind Sales Analytics Dashboard. It includes available endpoints, response formats, HTTP status codes, and example responses.
+### Method
+GET
 
----
-
-## GET /health
+### Endpoint
+/health
 
 ### Description
-Checks whether the backend service is running.
+Checks whether the backend server is running successfully.
+
+### Request
+None
 
 ### Response
 
 ```json
 {
-  "status": "healthy"
+  "status": "OK"
 }
 ```
 
 ### Status Codes
 
-- 200 OK
+- 200 OK – Server is running successfully.
+- 500 Internal Server Error – An unexpected server error occurred.
+
+### Example URL
+
+http://localhost:8000/health
+
+### Authentication
+
+None
 
 ---
 
-## GET /sales
+## 2. Sales API
+
+### Method
+GET
+
+### Endpoint
+/sales
 
 ### Description
-Retrieves sales records from the database.
+Retrieves sales records from the MySQL database.
+
+### Request
+None
 
 ### Response
 
@@ -37,34 +58,60 @@ Retrieves sales records from the database.
   {
     "id": 1,
     "product": "Laptop",
-    "sales": 120
+    "sales": 50000
   }
 ]
 ```
 
 ### Status Codes
 
-- 200 OK
-- 404 Not Found
+- 200 OK – Sales data retrieved successfully.
+- 404 Not Found – No sales data found.
+- 500 Internal Server Error – Database or server error.
+
+### Example URL
+
+http://localhost:8000/sales
+
+### Authentication
+
+None
 
 ---
 
-## GET /dashboard
+## 3. Dashboard API
+
+### Method
+GET
+
+### Endpoint
+/dashboard
 
 ### Description
-Returns dashboard summary and analytics.
+Returns dashboard analytics and summary information for the frontend.
+
+### Request
+None
 
 ### Response
 
 ```json
 {
-  "total_sales": 50000,
-  "total_orders": 200,
-  "regions": 5
+  "total_sales": 500000,
+  "total_orders": 150,
+  "top_product": "Laptop"
 }
 ```
 
 ### Status Codes
 
-- 200 OK
-- 500 Internal Server Error
+- 200 OK – Dashboard data retrieved successfully.
+- 500 Internal Server Error – Server error.
+
+### Example URL
+
+http://localhost:8000/dashboard
+
+### Authentication
+
+None
