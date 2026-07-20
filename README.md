@@ -1,6 +1,17 @@
 # MetricMind
 
-MetricMind is a sales analytics dashboard built using FastAPI, React, SQLite, and Pandas.
+## Description
+
+AI-powered Sales Analytics Dashboard
+
+## Technologies
+
+- FastAPI
+- MySQL
+- Python
+- HTML
+- CSS
+- JavaScript
 
 ## Team Members
 
@@ -10,3 +21,16 @@ MetricMind is a sales analytics dashboard built using FastAPI, React, SQLite, an
 - Himesh – Frontend Developer
 - Yoshita – UI/UX Developer
 - Prashant – QA & Documentation
+
+## Installation Guide
+
+1. Clone repository
+
+2. Install Python
+
+3. Install requirements
+
+```bash
+pip install -r requirements.txt
+
+##Import `metricmind.sql` into your MySQL server using phpMyAdmin or MySQL Workbench.
