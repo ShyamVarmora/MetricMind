@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Sidebar.css";
 
 function Sidebar() {
   const [hovered, setHovered] = useState("");
@@ -12,16 +13,7 @@ function Sidebar() {
   ];
 
   return (
-    <div
-      style={{
-        width: "240px",
-        background: "#1E293B",
-        color: "white",
-        padding: "25px 20px",
-        minHeight: "100vh",
-        boxShadow: "2px 0 10px rgba(0,0,0,0.15)",
-      }}
-    >
+    <div className="sidebar">
       <h2
         style={{
           textAlign: "center",
@@ -42,15 +34,19 @@ function Sidebar() {
             marginBottom: "12px",
             borderRadius: "10px",
             cursor: "pointer",
-            transition: "all 0.3s ease",
+            transition: "all .3s",
             background:
               item.label === "Analytics"
                 ? "#2563EB"
                 : hovered === item.label
                 ? "#334155"
                 : "transparent",
-            transform: hovered === item.label ? "translateX(6px)" : "translateX(0)",
-            fontWeight: item.label === "Analytics" ? "600" : "500",
+            transform:
+              hovered === item.label
+                ? "translateX(6px)"
+                : "translateX(0)",
+            fontWeight:
+              item.label === "Analytics" ? "600" : "500",
           }}
         >
           {item.icon} {item.label}

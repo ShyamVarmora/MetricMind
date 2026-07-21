@@ -1,75 +1,83 @@
 function RecentTransactions() {
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-  };
-
-  const thStyle = {
-    background: "#2563eb",
-    color: "white",
-    padding: "12px",
-    textAlign: "left",
-  };
-
-  const tdStyle = {
-    padding: "12px",
-    borderBottom: "1px solid #ddd",
-  };
+  const transactions = [
+    { id: 1, customer: "Rahul", amount: "₹12,000", status: "Completed" },
+    { id: 2, customer: "Anjali", amount: "₹8,500", status: "Pending" },
+    { id: 3, customer: "Aman", amount: "₹15,000", status: "Completed" },
+    { id: 4, customer: "Priya", amount: "₹5,200", status: "Cancelled" },
+  ];
 
   return (
     <div
       style={{
-        background: "white",
         marginTop: "30px",
-        padding: "25px",
-        borderRadius: "16px",
-        boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+        background: "#fff",
+        padding: "20px",
+        borderRadius: "15px",
+        boxShadow: "0 5px 15px rgba(0,0,0,0.08)",
       }}
     >
-      <h2 style={{ marginBottom: "20px" }}>
+      <h2
+        style={{
+          marginBottom: "20px",
+          color: "#1E293B",
+        }}
+      >
         📋 Recent Transactions
       </h2>
 
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            <th style={thStyle}>Order ID</th>
-            <th style={thStyle}>Customer</th>
-            <th style={thStyle}>Amount</th>
-            <th style={thStyle}>Status</th>
-          </tr>
-        </thead>
+      {/* Responsive Table */}
+      <div
+        style={{
+          overflowX: "auto",
+        }}
+      >
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            minWidth: "600px",
+          }}
+        >
+          <thead>
+            <tr style={{ background: "#2563EB", color: "white" }}>
+              <th style={{ padding: "12px" }}>ID</th>
+              <th style={{ padding: "12px" }}>Customer</th>
+              <th style={{ padding: "12px" }}>Amount</th>
+              <th style={{ padding: "12px" }}>Status</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr>
-            <td style={tdStyle}>#1001</td>
-            <td style={tdStyle}>Rahul</td>
-            <td style={tdStyle}>₹12,000</td>
-            <td style={tdStyle}>✅ Completed</td>
-          </tr>
-
-          <tr>
-            <td style={tdStyle}>#1002</td>
-            <td style={tdStyle}>Priya</td>
-            <td style={tdStyle}>₹8,500</td>
-            <td style={tdStyle}>🟡 Pending</td>
-          </tr>
-
-          <tr>
-            <td style={tdStyle}>#1003</td>
-            <td style={tdStyle}>Aman</td>
-            <td style={tdStyle}>₹15,200</td>
-            <td style={tdStyle}>✅ Completed</td>
-          </tr>
-
-          <tr>
-            <td style={tdStyle}>#1004</td>
-            <td style={tdStyle}>Neha</td>
-            <td style={tdStyle}>₹6,400</td>
-            <td style={tdStyle}>❌ Cancelled</td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            {transactions.map((item) => (
+              <tr
+                key={item.id}
+                style={{
+                  textAlign: "center",
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                <td style={{ padding: "12px" }}>{item.id}</td>
+                <td style={{ padding: "12px" }}>{item.customer}</td>
+                <td style={{ padding: "12px" }}>{item.amount}</td>
+                <td
+                  style={{
+                    padding: "12px",
+                    color:
+                      item.status === "Completed"
+                        ? "green"
+                        : item.status === "Pending"
+                        ? "orange"
+                        : "red",
+                    fontWeight: "600",
+                  }}
+                >
+                  {item.status}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -1,27 +1,31 @@
+import "./Navbar.css";
+
 function Navbar() {
   return (
     <nav
+      className="navbar"
       style={{
         background: "#1E3A8A",
         color: "white",
-        padding: "18px 30px",
+        padding: "18px 35px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        flexWrap: "wrap",
-        gap: "15px",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
       }}
     >
-      <h2
-        style={{
-          margin: 0,
-          fontSize: "26px",
-          fontWeight: "700",
-        }}
-      >
-        MetricMind
-      </h2>
+      <div>
+        <h2
+          style={{
+            margin: 0,
+            fontSize: "26px",
+            fontWeight: "bold",
+            letterSpacing: "1px",
+          }}
+        >
+          MetricMind
+        </h2>
+      </div>
 
       <div
         style={{
@@ -29,6 +33,7 @@ function Navbar() {
           alignItems: "center",
           gap: "15px",
           flexWrap: "wrap",
+          justifyContent: "center",
         }}
       >
         <span
@@ -40,33 +45,15 @@ function Navbar() {
           Welcome, User 👤
         </span>
 
-        <span
-          style={{
-            fontSize: "22px",
-            cursor: "pointer",
-          }}
-        >
-          🔔
-        </span>
-
         <button
-          onMouseEnter={(e) => {
-            e.target.style.background = "#2563EB";
-            e.target.style.color = "white";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = "white";
-            e.target.style.color = "#1E3A8A";
-          }}
           style={{
-            background: "white",
+            background: "#ffffff",
             color: "#1E3A8A",
             border: "none",
-            padding: "9px 18px",
+            padding: "8px 16px",
             borderRadius: "8px",
             cursor: "pointer",
             fontWeight: "600",
-            transition: "0.3s",
           }}
         >
           Profile
