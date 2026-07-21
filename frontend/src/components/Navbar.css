@@ -1,0 +1,35 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 15px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 12px !important;
+  }
+
+  .navbar h2 {
+    font-size: 22px;
+  }
+
+  .navbar span {
+    font-size: 15px;
+  }
+
+  .navbar button {
+    width: 100%;
+    max-width: 180px;
+  }
+}

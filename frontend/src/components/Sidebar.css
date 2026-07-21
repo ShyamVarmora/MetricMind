@@ -1,0 +1,17 @@
+.sidebar{
+width:240px;
+background:#1E293B;
+color:white;
+padding:25px 20px;
+min-height:100vh;
+transition:.3s;
+}
+
+@media(max-width:768px){
+
+.sidebar{
+width:100%;
+min-height:auto;
+}
+
+}
