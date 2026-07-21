@@ -35,7 +35,6 @@ def dashboard():
 
     return result
 
-
 @app.get("/sales")
 def sales():
 
