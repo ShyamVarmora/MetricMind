@@ -4,7 +4,10 @@ import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
 import ChartSection from "../components/ChartSection";
 import RecentTransactions from "../components/RecentTransactions";
+<<<<<<< HEAD
 
+=======
+>>>>>>> a5939d7 (Resolve Dashboard merge conflict)
 import Footer from "../components/Footer";
 
 function Dashboard() {
@@ -14,7 +17,6 @@ function Dashboard() {
     <>
       <Navbar />
 
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setShowSidebar(!showSidebar)}
         style={{
