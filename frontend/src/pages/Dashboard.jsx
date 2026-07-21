@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
 import ChartSection from "../components/ChartSection";
 import RecentTransactions from "../components/RecentTransactions";
+
 import Footer from "../components/Footer";
 
 function Dashboard() {
