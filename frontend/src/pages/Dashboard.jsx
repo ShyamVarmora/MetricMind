@@ -1,40 +1,62 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
-
 import ChartSection from "../components/ChartSection";
-
+import RecentTransactions from "../components/RecentTransactions";
 
 import Footer from "../components/Footer";
 
 function Dashboard() {
-    return (
-        <>
-            <Navbar />
+  const [showSidebar, setShowSidebar] = useState(false);
 
-            <div
-                style={{
-                    display: "flex"
-                }}
-            >
-                <Sidebar />
+  return (
+    <>
+      <Navbar />
 
-                <div
-                    style={{
-                        flex: 1,
-                        padding: "30px",
-                        background: "#f3f4f6"
-                    }}
-                >
-                    <DashboardCard />
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setShowSidebar(!showSidebar)}
+        style={{
+          margin: "15px",
+          padding: "10px 15px",
+          fontSize: "22px",
+          cursor: "pointer",
+          border: "none",
+          borderRadius: "8px",
+          background: "#2563EB",
+          color: "white",
+        }}
+      >
+        ☰
+      </button>
 
-                    <ChartSection />
-                </div>
-            </div>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        {(window.innerWidth > 768 || showSidebar) && <Sidebar />}
 
-            <Footer />
-        </>
-    );
+        <div
+          style={{
+            flex: 1,
+            minWidth: "300px",
+            padding: "30px",
+            background: "#F8FAFC",
+            minHeight: "100vh",
+          }}
+        >
+          <DashboardCard />
+          <ChartSection />
+          <RecentTransactions />
+        </div>
+      </div>
+
+      <Footer />
+    </>
+  );
 }
 
 export default Dashboard;
