@@ -1,7 +1,17 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_connection
 
 app = FastAPI()
+
+# CORS Configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -16,7 +26,6 @@ def health():
 
 @app.get("/dashboard")
 def dashboard():
-
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -35,9 +44,9 @@ def dashboard():
 
     return result
 
+
 @app.get("/sales")
 def sales():
-
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
