@@ -1,4 +1,31 @@
+import { useState, useEffect } from "react";
+import api from "../api";
+
 function DashboardCard() {
+    const [dashboard, setDashboard] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    useEffect(() => {
+        api.get("/dashboard")
+            .then((res) => {
+                console.log(res.data);
+                setDashboard(res.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setError("Unable to load dashboard");
+                setLoading(false);
+            });
+    }, []);
+    
+    if (loading) {
+        return <h2>Loading...</h2>;
+    } 
+    if (error) {
+        return <h2>{error}</h2>;
+    }
+
     return (
         <div
             style={{
@@ -17,7 +44,7 @@ function DashboardCard() {
                 }}
             >
                 <h3>Total Sales</h3>
-                <h2>₹1,20,000</h2>
+                <h2>₹{dashboard.total_sales}</h2>
             </div>
 
             <div
@@ -30,7 +57,7 @@ function DashboardCard() {
                 }}
             >
                 <h3>Orders</h3>
-                <h2>150</h2>
+                <h2>{dashboard.total_orders}</h2>
             </div>
 
             <div
@@ -42,8 +69,8 @@ function DashboardCard() {
                     width: "180px"
                 }}
             >
-                <h3>Profit</h3>
-                <h2>₹25,000</h2>
+                <h3>Total Customers</h3>
+                <h2>{dashboard.total_customers}</h2>
             </div>
         </div>
     );
