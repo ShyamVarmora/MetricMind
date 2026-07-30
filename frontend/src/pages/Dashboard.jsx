@@ -7,52 +7,32 @@ import RecentTransactions from "../components/RecentTransactions";
 
 import Footer from "../components/Footer";
 
+import Chat from "./Chat";
+
 function Dashboard() {
-  const [showSidebar, setShowSidebar] = useState(false);
+    return (
+        <>
+            <Navbar />
 
-  return (
-    <>
-      <Navbar />
+            <div
+                style={{
+                    display: "flex"
+                }}
+            >
+                <Sidebar />
 
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setShowSidebar(!showSidebar)}
-        style={{
-          margin: "15px",
-          padding: "10px 15px",
-          fontSize: "22px",
-          cursor: "pointer",
-          border: "none",
-          borderRadius: "8px",
-          background: "#2563EB",
-          color: "white",
-        }}
-      >
-        ☰
-      </button>
+                <div
+                    style={{
+                        flex: 1,
+                        padding: "30px",
+                        background: "#f3f4f6"
+                    }}
+                >
+                    <DashboardCard />
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-        }}
-      >
-        {(window.innerWidth > 768 || showSidebar) && <Sidebar />}
-
-        <div
-          style={{
-            flex: 1,
-            minWidth: "300px",
-            padding: "30px",
-            background: "#F8FAFC",
-            minHeight: "100vh",
-          }}
-        >
-          <DashboardCard />
-          <ChartSection />
-          <RecentTransactions />
-        </div>
-      </div>
+                    <ChartSection />
+                </div>
+            </div>
 
       <Footer />
     </>
