@@ -1,55 +1,38 @@
-import { useState } from "react";
 import "./Sidebar.css";
 
-function Sidebar() {
-  const [hovered, setHovered] = useState("");
+import {
+  FaChartPie,
+  FaFileAlt,
+  FaComments,
+  FaChartLine,
+  FaUser,
+  FaCog,
+} from "react-icons/fa";
 
+function Sidebar() {
   const menuItems = [
-    { icon: "📊", label: "Analytics" },
-    { icon: "📁", label: "Reports" },
-    { icon: "💬", label: "Chatbot" },
-    { icon: "👤", label: "Profile" },
-    { icon: "⚙️", label: "Settings" },
+    { icon: <FaChartPie />, label: "Dashboard" },
+    { icon: <FaFileAlt />, label: "Reports" },
+    { icon: <FaComments />, label: "Chat" },
+    { icon: <FaChartLine />, label: "Analytics" },
+    { icon: <FaUser />, label: "Profile" },
+    { icon: <FaCog />, label: "Settings" },
   ];
 
   return (
     <div className="sidebar">
-      <h2
-        style={{
-          textAlign: "center",
-          color: "#60A5FA",
-          marginBottom: "35px",
-        }}
-      >
-        Dashboard
-      </h2>
+      <h2>MetricMind</h2>
 
-      {menuItems.map((item) => (
+      {menuItems.map((item, index) => (
         <div
-          key={item.label}
-          onMouseEnter={() => setHovered(item.label)}
-          onMouseLeave={() => setHovered("")}
-          style={{
-            padding: "14px 18px",
-            marginBottom: "12px",
-            borderRadius: "10px",
-            cursor: "pointer",
-            transition: "all .3s",
-            background:
-              item.label === "Analytics"
-                ? "#2563EB"
-                : hovered === item.label
-                ? "#334155"
-                : "transparent",
-            transform:
-              hovered === item.label
-                ? "translateX(6px)"
-                : "translateX(0)",
-            fontWeight:
-              item.label === "Analytics" ? "600" : "500",
-          }}
+          key={index}
+          className={`menu-item ${index === 0 ? "active" : ""}`}
         >
-          {item.icon} {item.label}
+          <span className="menu-icon">
+            {item.icon}
+          </span>
+
+          <span>{item.label}</span>
         </div>
       ))}
     </div>
