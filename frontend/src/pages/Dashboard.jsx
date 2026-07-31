@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 import Navbar from "../components/Navbar";
@@ -52,6 +53,44 @@ function Dashboard() {
       <Footer />
     </>
   );
+import Chat from "./Chat";
+
+function Dashboard() {
+    const [activePage, setActivePage] = useState("dashboard");
+    
+    return (
+        <>
+            <Navbar />
+
+            <div
+                style={{
+                    display: "flex"
+                }}
+            >
+                <Sidebar setActivePage={setActivePage} />
+
+                <div
+                    style={{
+                        flex: 1,
+                        padding: "30px",
+                        background: "#f3f4f6"
+                    }}
+                >
+                    {activePage === "dashboard" ? (
+                        <>
+                            <DashboardCard />
+                            <ChartSection />
+                            <RecentTransactions />
+                        </>
+                    ) : (
+                        <Chat />
+                    )}
+                </div>
+            </div>
+
+            <Footer />
+        </>
+    );
 }
 
 export default Dashboard;

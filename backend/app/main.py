@@ -1,8 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import get_connection
 
-app = FastAPI()
+from app.database import engine, get_connection
+from app import models
+from app.routes.users import router as user_router
+
+# Create database tables
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="MetricMind API",
+    description="Authentication APIs for MetricMind Backend",
+    version="1.0.0"
+)
+
+# Register authentication routes
+app.include_router(user_router)
 
 # CORS Configuration
 app.add_middleware(
