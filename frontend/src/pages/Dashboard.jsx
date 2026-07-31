@@ -12,6 +12,7 @@ import Chat from "./Chat";
 
 function Dashboard() {
     const [activePage, setActivePage] = useState("dashboard");
+    
     return (
         <>
             <Navbar />
