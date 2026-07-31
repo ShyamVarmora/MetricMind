@@ -1,7 +1,30 @@
 from fastapi import FastAPI
-from app.database import get_connection
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from app.database import engine, get_connection
+from app import models
+from app.routes.users import router as user_router
+
+# Create database tables
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="MetricMind API",
+    description="Authentication APIs for MetricMind Backend",
+    version="1.0.0"
+)
+
+# Register authentication routes
+app.include_router(user_router)
+
+# CORS Configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -16,7 +39,6 @@ def health():
 
 @app.get("/dashboard")
 def dashboard():
-
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -35,9 +57,9 @@ def dashboard():
 
     return result
 
+
 @app.get("/sales")
 def sales():
-
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
