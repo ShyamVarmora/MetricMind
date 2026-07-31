@@ -18,7 +18,8 @@ function Chat() {
             { sender: "You", text: input },
         ]);
 
-        setInput("");
+        setInput(""); 
+            
 
         setTyping(true);
 
