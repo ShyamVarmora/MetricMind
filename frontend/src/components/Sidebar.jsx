@@ -1,4 +1,4 @@
-function Sidebar() {
+function Sidebar({ setActivePage }) {
     return (
         <div
             style={{
@@ -11,9 +11,21 @@ function Sidebar() {
         >
             <h3>Dashboard</h3>
 
-            <p>📊 Analytics</p>
+            <p
+                style={{ cursor: "pointer" }}
+                onClick={() => setActivePage("dashboard")}
+            >
+                📊 Analytics
+            </p>
 
             <p>📁 Reports</p>
+
+            <p
+                style={{ cursor: "pointer" }}
+                onClick={() => setActivePage("chat")}
+            >
+                🤖 Ask MetricMind
+            </p>
 
             <p>⚙ Settings</p>
         </div>
