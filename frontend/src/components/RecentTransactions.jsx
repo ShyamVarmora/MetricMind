@@ -1,3 +1,5 @@
+import "./RecentTransactions.css";
+
 function RecentTransactions() {
   const transactions = [
     { id: 1, customer: "Rahul", amount: "₹12,000", status: "Completed" },
@@ -7,71 +9,41 @@ function RecentTransactions() {
   ];
 
   return (
-    <div
-      style={{
-        marginTop: "30px",
-        background: "#fff",
-        padding: "20px",
-        borderRadius: "15px",
-        boxShadow: "0 5px 15px rgba(0,0,0,0.08)",
-      }}
-    >
-      <h2
-        style={{
-          marginBottom: "20px",
-          color: "#1E293B",
-        }}
-      >
-        📋 Recent Transactions
-      </h2>
+    <div className="transactions-card">
+      <div className="transactions-header">
+        <h2>📋 Recent Transactions</h2>
+      </div>
 
-      {/* Responsive Table */}
-      <div
-        style={{
-          overflowX: "auto",
-        }}
-      >
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            minWidth: "600px",
-          }}
-        >
+      <div className="table-container">
+        <table>
           <thead>
-            <tr style={{ background: "#2563EB", color: "white" }}>
-              <th style={{ padding: "12px" }}>ID</th>
-              <th style={{ padding: "12px" }}>Customer</th>
-              <th style={{ padding: "12px" }}>Amount</th>
-              <th style={{ padding: "12px" }}>Status</th>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
             </tr>
           </thead>
 
           <tbody>
             {transactions.map((item) => (
-              <tr
-                key={item.id}
-                style={{
-                  textAlign: "center",
-                  borderBottom: "1px solid #ddd",
-                }}
-              >
-                <td style={{ padding: "12px" }}>{item.id}</td>
-                <td style={{ padding: "12px" }}>{item.customer}</td>
-                <td style={{ padding: "12px" }}>{item.amount}</td>
-                <td
-                  style={{
-                    padding: "12px",
-                    color:
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.customer}</td>
+                <td>{item.amount}</td>
+
+                <td>
+                  <span
+                    className={`status ${
                       item.status === "Completed"
-                        ? "green"
+                        ? "completed"
                         : item.status === "Pending"
-                        ? "orange"
-                        : "red",
-                    fontWeight: "600",
-                  }}
-                >
-                  {item.status}
+                        ? "pending"
+                        : "cancelled"
+                    }`}
+                  >
+                    {item.status}
+                  </span>
                 </td>
               </tr>
             ))}
