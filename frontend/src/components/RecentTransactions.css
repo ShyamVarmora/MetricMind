@@ -1,75 +1,99 @@
-.transactions-card{
-    background:white;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+.transactions-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  margin-top: 25px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-.transactions-header{
-    margin-bottom:20px;
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.transactions-header h2{
-    margin:0;
-    color:#1e293b;
+.transactions-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 24px;
 }
 
-.table-container{
-    overflow-x:auto;
+.table-container {
+  overflow-x: auto;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
 }
 
-th{
-    background:#2563eb;
-    color:white;
-    padding:15px;
-    text-align:left;
-    font-size:15px;
+thead {
+  background: #2563eb;
 }
 
-td{
-    padding:16px;
-    border-bottom:1px solid #eef2f7;
+thead th {
+  color: white;
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 15px;
 }
 
-tbody tr{
-    transition:.3s;
+tbody tr {
+  transition: 0.3s;
 }
 
-tbody tr:hover{
-    background:#f8fafc;
+tbody tr:nth-child(even) {
+  background: #f8fafc;
 }
 
-.status{
-    padding:6px 14px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:600;
+tbody tr:hover {
+  background: #eef4ff;
 }
 
-.completed{
-    background:#dcfce7;
-    color:#15803d;
+tbody td {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #334155;
 }
 
-.pending{
-    background:#fef3c7;
-    color:#b45309;
+.status {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.cancelled{
-    background:#fee2e2;
-    color:#dc2626;
+.completed {
+  background: #dcfce7;
+  color: #15803d;
 }
 
-@media(max-width:768px){
-
-table{
-    min-width:600px;
+.pending {
+  background: #fef3c7;
+  color: #b45309;
 }
 
+.cancelled {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .transactions-card {
+    padding: 18px;
+  }
+
+  .transactions-header h2 {
+    font-size: 20px;
+  }
+
+  table {
+    min-width: 500px;
+  }
 }
