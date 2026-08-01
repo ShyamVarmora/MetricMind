@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import DashboardCard from "../components/DashboardCard";
-import ChartSection from "../components/ChartSection";
-import RecentTransactions from "../components/RecentTransactions";
 import Footer from "../components/Footer";
 import "./Dashboard.css";
+import "./Settings.css";
 
-function Dashboard() {
+function Settings() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
 
   useEffect(() => {
@@ -20,7 +18,6 @@ function Dashboard() {
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -28,7 +25,6 @@ function Dashboard() {
     <>
       <Navbar />
 
-      {/* Mobile Menu Button */}
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
@@ -39,36 +35,46 @@ function Dashboard() {
       )}
 
       <div className="dashboard">
+
         {showSidebar && (
           <Sidebar
             closeSidebar={() => {
-              if (window.innerWidth <= 768) {
-                setShowSidebar(false);
-              }
+              if (window.innerWidth <= 768) setShowSidebar(false);
             }}
           />
         )}
 
         <div className="dashboard-content">
+
           <div className="welcome-banner">
-            <h1>Welcome to MetricMind 👋</h1>
-            <p>
-              Monitor your sales, orders, analytics and business performance
-              from one dashboard.
-            </p>
+            <h1>⚙️ Settings</h1>
+            <p>Manage your application settings.</p>
           </div>
 
-          <div className="dashboard-cards">
-            <DashboardCard />
+          <div className="settings-grid">
+
+            <div className="setting-card">
+              <h2>👤 Account</h2>
+              <button>Manage</button>
+            </div>
+
+            <div className="setting-card">
+              <h2>🔔 Notifications</h2>
+              <button>Configure</button>
+            </div>
+
+            <div className="setting-card">
+              <h2>🌙 Theme</h2>
+              <button>Change</button>
+            </div>
+
+            <div className="setting-card">
+              <h2>🚪 Logout</h2>
+              <button>Logout</button>
+            </div>
+
           </div>
 
-          <div className="dashboard-section">
-            <ChartSection />
-          </div>
-
-          <div className="dashboard-section">
-            <RecentTransactions />
-          </div>
         </div>
       </div>
 
@@ -77,4 +83,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Settings;
