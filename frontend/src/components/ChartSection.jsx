@@ -19,45 +19,34 @@ const data = [
 
 function ChartSection() {
   return (
-    <div
-      style={{
-        background: "#ffffff",
-        marginTop: "35px",
-        padding: "25px",
-        borderRadius: "16px",
-        boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-      }}
-    >
-      <h2
-        style={{
-          marginBottom: "20px",
-          color: "#1e293b",
-        }}
-      >
-        📈 Sales Overview
-      </h2>
+    <div className="chart-card">
+      <div className="chart-header">
+        <div>
+          <h2>📈 Sales Overview</h2>
+          <p>Monthly sales performance</p>
+        </div>
 
-      <div
-        style={{
-          width: "100%",
-          height: "320px",
-        }}
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="5 5" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="sales"
-              stroke="#2563eb"
-              strokeWidth={3}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <button className="chart-btn">
+          View Report
+        </button>
       </div>
+
+      <ResponsiveContainer width="100%" height={320}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="sales"
+            stroke="#2563EB"
+            strokeWidth={4}
+            dot={{ r: 5 }}
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

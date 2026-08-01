@@ -1,0 +1,35 @@
+.profile{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:18px;
+}
+
+.profile h4{
+    margin:0;
+    font-size:15px;
+}
+
+.profile p{
+    margin:0;
+    color:#64748b;
+    font-size:13px;
+}
+
+@media(max-width:768px){
+    .profile p{
+        display:none;
+    }
+}

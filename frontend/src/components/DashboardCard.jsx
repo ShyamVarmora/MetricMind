@@ -1,64 +1,64 @@
+import "./DashboardCard.css";
+
+import {
+  FaRupeeSign,
+  FaShoppingCart,
+  FaChartLine,
+} from "react-icons/fa";
+
+const cards = [
+  {
+    id: 1,
+    title: "Total Sales",
+    value: "₹1,20,000",
+    icon: <FaRupeeSign />,
+    color: "linear-gradient(135deg,#2563EB,#1D4ED8)",
+    change: "+12%",
+  },
+  {
+    id: 2,
+    title: "Orders",
+    value: "150",
+    icon: <FaShoppingCart />,
+    color: "linear-gradient(135deg,#22C55E,#16A34A)",
+    change: "+8%",
+  },
+  {
+    id: 3,
+    title: "Profit",
+    value: "₹25,000",
+    icon: <FaChartLine />,
+    color: "linear-gradient(135deg,#F59E0B,#D97706)",
+    change: "+15%",
+  },
+];
+
 function DashboardCard() {
-  const cardStyle = (bg) => ({
-    background: bg,
-    color: "white",
-    padding: "25px",
-    borderRadius: "15px",
-    width: "250px",
-    height: "150px",
-    boxShadow: "0 8px 18px rgba(0,0,0,0.15)",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  });
-
-  const hoverIn = (e) => {
-    e.currentTarget.style.transform = "translateY(-8px) scale(1.03)";
-    e.currentTarget.style.boxShadow = "0 15px 30px rgba(0,0,0,0.25)";
-  };
-
-  const hoverOut = (e) => {
-    e.currentTarget.style.transform = "translateY(0)";
-    e.currentTarget.style.boxShadow = "0 8px 18px rgba(0,0,0,0.15)";
-  };
-
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: "20px",
-        justifyContent: "space-between",
-        marginBottom: "30px",
-      }}
-    >
-      <div
-        style={cardStyle("linear-gradient(135deg,#2563eb,#1d4ed8)")}
-        onMouseEnter={hoverIn}
-        onMouseLeave={hoverOut}
-      >
-        <h3>💰 Total Sales</h3>
-        <h1>₹1,20,000</h1>
-      </div>
+    <div className="cards">
+      {cards.map((card) => (
+        <div
+          key={card.id}
+          className="card"
+          style={{ background: card.color }}
+        >
+          <div className="card-header">
+            <div className="card-icon">
+              {card.icon}
+            </div>
 
-      <div
-        style={cardStyle("linear-gradient(135deg,#34d399,#10b981)")}
-        onMouseEnter={hoverIn}
-        onMouseLeave={hoverOut}
-      >
-        <h3>🛒 Orders</h3>
-        <h1>150</h1>
-      </div>
+            <span className="card-change">
+              {card.change}
+            </span>
+          </div>
 
-      <div
-        style={cardStyle("linear-gradient(135deg,#fbbf24,#f59e0b)")}
-        onMouseEnter={hoverIn}
-        onMouseLeave={hoverOut}
-      >
-        <h3>📈 Profit</h3>
-        <h1>₹25,000</h1>
-      </div>
+          <h3>{card.title}</h3>
+
+          <h1>{card.value}</h1>
+
+          <p>Compared to last month</p>
+        </div>
+      ))}
     </div>
   );
 }

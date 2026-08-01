@@ -1,0 +1,68 @@
+.dashboard{
+display:flex;
+align-items:flex-start;
+gap:0;
+}
+
+.dashboard-content{
+    flex:1;
+    padding:25px;
+    overflow-x:hidden;
+}
+
+.dashboard-cards{
+    margin-top:20px;
+}
+
+.dashboard-section{
+    margin-top:25px;
+}
+
+.welcome-banner{
+    width:100%;
+    background:linear-gradient(135deg,#2563EB,#1D4ED8);
+    color:white;
+    border-radius:20px;
+    padding:28px;
+    margin-bottom:25px;
+    box-sizing:border-box;
+}
+
+.welcome-banner h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.welcome-banner p{
+    font-size:17px;
+    opacity:.95;
+}
+
+@media(max-width:768px){
+
+.dashboard{
+    flex-direction:column;
+}
+
+.dashboard-content{
+    padding:15px;
+}
+
+.welcome-banner h1{
+    font-size:26px;
+}
+
+}
+.dashboard-section,
+.card,
+.chart-card,
+.transactions-card,
+.welcome-banner {
+  transition: all 0.3s ease;
+}
+
+.dashboard-section:hover,
+.chart-card:hover,
+.transactions-card:hover {
+  transform: translateY(-4px);
+}
