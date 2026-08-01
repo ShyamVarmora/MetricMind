@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import DashboardCard from "../components/DashboardCard";
-import ChartSection from "../components/ChartSection";
-import RecentTransactions from "../components/RecentTransactions";
 import Footer from "../components/Footer";
 import "./Dashboard.css";
+import "./Profile.css";
 
-function Dashboard() {
+function Profile() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
 
   useEffect(() => {
@@ -20,7 +18,6 @@ function Dashboard() {
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -28,7 +25,6 @@ function Dashboard() {
     <>
       <Navbar />
 
-      {/* Mobile Menu Button */}
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
@@ -42,33 +38,41 @@ function Dashboard() {
         {showSidebar && (
           <Sidebar
             closeSidebar={() => {
-              if (window.innerWidth <= 768) {
-                setShowSidebar(false);
-              }
+              if (window.innerWidth <= 768) setShowSidebar(false);
             }}
           />
         )}
 
         <div className="dashboard-content">
+
           <div className="welcome-banner">
-            <h1>Welcome to MetricMind 👋</h1>
-            <p>
-              Monitor your sales, orders, analytics and business performance
-              from one dashboard.
-            </p>
+            <h1>👤 Profile</h1>
+            <p>Manage your profile information.</p>
           </div>
 
-          <div className="dashboard-cards">
-            <DashboardCard />
+          <div className="profile-card">
+
+            <label>Name</label>
+
+            <input
+              type="text"
+              defaultValue="Yoshita"
+            />
+
+            <label>Email</label>
+
+            <input
+              type="email"
+              defaultValue="yoshita@email.com"
+            />
+
+            <div className="profile-buttons">
+              <button>Edit</button>
+              <button>Save</button>
+            </div>
+
           </div>
 
-          <div className="dashboard-section">
-            <ChartSection />
-          </div>
-
-          <div className="dashboard-section">
-            <RecentTransactions />
-          </div>
         </div>
       </div>
 
@@ -77,4 +81,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Profile;
