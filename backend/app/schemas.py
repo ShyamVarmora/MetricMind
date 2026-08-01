@@ -12,6 +12,11 @@ class UserLogin(BaseModel):
     password: str
 
 
+class ProfileUpdate(BaseModel):
+    name: str
+    email: EmailStr
+
+
 class UserResponse(BaseModel):
     id: int
     name: str

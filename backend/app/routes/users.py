@@ -4,7 +4,13 @@ from app.auth import get_current_user
 from app.database import get_db
 from app.models import User
 from fastapi.security import OAuth2PasswordRequestForm
-from app.schemas import UserCreate, UserResponse, UserLogin, Token
+from app.schemas import (
+    UserCreate,
+    UserResponse,
+    UserLogin,
+    ProfileUpdate,
+    Token
+)
 from app.auth import (
     hash_password,
     verify_password,
@@ -73,4 +79,18 @@ def login(
     }
 @router.get("/profile", response_model=UserResponse)
 def profile(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.put("/profile", response_model=UserResponse)
+def update_profile(
+    profile: ProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    current_user.name = profile.name
+    current_user.email = profile.email
+
+    db.commit()
+    db.refresh(current_user)
+
     return current_user

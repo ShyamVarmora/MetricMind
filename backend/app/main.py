@@ -3,9 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, get_connection
 from app import models
+from app.routes.analytics import router as analytics_router
 from app.routes.users import router as user_router
+from app.routes.reports import router as reports_router
 
-# Create database tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -14,10 +15,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Register authentication routes
 app.include_router(user_router)
-
-# CORS Configuration
+app.include_router(reports_router)
+app.include_router(analytics_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -42,6 +42,7 @@ def dashboard():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # Summary
     cursor.execute("""
         SELECT
             ROUND(SUM(SalesAmount),2) AS total_sales,
@@ -49,24 +50,13 @@ def dashboard():
             COUNT(DISTINCT CustomerKey) AS total_customers
         FROM factinternetsales;
     """)
+    summary = cursor.fetchone()
 
-    result = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return result
-
-
-@app.get("/sales")
-def sales():
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
+    # Monthly Sales
     cursor.execute("""
         SELECT
             d.EnglishMonthName AS month,
-            ROUND(SUM(f.SalesAmount),2) AS revenue
+            ROUND(SUM(f.SalesAmount),2) AS sales
         FROM factinternetsales f
         JOIN dimdate d
             ON f.OrderDateKey = d.DateKey
@@ -76,10 +66,30 @@ def sales():
         ORDER BY
             d.MonthNumberOfYear;
     """)
+    monthly_sales = cursor.fetchall()
 
-    result = cursor.fetchall()
+    # Top Products
+    cursor.execute("""
+        SELECT
+            p.EnglishProductName,
+            ROUND(SUM(f.SalesAmount),2) AS sales
+        FROM factinternetsales f
+        JOIN dimproduct p
+            ON f.ProductKey = p.ProductKey
+        GROUP BY p.EnglishProductName
+        ORDER BY sales DESC
+        LIMIT 5;
+    """)
+    top_products = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    return {"sales": result}
+    return {
+        "success": True,
+        "data": {
+            "summary": summary,
+            "monthly_sales": monthly_sales,
+            "top_products": top_products
+        }
+    }
