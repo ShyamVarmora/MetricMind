@@ -21,8 +21,7 @@ function Sidebar({ closeSidebar }) {
       <ul>
         <li>
           <NavLink
-            to="/"
-            end
+            to="/dashboard"
             className={({ isActive }) => (isActive ? "active" : "")}
             onClick={handleClick}
           >
@@ -41,15 +40,23 @@ function Sidebar({ closeSidebar }) {
         </li>
 
         <li>
-          <a href="#" onClick={handleClick}>
+          <NavLink
+            to="/chat"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
             💬 Chat
-          </a>
+          </NavLink>
         </li>
 
         <li>
-          <a href="#" onClick={handleClick}>
+          <NavLink
+            to="/analytics"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
             📈 Analytics
-          </a>
+          </NavLink>
         </li>
 
         <li>

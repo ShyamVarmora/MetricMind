@@ -1,46 +1,56 @@
 import "./DashboardCard.css";
-
 import {
   FaRupeeSign,
   FaShoppingCart,
   FaChartLine,
 } from "react-icons/fa";
 
-const cards = [
-  {
-    id: 1,
-    title: "Total Sales",
-    value: "₹1,20,000",
-    icon: <FaRupeeSign />,
-    color: "linear-gradient(135deg,#2563EB,#1D4ED8)",
-    change: "+12%",
-  },
-  {
-    id: 2,
-    title: "Orders",
-    value: "150",
-    icon: <FaShoppingCart />,
-    color: "linear-gradient(135deg,#22C55E,#16A34A)",
-    change: "+8%",
-  },
-  {
-    id: 3,
-    title: "Profit",
-    value: "₹25,000",
-    icon: <FaChartLine />,
-    color: "linear-gradient(135deg,#F59E0B,#D97706)",
-    change: "+15%",
-  },
-];
+import { useNavigate } from "react-router-dom";
 
-function DashboardCard() {
+function DashboardCard({ data }) {
+  const navigate = useNavigate();
+
+  const cards = [
+    {
+      id: 1,
+      title: "Total Sales",
+      value: `₹${data?.totalSales ?? 0}`,
+      icon: <FaRupeeSign />,
+      color: "linear-gradient(135deg,#2563EB,#1D4ED8)",
+      change: data?.salesChange ?? "+0%",
+      route: "/reports",
+    },
+    {
+      id: 2,
+      title: "Orders",
+      value: data?.orders ?? 0,
+      icon: <FaShoppingCart />,
+      color: "linear-gradient(135deg,#22C55E,#16A34A)",
+      change: data?.ordersChange ?? "+0%",
+      route: "/reports",
+    },
+    {
+      id: 3,
+      title: "Profit",
+      value: `₹${data?.profit ?? 0}`,
+      icon: <FaChartLine />,
+      color: "linear-gradient(135deg,#F59E0B,#D97706)",
+      change: data?.profitChange ?? "+0%",
+      route: "/reports",
+    },
+  ];
+
   return (
     <div className="cards">
       {cards.map((card) => (
         <div
           key={card.id}
           className="card"
-          style={{ background: card.color }}
+          style={{
+            background: card.color,
+            cursor: "pointer",
+          }}
+          onClick={() => navigate(card.route)}
         >
           <div className="card-header">
             <div className="card-icon">
