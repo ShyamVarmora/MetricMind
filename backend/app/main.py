@@ -1,12 +1,16 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, get_connection
 from app import models
-from app.routes.analytics import router as analytics_router
+from app.models import User
+from app.auth import get_current_user
+
 from app.routes.users import router as user_router
 from app.routes.reports import router as reports_router
+from app.routes.analytics import router as analytics_router
 
+# Create database tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -15,9 +19,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Register Routers
 app.include_router(user_router)
 app.include_router(reports_router)
 app.include_router(analytics_router)
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -29,30 +36,46 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return {"message": "MetricMind API is running"}
+    return {
+        "success": True,
+        "message": "MetricMind API is running"
+    }
 
 
 @app.get("/health")
 def health():
-    return {"status": "OK"}
+    return {
+        "success": True,
+        "message": "Server is healthy"
+    }
 
 
 @app.get("/dashboard")
-def dashboard():
+def dashboard(
+    current_user: User = Depends(get_current_user)
+):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # Summary
+    # ---------------- Summary ----------------
     cursor.execute("""
         SELECT
-            ROUND(SUM(SalesAmount),2) AS total_sales,
-            COUNT(DISTINCT SalesOrderNumber) AS total_orders,
-            COUNT(DISTINCT CustomerKey) AS total_customers
+            ROUND(SUM(SalesAmount),2) AS totalSales,
+            COUNT(DISTINCT SalesOrderNumber) AS orders,
+            COUNT(DISTINCT CustomerKey) AS customers
         FROM factinternetsales;
     """)
     summary = cursor.fetchone()
 
-    # Monthly Sales
+    # ---------------- Profit ----------------
+    cursor.execute("""
+        SELECT
+            ROUND(SUM(SalesAmount - TotalProductCost),2) AS profit
+        FROM factinternetsales;
+    """)
+    profit = cursor.fetchone()
+
+    # ---------------- Monthly Sales ----------------
     cursor.execute("""
         SELECT
             d.EnglishMonthName AS month,
@@ -68,28 +91,31 @@ def dashboard():
     """)
     monthly_sales = cursor.fetchall()
 
-    # Top Products
+    # ---------------- Recent Transactions ----------------
     cursor.execute("""
         SELECT
-            p.EnglishProductName,
-            ROUND(SUM(f.SalesAmount),2) AS sales
-        FROM factinternetsales f
-        JOIN dimproduct p
-            ON f.ProductKey = p.ProductKey
-        GROUP BY p.EnglishProductName
-        ORDER BY sales DESC
-        LIMIT 5;
+            SalesOrderNumber,
+            CustomerKey,
+            ROUND(SalesAmount,2) AS sales,
+            OrderDateKey
+        FROM factinternetsales
+        ORDER BY OrderDateKey DESC
+        LIMIT 10;
     """)
-    top_products = cursor.fetchall()
+    recent_transactions = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
     return {
         "success": True,
+        "message": "Dashboard loaded successfully",
         "data": {
-            "summary": summary,
-            "monthly_sales": monthly_sales,
-            "top_products": top_products
+            "totalSales": summary["totalSales"],
+            "orders": summary["orders"],
+            "customers": summary["customers"],
+            "profit": profit["profit"],
+            "monthlySales": monthly_sales,
+            "recentTransactions": recent_transactions
         }
     }
