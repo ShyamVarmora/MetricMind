@@ -8,16 +8,13 @@ import {
   Tooltip,
 } from "recharts";
 
-const data = [
-  { month: "Jan", sales: 4000 },
-  { month: "Feb", sales: 3000 },
-  { month: "Mar", sales: 5000 },
-  { month: "Apr", sales: 4500 },
-  { month: "May", sales: 6000 },
-  { month: "Jun", sales: 5500 },
-];
+import { useNavigate } from "react-router-dom";
 
-function ChartSection() {
+import "./ChartSection.css";
+
+function ChartSection({ data = [] }) {
+  const navigate = useNavigate();
+
   return (
     <div className="chart-card">
       <div className="chart-header">
@@ -26,27 +23,45 @@ function ChartSection() {
           <p>Monthly sales performance</p>
         </div>
 
-        <button className="chart-btn">
+        <button
+          className="chart-btn"
+          onClick={() => navigate("/reports")}
+        >
           View Report
         </button>
       </div>
 
-      <ResponsiveContainer width="100%" height={320}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="sales"
-            stroke="#2563EB"
-            strokeWidth={4}
-            dot={{ r: 5 }}
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {data.length === 0 ? (
+        <div
+          style={{
+            height: "320px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#64748b",
+            fontSize: "18px",
+          }}
+        >
+          No chart data available.
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={320}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="sales"
+              stroke="#2563EB"
+              strokeWidth={4}
+              dot={{ r: 5 }}
+              activeDot={{ r: 8 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }

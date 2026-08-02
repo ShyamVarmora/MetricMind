@@ -8,18 +8,36 @@ import "./Profile.css";
 function Profile() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
 
+  const [editing, setEditing] = useState(false);
+
+  const [profile, setProfile] = useState({
+    name: "Yoshita Chaudhary",
+    email: "yoshita@email.com",
+    phone: "+91 9876543210",
+    role: "UI Developer",
+  });
+
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setShowSidebar(true);
-      } else {
-        setShowSidebar(false);
-      }
+      setShowSidebar(window.innerWidth > 768);
     };
 
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleChange = (e) => {
+    setProfile({
+      ...profile,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSave = () => {
+    setEditing(false);
+    alert("Profile updated successfully!");
+  };
 
   return (
     <>
@@ -52,23 +70,52 @@ function Profile() {
 
           <div className="profile-card">
 
-            <label>Name</label>
-
+            <label htmlFor="name">Name</label>
             <input
-              type="text"
-              defaultValue="Yoshita"
+              id="name"
+              name="name"
+              value={profile.name}
+              disabled={!editing}
+              onChange={handleChange}
             />
 
-            <label>Email</label>
-
+            <label htmlFor="email">Email</label>
             <input
-              type="email"
-              defaultValue="yoshita@email.com"
+              id="email"
+              name="email"
+              value={profile.email}
+              disabled={!editing}
+              onChange={handleChange}
+            />
+
+            <label htmlFor="phone">Phone</label>
+            <input
+              id="phone"
+              name="phone"
+              value={profile.phone}
+              disabled={!editing}
+              onChange={handleChange}
+            />
+
+            <label htmlFor="role">Role</label>
+            <input
+              id="role"
+              name="role"
+              value={profile.role}
+              disabled={!editing}
+              onChange={handleChange}
             />
 
             <div className="profile-buttons">
-              <button>Edit</button>
-              <button>Save</button>
+              {!editing ? (
+                <button onClick={() => setEditing(true)}>
+                  Edit
+                </button>
+              ) : (
+                <button onClick={handleSave}>
+                  Save
+                </button>
+              )}
             </div>
 
           </div>
