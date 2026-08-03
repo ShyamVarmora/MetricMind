@@ -1,40 +1,88 @@
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-import {
-  FaChartPie,
-  FaFileAlt,
-  FaComments,
-  FaChartLine,
-  FaUser,
-  FaCog,
-} from "react-icons/fa";
-
-function Sidebar() {
-  const menuItems = [
-    { icon: <FaChartPie />, label: "Dashboard" },
-    { icon: <FaFileAlt />, label: "Reports" },
-    { icon: <FaComments />, label: "Chat" },
-    { icon: <FaChartLine />, label: "Analytics" },
-    { icon: <FaUser />, label: "Profile" },
-    { icon: <FaCog />, label: "Settings" },
-  ];
+function Sidebar({ closeSidebar }) {
+  const handleClick = () => {
+    if (closeSidebar) {
+      closeSidebar();
+    }
+  };
 
   return (
     <div className="sidebar">
       <h2>MetricMind</h2>
 
-      {menuItems.map((item, index) => (
-        <div
-          key={index}
-          className={`menu-item ${index === 0 ? "active" : ""}`}
-        >
-          <span className="menu-icon">
-            {item.icon}
-          </span>
+      <input
+        type="text"
+        placeholder="🔍 Search..."
+        className="search-box"
+      />
 
-          <span>{item.label}</span>
-        </div>
-      ))}
+      <ul>
+        <li>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
+            📊 Dashboard
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/reports"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
+            📋 Reports
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/chat"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
+            💬 Chat
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/analytics"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
+            📈 Analytics
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
+            👤 Profile
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/settings"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleClick}
+          >
+            ⚙️ Settings
+          </NavLink>
+        </li>
+      </ul>
+
+      <div className="sidebar-footer">
+        MetricMind v1.0
+      </div>
     </div>
   );
 }

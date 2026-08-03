@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import DashboardBanner from "../components/DashboardBanner";
 import DashboardCard from "../components/DashboardCard";
 import ChartSection from "../components/ChartSection";
 import RecentTransactions from "../components/RecentTransactions";
@@ -11,41 +10,122 @@ import Footer from "../components/Footer";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
+
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  const fetchDashboard = () => {
+    setDashboardData({
+      totalSales: 250000,
+      orders: 180,
+      profit: 65000,
+
+      salesChange: "+12%",
+      ordersChange: "+8%",
+      profitChange: "+15%",
+
+      chart: [
+        { month: "Jan", sales: 4000 },
+        { month: "Feb", sales: 5000 },
+        { month: "Mar", sales: 6500 },
+        { month: "Apr", sales: 6000 },
+        { month: "May", sales: 7200 },
+        { month: "Jun", sales: 8500 },
+      ],
+
+      transactions: [
+        {
+          id: 101,
+          customer: "Rahul Sharma",
+          amount: "₹5,000",
+          status: "Completed",
+        },
+        {
+          id: 102,
+          customer: "Priya Singh",
+          amount: "₹3,200",
+          status: "Pending",
+        },
+        {
+          id: 103,
+          customer: "Aman Gupta",
+          amount: "₹8,400",
+          status: "Completed",
+        },
+        {
+          id: 104,
+          customer: "Neha Verma",
+          amount: "₹2,700",
+          status: "Cancelled",
+        },
+      ],
+    });
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowSidebar(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (loading) {
+    return <h2 style={{ padding: 30 }}>Loading Dashboard...</h2>;
+  }
 
   return (
     <>
       <Navbar />
 
-      <button
-        className="menu-btn"
-        onClick={() => setShowSidebar(!showSidebar)}
-      >
-        ☰
-      </button>
+      {window.innerWidth <= 768 && (
+        <button
+          className="menu-btn"
+          onClick={() => setShowSidebar(!showSidebar)}
+        >
+          ☰
+        </button>
+      )}
 
       <div className="dashboard">
-
-        {(window.innerWidth > 768 || showSidebar) && (
-          <Sidebar />
+        {showSidebar && (
+          <Sidebar
+            closeSidebar={() => {
+              if (window.innerWidth <= 768) {
+                setShowSidebar(false);
+              }
+            }}
+          />
         )}
 
         <div className="dashboard-content">
-
-          <DashboardBanner />
+          <div className="welcome-banner">
+            <h1>Welcome to MetricMind 👋</h1>
+            <p>Monitor your business from one dashboard.</p>
+          </div>
 
           <div className="dashboard-cards">
-            <DashboardCard />
+            <DashboardCard data={dashboardData} />
           </div>
 
           <div className="dashboard-section">
-            <ChartSection />
+            <ChartSection data={dashboardData.chart} />
           </div>
 
           <div className="dashboard-section">
-            <RecentTransactions />
+            <RecentTransactions
+              transactions={dashboardData.transactions}
+            />
           </div>
-
         </div>
       </div>
 

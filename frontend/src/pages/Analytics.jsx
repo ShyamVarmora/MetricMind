@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 import "./Dashboard.css";
 
-function Chat() {
+function Analytics() {
   return (
     <>
       <Navbar />
@@ -13,8 +13,8 @@ function Chat() {
 
         <div className="dashboard-content">
           <div className="welcome-banner">
-            <h1>💬 Chat</h1>
-            <p>AI Chat page coming soon.</p>
+            <h1>📊 Analytics</h1>
+            <p>Analytics page coming soon.</p>
           </div>
         </div>
       </div>
@@ -24,4 +24,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default Analytics;
