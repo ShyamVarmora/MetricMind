@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
+
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
+import Skeleton from "../components/Skeleton";
+
 import "./Dashboard.css";
 import "./Profile.css";
 
 function Profile() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
+
+  const [loading, setLoading] = useState(true);
 
   const [editing, setEditing] = useState(false);
 
@@ -24,7 +29,14 @@ function Profile() {
 
     window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleChange = (e) => {
@@ -38,6 +50,24 @@ function Profile() {
     setEditing(false);
     alert("Profile updated successfully!");
   };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        <div className="dashboard">
+          {showSidebar && <Sidebar />}
+
+          <div className="dashboard-content">
+            <Skeleton />
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -56,7 +86,9 @@ function Profile() {
         {showSidebar && (
           <Sidebar
             closeSidebar={() => {
-              if (window.innerWidth <= 768) setShowSidebar(false);
+              if (window.innerWidth <= 768) {
+                setShowSidebar(false);
+              }
             }}
           />
         )}

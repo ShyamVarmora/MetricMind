@@ -6,6 +6,7 @@ import DashboardCard from "../components/DashboardCard";
 import ChartSection from "../components/ChartSection";
 import RecentTransactions from "../components/RecentTransactions";
 import Footer from "../components/Footer";
+import Skeleton from "../components/Skeleton";
 
 import "./Dashboard.css";
 
@@ -20,53 +21,55 @@ function Dashboard() {
   }, []);
 
   const fetchDashboard = () => {
-    setDashboardData({
-      totalSales: 250000,
-      orders: 180,
-      profit: 65000,
+    setTimeout(() => {
+      setDashboardData({
+        totalSales: 250000,
+        orders: 180,
+        profit: 65000,
 
-      salesChange: "+12%",
-      ordersChange: "+8%",
-      profitChange: "+15%",
+        salesChange: "+12%",
+        ordersChange: "+8%",
+        profitChange: "+15%",
 
-      chart: [
-        { month: "Jan", sales: 4000 },
-        { month: "Feb", sales: 5000 },
-        { month: "Mar", sales: 6500 },
-        { month: "Apr", sales: 6000 },
-        { month: "May", sales: 7200 },
-        { month: "Jun", sales: 8500 },
-      ],
+        chart: [
+          { month: "Jan", sales: 4000 },
+          { month: "Feb", sales: 5000 },
+          { month: "Mar", sales: 6500 },
+          { month: "Apr", sales: 6000 },
+          { month: "May", sales: 7200 },
+          { month: "Jun", sales: 8500 },
+        ],
 
-      transactions: [
-        {
-          id: 101,
-          customer: "Rahul Sharma",
-          amount: "₹5,000",
-          status: "Completed",
-        },
-        {
-          id: 102,
-          customer: "Priya Singh",
-          amount: "₹3,200",
-          status: "Pending",
-        },
-        {
-          id: 103,
-          customer: "Aman Gupta",
-          amount: "₹8,400",
-          status: "Completed",
-        },
-        {
-          id: 104,
-          customer: "Neha Verma",
-          amount: "₹2,700",
-          status: "Cancelled",
-        },
-      ],
-    });
+        transactions: [
+          {
+            id: 101,
+            customer: "Rahul Sharma",
+            amount: "₹5,000",
+            status: "Completed",
+          },
+          {
+            id: 102,
+            customer: "Priya Singh",
+            amount: "₹3,200",
+            status: "Pending",
+          },
+          {
+            id: 103,
+            customer: "Aman Gupta",
+            amount: "₹8,400",
+            status: "Completed",
+          },
+          {
+            id: 104,
+            customer: "Neha Verma",
+            amount: "₹2,700",
+            status: "Cancelled",
+          },
+        ],
+      });
 
-    setLoading(false);
+      setLoading(false);
+    }, 1200);
   };
 
   useEffect(() => {
@@ -80,7 +83,21 @@ function Dashboard() {
   }, []);
 
   if (loading) {
-    return <h2 style={{ padding: 30 }}>Loading Dashboard...</h2>;
+    return (
+      <>
+        <Navbar />
+
+        <div className="dashboard">
+          {showSidebar && <Sidebar />}
+
+          <div className="dashboard-content">
+            <Skeleton />
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
   }
 
   return (

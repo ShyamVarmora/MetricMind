@@ -1,5 +1,4 @@
 import "./RecentTransactions.css";
-import EmptyState from "./EmptyState";
 
 function RecentTransactions({ transactions = [] }) {
   return (
@@ -9,7 +8,14 @@ function RecentTransactions({ transactions = [] }) {
       </div>
 
       {transactions.length === 0 ? (
-        <EmptyState message="No recent transactions found." />
+        <div
+          style={{
+            padding: "30px",
+            textAlign: "center",
+          }}
+        >
+          No recent transactions found.
+        </div>
       ) : (
         <div className="table-container">
           <table>
@@ -23,13 +29,14 @@ function RecentTransactions({ transactions = [] }) {
             </thead>
 
             <tbody>
-              {transactions.map((item, index) => (
-                <tr key={item.id || index}>
-                  <td>{item.id || "-"}</td>
+              {transactions.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.id}</td>
 
-                  <td>{item.customer || item.customerName || "-"}</td>
+                  <td>{item.customer}</td>
 
-                  <td>₹{item.amount ?? 0}</td>
+                  {/* Removed extra ₹ symbol */}
+                  <td>{item.amount}</td>
 
                   <td>
                     <span
@@ -41,7 +48,7 @@ function RecentTransactions({ transactions = [] }) {
                           : "cancelled"
                       }`}
                     >
-                      {item.status || "Unknown"}
+                      {item.status}
                     </span>
                   </td>
                 </tr>
