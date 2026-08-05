@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import Loading from "../components/Loading";
 import ErrorState from "../components/ErrorState";
 import EmptyState from "../components/EmptyState";
+import Skeleton from "../components/Skeleton";
 
 import "./Dashboard.css";
 import "./Reports.css";
@@ -15,7 +16,7 @@ import "./Reports.css";
 function Reports() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reportData, setReportData] = useState(null);
 
@@ -25,6 +26,10 @@ function Reports() {
     };
 
     window.addEventListener("resize", handleResize);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1200);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -45,6 +50,24 @@ function Reports() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        <div className="dashboard">
+          {showSidebar && <Sidebar />}
+
+          <div className="dashboard-content">
+            <Skeleton />
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
