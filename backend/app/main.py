@@ -5,11 +5,11 @@ from app.database import engine, get_connection
 from app import models
 from app.models import User
 from app.auth import get_current_user
-
+from app.routes.ask import router as ask_router
 from app.routes.users import router as user_router
 from app.routes.reports import router as reports_router
 from app.routes.analytics import router as analytics_router
-
+from app.middleware import rate_limit_middleware
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
 
@@ -18,9 +18,10 @@ app = FastAPI(
     description="Authentication APIs for MetricMind Backend",
     version="1.0.0"
 )
-
+app.middleware("http")(rate_limit_middleware)
 # Register Routers
 app.include_router(user_router)
+app.include_router(ask_router)
 app.include_router(reports_router)
 app.include_router(analytics_router)
 

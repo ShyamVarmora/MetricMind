@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from app.database import get_connection
+from datetime import datetime
 
 router = APIRouter(
     prefix="/analytics",
@@ -27,7 +28,12 @@ def analytics():
 
     return {
         "success": True,
-        "data": data
+        "message": "Analytics fetched successfully",
+        "data": data,
+        "meta": {
+            "endpoint": "/analytics",
+            "timestamp": datetime.now().isoformat()
+        }
     }
 
 
@@ -55,7 +61,12 @@ def analytics_sales():
 
     return {
         "success": True,
-        "data": data
+        "message": "Sales analytics fetched successfully",
+        "data": data,
+        "meta": {
+            "endpoint": "/analytics/sales",
+            "timestamp": datetime.now().isoformat()
+        }
     }
 
 
@@ -76,7 +87,12 @@ def analytics_products():
 
     return {
         "success": True,
-        "data": data
+        "message": "Products analytics fetched successfully",
+        "data": data,
+        "meta": {
+            "endpoint": "/analytics/products",
+            "timestamp": datetime.now().isoformat()
+        }
     }
 
 
@@ -97,7 +113,12 @@ def analytics_customers():
 
     return {
         "success": True,
-        "data": data
+        "message": "Customer analytics fetched successfully",
+        "data": data,
+        "meta": {
+            "endpoint": "/analytics/customers",
+            "timestamp": datetime.now().isoformat()
+        }
     }
 
 
@@ -127,5 +148,10 @@ def analytics_monthly():
 
     return {
         "success": True,
-        "data": data
+        "message": "Monthly analytics fetched successfully",
+        "data": data,
+        "meta": {
+            "endpoint": "/analytics/monthly",
+            "timestamp": datetime.now().isoformat()
+        }
     }
