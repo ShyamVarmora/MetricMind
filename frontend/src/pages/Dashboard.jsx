@@ -130,19 +130,29 @@ function Dashboard() {
             <p>Monitor your business from one dashboard.</p>
           </div>
 
-          <div className="dashboard-cards">
-            <DashboardCard data={dashboardData} />
-          </div>
+          {!dashboardData ? (
+            <div className="empty-state">
+              <h2>📊</h2>
+              <h3>No dashboard data available</h3>
+              <p>Your dashboard metrics will appear here.</p>
+            </div>
+          ) : (
+            <>
+              <div className="dashboard-cards">
+                <DashboardCard data={dashboardData} />
+              </div>
 
-          <div className="dashboard-section">
-            <ChartSection data={dashboardData.chart} />
-          </div>
+              <div className="dashboard-section">
+                <ChartSection data={dashboardData.chart} />
+              </div>
 
-          <div className="dashboard-section">
-            <RecentTransactions
-              transactions={dashboardData.transactions}
-            />
-          </div>
+              <div className="dashboard-section">
+                <RecentTransactions
+                  transactions={dashboardData.transactions}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 

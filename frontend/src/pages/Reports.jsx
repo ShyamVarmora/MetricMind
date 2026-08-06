@@ -5,9 +5,7 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 
-import Loading from "../components/Loading";
 import ErrorState from "../components/ErrorState";
-import EmptyState from "../components/EmptyState";
 import Skeleton from "../components/Skeleton";
 
 import "./Dashboard.css";
@@ -27,11 +25,14 @@ function Reports() {
 
     window.addEventListener("resize", handleResize);
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setLoading(false);
     }, 1200);
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
+    };
   }, []);
 
   const loadReport = async (type) => {
@@ -105,7 +106,6 @@ function Reports() {
             <div
               className="report-card"
               onClick={() => loadReport("sales")}
-              style={{ cursor: "pointer" }}
             >
               <h2>Sales Report</h2>
               <p>Total Sales Performance</p>
@@ -114,7 +114,6 @@ function Reports() {
             <div
               className="report-card"
               onClick={() => loadReport("revenue")}
-              style={{ cursor: "pointer" }}
             >
               <h2>Revenue Report</h2>
               <p>Revenue Growth Analysis</p>
@@ -123,7 +122,6 @@ function Reports() {
             <div
               className="report-card"
               onClick={() => loadReport("customer")}
-              style={{ cursor: "pointer" }}
             >
               <h2>Customer Report</h2>
               <p>Customer Insights</p>
@@ -132,7 +130,6 @@ function Reports() {
             <div
               className="report-card"
               onClick={() => loadReport("monthly")}
-              style={{ cursor: "pointer" }}
             >
               <h2>Monthly Report</h2>
               <p>Monthly Business Analysis</p>
@@ -142,23 +139,26 @@ function Reports() {
 
           <div style={{ marginTop: "30px" }}>
 
-            {loading && <Loading />}
-
-            {!loading && error && (
+            {error && (
               <ErrorState message={error} />
             )}
 
-            {!loading && !error && reportData === null && (
-              <EmptyState message="Select a report to view." />
+            {!error && reportData === null && (
+              <div className="empty-state">
+                <h2>📋</h2>
+                <h3>Report will appear here</h3>
+                <p>Select any report card to view report details.</p>
+              </div>
             )}
 
-            {!loading && !error && reportData && (
+            {!error && reportData && (
               <pre
                 style={{
                   background: "#fff",
                   padding: "20px",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   overflow: "auto",
+                  boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
                 }}
               >
                 {JSON.stringify(reportData, null, 2)}
@@ -174,5 +174,4 @@ function Reports() {
     </>
   );
 }
-
 export default Reports;

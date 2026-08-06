@@ -8,16 +8,18 @@
 .card {
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  padding: 25px;
+  border-radius: 16px;
+  padding: 24px;
   color: white;
   min-height: 190px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
 }
 
 .card::before {
@@ -42,7 +44,7 @@
 }
 
 .card-change {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255,255,255,.18);
   padding: 8px 14px;
   border-radius: 30px;
   font-size: 13px;
@@ -50,32 +52,82 @@
 }
 
 .card h3 {
-  margin-top: 25px;
-  font-size: 20px;
+  margin-top: 22px;
+  font-size: 18px;
   font-weight: 500;
 }
 
 .card h1 {
   margin: 10px 0;
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 700;
 }
 
 .card p {
-  opacity: 0.9;
-  font-size: 15px;
+  opacity: .9;
+  font-size: 14px;
 }
 
-@media (max-width: 900px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
+/* Tablet */
 
-  .card {
-    min-height: 170px;
-  }
+@media (max-width:900px){
 
-  .card h1 {
-    font-size: 34px;
-  }
+.cards{
+grid-template-columns:1fr;
+}
+
+.card{
+min-height:170px;
+}
+
+.card h1{
+font-size:34px;
+}
+
+}
+
+/* Mobile */
+
+@media (max-width:768px){
+
+.cards{
+grid-template-columns:1fr;
+gap:16px;
+}
+
+.card{
+padding:20px;
+min-height:auto;
+}
+
+.card h1{
+font-size:30px;
+}
+
+.card h3{
+font-size:17px;
+}
+
+.card-icon{
+font-size:26px;
+}
+
+}
+
+/* Small Phones */
+
+@media (max-width:480px){
+
+.card{
+padding:18px;
+}
+
+.card h1{
+font-size:26px;
+}
+
+.card p{
+font-size:13px;
+}
+
 }

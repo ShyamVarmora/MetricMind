@@ -11,6 +11,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 /* Logo */
@@ -18,11 +19,11 @@
 .sidebar h2 {
   font-size: 20px;
   font-weight: 700;
-  margin: 0 0 20px;
-  color: #ffffff;
+  margin-bottom: 20px;
+  color: white;
 }
 
-/* Search Box */
+/* Search */
 
 .search-box {
   width: 100%;
@@ -33,7 +34,6 @@
   background: #1e293b;
   color: white;
   margin-bottom: 25px;
-  box-sizing: border-box;
   font-size: 14px;
 }
 
@@ -61,47 +61,65 @@
   color: #cbd5e1;
   padding: 14px 16px;
   border-radius: 12px;
-  transition: 0.3s;
   font-size: 16px;
   font-weight: 500;
+  transition: all 0.25s ease;
 }
+
+/* Hover */
 
 .sidebar a:hover {
   background: #2563eb;
   color: white;
-  transform: translateX(4px);
+  transform: translateX(6px);
+  box-shadow: 0 8px 20px rgba(37,99,235,.25);
 }
+
+/* Active */
 
 .sidebar a.active {
   background: #2563eb;
   color: white;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 10px 25px rgba(37,99,235,.35);
 }
 
-/* Push footer to bottom */
+/* Footer */
 
 .sidebar-footer {
   margin-top: auto;
   padding-top: 25px;
   color: #94a3b8;
   font-size: 14px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,.08);
 }
 
-/* Responsive */
+/* Scrollbar */
 
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    left: -270px;
-    top: 70px;
-    width: 250px;
-    height: calc(100vh - 70px);
-    transition: left 0.3s ease;
-    z-index: 1000;
-  }
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .sidebar.active {
-    left: 0;
-  }
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+}
+
+/* Mobile */
+
+@media (max-width:768px){
+
+.sidebar{
+    position:fixed;
+    left:-270px;
+    top:70px;
+    width:250px;
+    height:calc(100vh - 70px);
+    z-index:1000;
+    transition:left .3s ease;
+}
+
+.sidebar.active{
+    left:0;
+}
+
 }

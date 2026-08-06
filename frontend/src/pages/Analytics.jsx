@@ -168,6 +168,7 @@ function Analytics() {
                       />
                     ))}
                   </Pie>
+                  <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -191,6 +192,14 @@ function Analytics() {
 
           </div>
 
+          <div className="empty-state">
+            <h2>📈</h2>
+            <h3>Waiting for analytics data</h3>
+            <p>
+              Backend integration will display live analytics and insights here.
+            </p>
+          </div>
+
         </div>
       </div>
 
@@ -198,4 +207,5 @@ function Analytics() {
     </>
   );
 }
+
 export default Analytics;
