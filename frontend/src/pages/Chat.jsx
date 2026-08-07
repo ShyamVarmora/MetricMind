@@ -1,7 +1,9 @@
 import { useState } from "react";
+
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
+
 import "./Dashboard.css";
 import "./Chat.css";
 
@@ -32,42 +34,64 @@ function Chat() {
         <Sidebar />
 
         <div className="dashboard-content">
+
           <div className="welcome-banner">
             <h1>💬 AI Chat</h1>
             <p>Enterprise AI Assistant</p>
           </div>
 
           <div className="chat-container">
-            <div className="chat-history">
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`message ${
-                    msg.sender === "user" ? "user" : "ai"
-                  }`}
-                >
-                  <div className="bubble">{msg.text}</div>
-                </div>
-              ))}
 
-              <div className="message ai">
-                <div className="bubble typing">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
+            {messages.length === 0 ? (
+              <div className="empty-state">
+                <h2>🤖</h2>
+                <h3>Start a conversation</h3>
+                <p>
+                  Your AI assistant responses will appear here.
+                </p>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="chat-history">
 
-            <div className="chat-input-area">
-              <input
-                type="text"
-                placeholder="Type your message..."
-              />
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`message ${
+                        msg.sender === "user" ? "user" : "ai"
+                      }`}
+                    >
+                      <div className="bubble">
+                        {msg.text}
+                      </div>
+                    </div>
+                  ))}
 
-              <button>Send</button>
-            </div>
+                  <div className="message ai">
+                    <div className="bubble typing">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="chat-input-area">
+                  <input
+                    type="text"
+                    placeholder="Type your message..."
+                  />
+
+                  <button>
+                    Send
+                  </button>
+                </div>
+              </>
+            )}
+
           </div>
+
         </div>
       </div>
 

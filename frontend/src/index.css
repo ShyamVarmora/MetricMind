@@ -1,84 +1,246 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:"Poppins",sans-serif;
+/* ===========================
+   Global Reset
+=========================== */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+/* ===========================
+   Root
+=========================== */
 
 html,
 body,
-#root{
-  width:100%;
-  min-height:100vh;
-  background:#f4f7fb;
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: #f5f7fb;
+  color: #1f2937;
 }
 
-body{
-  overflow-x:hidden;
+/* ===========================
+   Body
+=========================== */
+
+body {
+  line-height: 1.5;
 }
 
-a{
-  text-decoration:none;
-  color:inherit;
+/* ===========================
+   Links
+=========================== */
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-button{
-  cursor:pointer;
-  transition:0.3s;
-  font-family:"Poppins",sans-serif;
+/* ===========================
+   Images
+=========================== */
+
+img {
+  max-width: 100%;
+  display: block;
 }
 
-button:hover{
-  transform:translateY(-2px);
+/* ===========================
+   Buttons
+=========================== */
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s ease;
 }
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* ===========================
+   Inputs
+=========================== */
 
 input,
 select,
-textarea{
-  font-family:"Poppins",sans-serif;
+textarea {
+  font-family: inherit;
+  outline: none;
 }
 
-table{
-  border-collapse:collapse;
-  width:100%;
-}
-/* Smooth Scroll */
-html{
-    scroll-behavior:smooth;
+/* ===========================
+   Headings
+=========================== */
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar{
-    width:10px;
+h2 {
+  font-size: 24px;
+  font-weight: 600;
 }
 
-::-webkit-scrollbar-track{
-    background:#f1f5f9;
+h3 {
+  font-size: 18px;
+  font-weight: 600;
 }
 
-::-webkit-scrollbar-thumb{
-    background:#2563eb;
-    border-radius:10px;
+p {
+  font-size: 15px;
+  color: #6b7280;
 }
 
-::-webkit-scrollbar-thumb:hover{
-    background:#1d4ed8;
-}
-/* Scrollbar */
+/* ===========================
+   Scrollbar
+=========================== */
 
-::-webkit-scrollbar{
-    width:8px;
-}
-
-::-webkit-scrollbar-track{
-    background:#f1f5f9;
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-::-webkit-scrollbar-thumb{
-    background:#2563eb;
-    border-radius:20px;
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover{
-    background:#1d4ed8;
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ===========================
+   Responsive Typography
+=========================== */
+
+@media (max-width: 768px) {
+
+  h1 {
+    font-size: 26px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 17px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  h1 {
+    font-size: 22px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+}
+/* ===========================
+   Global Text Colors
+=========================== */
+
+body {
+  background: #f5f7fb;
+  color: #111827;
+}
+
+/* White cards */
+.card,
+.dashboard-card,
+.analytics-card,
+.report-card,
+.profile-card,
+.chart-container,
+.transactions-container {
+  color: #111827;
+}
+
+.card h1,
+.card h2,
+.card h3,
+.dashboard-card h1,
+.dashboard-card h2,
+.dashboard-card h3,
+.analytics-card h1,
+.analytics-card h2,
+.analytics-card h3,
+.report-card h1,
+.report-card h2,
+.report-card h3,
+.profile-card h1,
+.profile-card h2,
+.profile-card h3 {
+  color: #111827;
+}
+
+.card p,
+.dashboard-card p,
+.analytics-card p,
+.report-card p,
+.profile-card p {
+  color: #4b5563;
+}
+
+/* Tables */
+table,
+th,
+td {
+  color: #111827;
+}
+
+thead {
+  color: #111827;
+}
+
+tbody {
+  color: #374151;
+}
+/* ===========================
+   Force Text Visibility
+=========================== */
+
+.dashboard-content h1,
+.dashboard-content h2,
+.dashboard-content h3,
+.dashboard-content h4,
+.dashboard-content h5,
+.dashboard-content h6{
+    color:#111827 !important;
+}
+
+.dashboard-content p{
+    color:#4b5563 !important;
+}
+
+.dashboard-content label{
+    color:#374151 !important;
+}
+
+.dashboard-content span{
+    color:inherit;
+}
+
+.dashboard-content table,
+.dashboard-content td,
+.dashboard-content th{
+    color:#111827 !important;
 }
