@@ -74,7 +74,11 @@ function Dashboard() {
 
   useEffect(() => {
     const handleResize = () => {
-      setShowSidebar(window.innerWidth > 768);
+      if (window.innerWidth > 768) {
+        setShowSidebar(true);
+      } else {
+        setShowSidebar(false);
+      }
     };
 
     window.addEventListener("resize", handleResize);
@@ -88,7 +92,10 @@ function Dashboard() {
         <Navbar />
 
         <div className="dashboard">
-          {showSidebar && <Sidebar />}
+          <Sidebar
+            showSidebar={showSidebar}
+            closeSidebar={() => setShowSidebar(false)}
+          />
 
           <div className="dashboard-content">
             <Skeleton />
@@ -114,15 +121,10 @@ function Dashboard() {
       )}
 
       <div className="dashboard">
-        {showSidebar && (
-          <Sidebar
-            closeSidebar={() => {
-              if (window.innerWidth <= 768) {
-                setShowSidebar(false);
-              }
-            }}
-          />
-        )}
+        <Sidebar
+          showSidebar={showSidebar}
+          closeSidebar={() => setShowSidebar(false)}
+        />
 
         <div className="dashboard-content">
           <div className="welcome-banner">
@@ -130,14 +132,15 @@ function Dashboard() {
             <p>Monitor your business from one dashboard.</p>
           </div>
 
-          <div className="dashboard-cards">
-            <DashboardCard data={dashboardData} />
-          </div>
+          {/* Dashboard Cards */}
+          <DashboardCard data={dashboardData} />
 
+          {/* Sales Chart */}
           <div className="dashboard-section">
             <ChartSection data={dashboardData.chart} />
           </div>
 
+          {/* Recent Transactions */}
           <div className="dashboard-section">
             <RecentTransactions
               transactions={dashboardData.transactions}

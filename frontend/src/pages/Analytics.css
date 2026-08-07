@@ -82,3 +82,29 @@
 }
 
 }
+/* ===============================
+   Analytics Banner
+================================= */
+
+.analytics-banner{
+    background:linear-gradient(135deg,#2563EB,#3B82F6);
+    color:#fff;
+    padding:30px;
+    border-radius:18px;
+    margin-bottom:30px;
+    box-shadow:0 12px 30px rgba(37,99,235,.25);
+}
+
+.analytics-banner h1{
+    color:#fff !important;
+    font-size:38px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.analytics-banner p{
+    color:#ffffff !important;
+    opacity:1 !important;
+    font-size:17px;
+    margin:0;
+}

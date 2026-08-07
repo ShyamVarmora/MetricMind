@@ -53,15 +53,12 @@ function Analytics() {
     return (
       <>
         <Navbar />
-
         <div className="dashboard">
           <Sidebar />
-
           <div className="dashboard-content">
             <Skeleton />
           </div>
         </div>
-
         <Footer />
       </>
     );
@@ -128,7 +125,7 @@ function Analytics() {
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="sales" fill="#2563EB" />
+                  <Bar dataKey="sales" fill="#2563EB" radius={[8, 8, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -168,6 +165,7 @@ function Analytics() {
                       />
                     ))}
                   </Pie>
+                  <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -184,6 +182,7 @@ function Analytics() {
                   <Bar
                     dataKey="revenue"
                     fill="#F59E0B"
+                    radius={[8, 8, 0, 0]}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -198,4 +197,5 @@ function Analytics() {
     </>
   );
 }
+
 export default Analytics;

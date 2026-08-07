@@ -105,3 +105,10 @@
         opacity:1;
     }
 }
+.welcome-banner h1{
+    color:white !important;
+}
+
+.welcome-banner p{
+    color:rgba(255,255,255,.95) !important;
+}

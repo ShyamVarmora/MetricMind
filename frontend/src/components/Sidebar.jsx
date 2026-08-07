@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-function Sidebar({ closeSidebar }) {
+function Sidebar({ showSidebar, closeSidebar }) {
   const handleClick = () => {
     if (closeSidebar) {
       closeSidebar();
@@ -9,7 +9,8 @@ function Sidebar({ closeSidebar }) {
   };
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${showSidebar ? "active" : ""}`}>
+
       <h2>MetricMind</h2>
 
       <input
@@ -19,6 +20,7 @@ function Sidebar({ closeSidebar }) {
       />
 
       <ul>
+
         <li>
           <NavLink
             to="/dashboard"
@@ -78,11 +80,13 @@ function Sidebar({ closeSidebar }) {
             ⚙️ Settings
           </NavLink>
         </li>
+
       </ul>
 
       <div className="sidebar-footer">
         MetricMind v1.0
       </div>
+
     </div>
   );
 }

@@ -1,28 +1,41 @@
 .sidebar {
-  width: 250px;
-  min-width: 250px;
+  width: 240px;
+  min-width: 240px;
   background: #0f172a;
   color: white;
-  padding: 25px 18px;
+  padding: 24px 18px;
   box-sizing: border-box;
-  height: calc(100vh - 70px);
-  position: sticky;
+
+  position: fixed;
   top: 70px;
-  overflow-y: auto;
+  left: 0;
+
+  height: calc(100vh - 70px);
+
   display: flex;
   flex-direction: column;
+
+  overflow-y: auto;
+
+  transition: left 0.3s ease;
+
+  z-index: 1100;
 }
 
-/* Logo */
+/* ===========================
+   Logo
+=========================== */
 
 .sidebar h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  margin: 0 0 20px;
-  color: #ffffff;
+  margin-bottom: 22px;
+  color: white;
 }
 
-/* Search Box */
+/* ===========================
+   Search
+=========================== */
 
 .search-box {
   width: 100%;
@@ -32,16 +45,18 @@
   border-radius: 12px;
   background: #1e293b;
   color: white;
-  margin-bottom: 25px;
-  box-sizing: border-box;
+  margin-bottom: 28px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .search-box::placeholder {
   color: #94a3b8;
 }
 
-/* Menu */
+/* ===========================
+   Menu
+=========================== */
 
 .sidebar ul {
   list-style: none;
@@ -50,20 +65,25 @@
 }
 
 .sidebar li {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .sidebar a {
   display: flex;
   align-items: center;
   gap: 12px;
+
   text-decoration: none;
   color: #cbd5e1;
+
   padding: 14px 16px;
+
   border-radius: 12px;
-  transition: 0.3s;
-  font-size: 16px;
+
+  font-size: 15px;
   font-weight: 500;
+
+  transition: all 0.25s ease;
 }
 
 .sidebar a:hover {
@@ -75,33 +95,99 @@
 .sidebar a.active {
   background: #2563eb;
   color: white;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
 }
 
-/* Push footer to bottom */
+/* ===========================
+   Footer
+=========================== */
 
 .sidebar-footer {
   margin-top: auto;
   padding-top: 25px;
+  border-top: 1px solid rgba(255,255,255,.08);
+
   color: #94a3b8;
-  font-size: 14px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 13px;
 }
 
-/* Responsive */
+/* ===========================
+   Scrollbar
+=========================== */
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+}
+
+/* ===========================
+   Desktop
+=========================== */
+
+@media (min-width: 769px) {
+
+  .sidebar {
+    left: 0;
+  }
+
+}
+
+/* ===========================
+   Tablet & Mobile
+=========================== */
 
 @media (max-width: 768px) {
+
   .sidebar {
-    position: fixed;
-    left: -270px;
+
+    left: -260px;
+
+    width: 240px;
+    min-width: 240px;
+
     top: 70px;
-    width: 250px;
     height: calc(100vh - 70px);
-    transition: left 0.3s ease;
-    z-index: 1000;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.35);
   }
 
   .sidebar.active {
     left: 0;
   }
+
+}
+
+/* ===========================
+   Small Phones
+=========================== */
+
+@media (max-width: 480px) {
+
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    left: -240px;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar h2 {
+    font-size: 20px;
+  }
+
+  .sidebar a {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .search-box {
+    font-size: 13px;
+  }
+
 }
