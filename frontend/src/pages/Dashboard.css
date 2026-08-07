@@ -1,12 +1,19 @@
+/* ===========================
+   Main Layout
+=========================== */
+
 .dashboard {
   display: flex;
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   background: #f5f7fb;
 }
 
 .dashboard-content {
   flex: 1;
-  padding: 30px;
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  padding: 95px 32px 30px;
+  box-sizing: border-box;
   overflow-x: hidden;
 }
 
@@ -15,27 +22,35 @@
 =========================== */
 
 .welcome-banner {
+  width: 100%;
   background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: #fff;
-  padding: 30px;
-  border-radius: 16px;
-  margin-bottom: 25px;
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.18);
+  border-radius: 18px;
+  padding: 28px;
+  color: white;
+  margin-bottom: 28px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.18);
 }
 
 .welcome-banner h1 {
-  color: #ffffff !important;
-  font-size: 30px;
+  font-size: 34px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .welcome-banner p {
-  color: rgba(255, 255, 255, 0.95) !important;
   font-size: 16px;
-  font-weight: 500;
-  margin-top: 6px;
-  opacity: 1;
+  opacity: .95;
+}
+
+/* ===========================
+   Cards
+=========================== */
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 30px;
 }
 
 /* ===========================
@@ -43,51 +58,29 @@
 =========================== */
 
 .dashboard-section {
-  margin-top: 25px;
+  margin-bottom: 30px;
 }
 
 /* ===========================
-   Grid Layout
-=========================== */
-
-.dashboard-cards,
-.analytics-cards,
-.reports-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.analytics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 25px;
-  margin-top: 25px;
-}
-
-/* ===========================
-   Cards
+   Generic Cards
 =========================== */
 
 .card,
-.dashboard-card,
 .analytics-card,
 .report-card,
 .profile-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 22px;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
-  transition: all 0.25s ease;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  transition: .25s;
 }
 
 .card:hover,
-.dashboard-card:hover,
 .analytics-card:hover,
 .report-card:hover,
 .profile-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0,0,0,.12);
 }
 
 /* ===========================
@@ -96,22 +89,16 @@
 
 button {
   border: none;
-  border-radius: 10px;
-  padding: 12px 24px;
   background: #2563eb;
   color: white;
+  border-radius: 10px;
+  padding: 12px 22px;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.25s ease;
+  transition: .25s;
 }
 
 button:hover {
   background: #1d4ed8;
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: scale(0.97);
 }
 
 /* ===========================
@@ -119,24 +106,21 @@ button:active {
 =========================== */
 
 input,
-select,
-textarea {
+textarea,
+select {
   width: 100%;
-  padding: 12px;
-  margin-top: 8px;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  border: 1px solid #d9d9d9;
-  font-size: 15px;
-  transition: all 0.2s ease;
+  padding: 12px;
   box-sizing: border-box;
 }
 
 input:focus,
-select:focus,
-textarea:focus {
-  border-color: #2563eb;
+textarea:focus,
+select:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
 }
 
 /* ===========================
@@ -144,71 +128,89 @@ textarea:focus {
 =========================== */
 
 .menu-btn {
+  display: none;
+
   position: fixed;
-  top: 80px;
+  top: 82px;
   left: 15px;
-  z-index: 999;
-  padding: 10px 14px;
+
+  width: 45px;
+  height: 45px;
+
   border-radius: 10px;
+
   background: #2563eb;
   color: white;
+
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1200;
 }
 
 /* ===========================
-   Mobile
+   Large Desktop
+=========================== */
+
+@media (min-width: 1400px) {
+
+  .dashboard-content {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+}
+
+/* ===========================
+   Laptop
+=========================== */
+
+@media (max-width: 1200px) {
+
+  .dashboard-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+/* ===========================
+   Tablet
 =========================== */
 
 @media (max-width: 768px) {
 
-  .dashboard {
-    flex-direction: column;
-  }
-
   .dashboard-content {
-    padding: 20px;
+    margin-left: 0;
+    width: 100%;
+    padding: 90px 18px 20px;
   }
 
-  .analytics-grid,
-  .dashboard-cards,
-  .analytics-cards,
-  .reports-grid {
+  .dashboard-cards {
     grid-template-columns: 1fr;
   }
 
   .welcome-banner {
     padding: 20px;
-    text-align: center;
   }
 
   .welcome-banner h1 {
     font-size: 24px;
   }
 
-  .welcome-banner p {
-    font-size: 15px;
+  .menu-btn {
+    display: flex;
   }
 
-  button {
-    width: 100%;
-  }
-
-  .card,
-  .dashboard-card,
-  .analytics-card,
-  .report-card,
-  .profile-card {
-    padding: 18px;
-  }
 }
 
 /* ===========================
-   Small Phones
+   Mobile
 =========================== */
 
 @media (max-width: 480px) {
 
   .dashboard-content {
-    padding: 15px;
+    padding: 85px 15px 20px;
   }
 
   .welcome-banner {
@@ -222,4 +224,12 @@ textarea:focus {
   .welcome-banner p {
     font-size: 14px;
   }
+
+}
+.welcome-banner h1{
+    color:white !important;
+}
+
+.welcome-banner p{
+    color:rgba(255,255,255,.95) !important;
 }

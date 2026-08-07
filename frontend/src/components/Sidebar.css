@@ -1,29 +1,41 @@
 .sidebar {
-  width: 250px;
-  min-width: 250px;
+  width: 240px;
+  min-width: 240px;
   background: #0f172a;
   color: white;
-  padding: 25px 18px;
+  padding: 24px 18px;
   box-sizing: border-box;
-  height: calc(100vh - 70px);
-  position: sticky;
+
+  position: fixed;
   top: 70px;
-  overflow-y: auto;
+  left: 0;
+
+  height: calc(100vh - 70px);
+
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
+
+  overflow-y: auto;
+
+  transition: left 0.3s ease;
+
+  z-index: 1100;
 }
 
-/* Logo */
+/* ===========================
+   Logo
+=========================== */
 
 .sidebar h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   color: white;
 }
 
-/* Search */
+/* ===========================
+   Search
+=========================== */
 
 .search-box {
   width: 100%;
@@ -33,15 +45,18 @@
   border-radius: 12px;
   background: #1e293b;
   color: white;
-  margin-bottom: 25px;
+  margin-bottom: 28px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .search-box::placeholder {
   color: #94a3b8;
 }
 
-/* Menu */
+/* ===========================
+   Menu
+=========================== */
 
 .sidebar ul {
   list-style: none;
@@ -50,50 +65,55 @@
 }
 
 .sidebar li {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .sidebar a {
   display: flex;
   align-items: center;
   gap: 12px;
+
   text-decoration: none;
   color: #cbd5e1;
+
   padding: 14px 16px;
+
   border-radius: 12px;
-  font-size: 16px;
+
+  font-size: 15px;
   font-weight: 500;
+
   transition: all 0.25s ease;
 }
-
-/* Hover */
 
 .sidebar a:hover {
   background: #2563eb;
   color: white;
-  transform: translateX(6px);
-  box-shadow: 0 8px 20px rgba(37,99,235,.25);
+  transform: translateX(4px);
 }
-
-/* Active */
 
 .sidebar a.active {
   background: #2563eb;
   color: white;
-  box-shadow: 0 10px 25px rgba(37,99,235,.35);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
 }
 
-/* Footer */
+/* ===========================
+   Footer
+=========================== */
 
 .sidebar-footer {
   margin-top: auto;
   padding-top: 25px;
-  color: #94a3b8;
-  font-size: 14px;
   border-top: 1px solid rgba(255,255,255,.08);
+
+  color: #94a3b8;
+  font-size: 13px;
 }
 
-/* Scrollbar */
+/* ===========================
+   Scrollbar
+=========================== */
 
 .sidebar::-webkit-scrollbar {
   width: 6px;
@@ -104,22 +124,70 @@
   border-radius: 10px;
 }
 
-/* Mobile */
+/* ===========================
+   Desktop
+=========================== */
 
-@media (max-width:768px){
+@media (min-width: 769px) {
 
-.sidebar{
-    position:fixed;
-    left:-270px;
-    top:70px;
-    width:250px;
-    height:calc(100vh - 70px);
-    z-index:1000;
-    transition:left .3s ease;
+  .sidebar {
+    left: 0;
+  }
+
 }
 
-.sidebar.active{
-    left:0;
+/* ===========================
+   Tablet & Mobile
+=========================== */
+
+@media (max-width: 768px) {
+
+  .sidebar {
+
+    left: -260px;
+
+    width: 240px;
+    min-width: 240px;
+
+    top: 70px;
+    height: calc(100vh - 70px);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.35);
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
 }
+
+/* ===========================
+   Small Phones
+=========================== */
+
+@media (max-width: 480px) {
+
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    left: -240px;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar h2 {
+    font-size: 20px;
+  }
+
+  .sidebar a {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .search-box {
+    font-size: 13px;
+  }
 
 }

@@ -11,7 +11,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default */}
+
+        {/* Redirect Home */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
         {/* Pages */}
@@ -24,6 +25,7 @@ function App() {
 
         {/* Invalid URL */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
       </Routes>
     </BrowserRouter>
   );

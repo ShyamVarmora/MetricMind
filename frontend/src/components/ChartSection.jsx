@@ -9,14 +9,13 @@ import {
 } from "recharts";
 
 import { useNavigate } from "react-router-dom";
-
 import "./ChartSection.css";
 
 function ChartSection({ data = [] }) {
   const navigate = useNavigate();
 
   return (
-    <div className="chart-card">
+    <div className="chart-container">
       <div className="chart-header">
         <div>
           <h2>📈 Sales Overview</h2>
@@ -32,25 +31,23 @@ function ChartSection({ data = [] }) {
       </div>
 
       {data.length === 0 ? (
-        <div
-          style={{
-            height: "320px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#64748b",
-            fontSize: "18px",
-          }}
-        >
+        <div className="chart-empty">
           No chart data available.
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#e5e7eb"
+            />
+
             <XAxis dataKey="month" />
+
             <YAxis />
+
             <Tooltip />
+
             <Line
               type="monotone"
               dataKey="sales"

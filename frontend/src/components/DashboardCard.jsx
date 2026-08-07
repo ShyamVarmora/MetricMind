@@ -5,11 +5,7 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 
-import { useNavigate } from "react-router-dom";
-
 function DashboardCard({ data }) {
-  const navigate = useNavigate();
-
   const cards = [
     {
       id: 1,
@@ -18,7 +14,6 @@ function DashboardCard({ data }) {
       icon: <FaRupeeSign />,
       color: "linear-gradient(135deg,#2563EB,#1D4ED8)",
       change: data?.salesChange ?? "+0%",
-      route: "/reports",
     },
     {
       id: 2,
@@ -27,7 +22,6 @@ function DashboardCard({ data }) {
       icon: <FaShoppingCart />,
       color: "linear-gradient(135deg,#22C55E,#16A34A)",
       change: data?.ordersChange ?? "+0%",
-      route: "/reports",
     },
     {
       id: 3,
@@ -36,26 +30,22 @@ function DashboardCard({ data }) {
       icon: <FaChartLine />,
       color: "linear-gradient(135deg,#F59E0B,#D97706)",
       change: data?.profitChange ?? "+0%",
-      route: "/reports",
     },
   ];
 
   return (
-    <div className="cards">
+    <div className="dashboard-cards">
       {cards.map((card) => (
         <div
           key={card.id}
           className="card"
           style={{
             background: card.color,
-            cursor: "pointer",
+            cursor: "default",
           }}
-          onClick={() => navigate(card.route)}
         >
-          <div className="card-header">
-            <div className="card-icon">
-              {card.icon}
-            </div>
+          <div className="card-top">
+            {card.icon}
 
             <span className="card-change">
               {card.change}

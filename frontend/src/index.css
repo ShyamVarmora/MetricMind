@@ -154,3 +154,93 @@ p {
   }
 
 }
+/* ===========================
+   Global Text Colors
+=========================== */
+
+body {
+  background: #f5f7fb;
+  color: #111827;
+}
+
+/* White cards */
+.card,
+.dashboard-card,
+.analytics-card,
+.report-card,
+.profile-card,
+.chart-container,
+.transactions-container {
+  color: #111827;
+}
+
+.card h1,
+.card h2,
+.card h3,
+.dashboard-card h1,
+.dashboard-card h2,
+.dashboard-card h3,
+.analytics-card h1,
+.analytics-card h2,
+.analytics-card h3,
+.report-card h1,
+.report-card h2,
+.report-card h3,
+.profile-card h1,
+.profile-card h2,
+.profile-card h3 {
+  color: #111827;
+}
+
+.card p,
+.dashboard-card p,
+.analytics-card p,
+.report-card p,
+.profile-card p {
+  color: #4b5563;
+}
+
+/* Tables */
+table,
+th,
+td {
+  color: #111827;
+}
+
+thead {
+  color: #111827;
+}
+
+tbody {
+  color: #374151;
+}
+/* ===========================
+   Force Text Visibility
+=========================== */
+
+.dashboard-content h1,
+.dashboard-content h2,
+.dashboard-content h3,
+.dashboard-content h4,
+.dashboard-content h5,
+.dashboard-content h6{
+    color:#111827 !important;
+}
+
+.dashboard-content p{
+    color:#4b5563 !important;
+}
+
+.dashboard-content label{
+    color:#374151 !important;
+}
+
+.dashboard-content span{
+    color:inherit;
+}
+
+.dashboard-content table,
+.dashboard-content td,
+.dashboard-content th{
+    color:#111827 !important;
+}
