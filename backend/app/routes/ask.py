@@ -1,53 +1,72 @@
 from fastapi import APIRouter
-from app.schemas import AskRequest
-from app.semantic_layer import get_metric
+from app.schemas import (
+    AskRequest,
+    AskResponse,
+    ErrorResponse
+)
+from app.semantic_layer import get_metric, get_api
+
 router = APIRouter(
     prefix="/ask",
     tags=["AI"]
 )
 
-@router.post("")
+
+@router.post(
+    "",
+    response_model=AskResponse,
+    summary="Ask AI Analytics Assistant",
+    description="""
+Identify the requested business metric from a natural language question
+and return the corresponding backend API along with analysis details.
+""",
+    responses={
+        200: {
+            "description": "Metric identified successfully"
+        },
+        400: {
+            "model": ErrorResponse,
+            "description": "Unable to identify requested metric"
+        }
+    }
+)
 def ask(request: AskRequest):
 
     metric = get_metric(request.question)
 
-    if metric == "totalSales":
+    if metric is None:
         return {
-            "analysis": "Revenue analysis requested",
-            "chart": "bar",
-            "api_used": "/analytics/sales"
+            "success": False,
+            "message": "Unable to identify requested metric."
         }
 
-    elif metric == "profit":
-        return {
-            "analysis": "Profit analysis requested",
-            "chart": "line",
-            "api_used": "/analytics"
-        }
+    api_used = get_api(metric)
 
-    elif metric == "customers":
-        return {
-            "analysis": "Customer analysis requested",
-            "chart": "pie",
-            "api_used": "/analytics/customers"
-        }
+    analysis_map = {
+        "totalSales": "Revenue analysis requested.",
+        "profit": "Profit analysis requested.",
+        "orders": "Orders analysis requested.",
+        "customers": "Customer analysis requested.",
+        "products": "Product analysis requested.",
+        "monthlySales": "Monthly sales analysis requested."
+    }
 
-    elif metric == "products":
-        return {
-            "analysis": "Product analysis requested",
-            "chart": "bar",
-            "api_used": "/analytics/products"
-        }
-
-    elif metric == "monthlySales":
-        return {
-            "analysis": "Monthly sales analysis requested",
-            "chart": "line",
-            "api_used": "/analytics/monthly"
-        }
+    chart_map = {
+        "totalSales": "bar",
+        "profit": "line",
+        "orders": "bar",
+        "customers": "pie",
+        "products": "bar",
+        "monthlySales": "line"
+    }
 
     return {
-        "analysis": "No matching metric found.",
-        "chart": None,
-        "api_used": None
+        "success": True,
+        "message": "Metric identified successfully",
+        "data": {
+            "metric": metric,
+            "analysis": analysis_map.get(metric, ""),
+            "chart": chart_map.get(metric, ""),
+            "api_used": api_used
+        }
     }
