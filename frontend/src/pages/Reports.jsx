@@ -5,8 +5,9 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 
+import LoadingState from "../components/LoadingState";
+import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
-import Skeleton from "../components/Skeleton";
 
 import "./Dashboard.css";
 import "./Reports.css";
@@ -15,7 +16,7 @@ function Reports() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [reportData, setReportData] = useState(null);
 
   useEffect(() => {
@@ -38,14 +39,14 @@ function Reports() {
   const loadReport = async (type) => {
     try {
       setLoading(true);
-      setError("");
+      setError(false);
 
       const res = await api.get(`/reports/${type}`);
 
       setReportData(res.data);
     } catch (err) {
       console.error(err);
-      setError("Unable to load report.");
+      setError(true);
       setReportData(null);
     } finally {
       setLoading(false);
@@ -53,21 +54,11 @@ function Reports() {
   };
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
+    return <LoadingState />;
+  }
 
-        <div className="dashboard">
-          {showSidebar && <Sidebar />}
-
-          <div className="dashboard-content">
-            <Skeleton />
-          </div>
-        </div>
-
-        <Footer />
-      </>
-    );
+  if (error) {
+    return <ErrorState />;
   }
 
   return (
@@ -86,6 +77,7 @@ function Reports() {
       <div className="dashboard">
         {showSidebar && (
           <Sidebar
+            showSidebar={showSidebar}
             closeSidebar={() => {
               if (window.innerWidth <= 768) {
                 setShowSidebar(false);
@@ -139,26 +131,20 @@ function Reports() {
 
           <div style={{ marginTop: "30px" }}>
 
-            {error && (
-              <ErrorState message={error} />
-            )}
-
-            {!error && reportData === null && (
-              <div className="empty-state">
-                <h2>📋</h2>
-                <h3>Report will appear here</h3>
-                <p>Select any report card to view report details.</p>
-              </div>
-            )}
-
-            {!error && reportData && (
+            {reportData === null ? (
+              <EmptyState
+                title="No Report Selected"
+                message="Select any report card above to preview the report."
+              />
+            ) : (
               <pre
                 style={{
-                  background: "#fff",
+                  background: "#ffffff",
                   padding: "20px",
                   borderRadius: "12px",
                   overflow: "auto",
-                  boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+                  boxShadow: "0 6px 20px rgba(0,0,0,.08)",
+                  color: "#111827",
                 }}
               >
                 {JSON.stringify(reportData, null, 2)}
@@ -174,4 +160,5 @@ function Reports() {
     </>
   );
 }
+
 export default Reports;
