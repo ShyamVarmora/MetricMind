@@ -1,10 +1,19 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter
+
 from app.schemas import (
     AskRequest,
     AskResponse,
     ErrorResponse
 )
-from app.semantic_layer import get_metric, get_api
+
+from app.semantic_layer import (
+    get_metrics,
+    get_api,
+    get_chart_type
+)
+
 
 router = APIRouter(
     prefix="/ask",
@@ -17,56 +26,131 @@ router = APIRouter(
     response_model=AskResponse,
     summary="Ask AI Analytics Assistant",
     description="""
-Identify the requested business metric from a natural language question
-and return the corresponding backend API along with analysis details.
+Ask a natural language business question.
+
+The API detects one or more business metrics,
+identifies the user's intent, and returns the
+corresponding backend APIs and chart types.
 """,
     responses={
         200: {
-            "description": "Metric identified successfully"
+            "description": "Question processed successfully"
         },
         400: {
             "model": ErrorResponse,
-            "description": "Unable to identify requested metric"
+            "description": "Invalid or unsupported question"
         }
     }
 )
 def ask(request: AskRequest):
 
-    metric = get_metric(request.question)
+    # -----------------------------
+    # Validate empty question
+    # -----------------------------
 
-    if metric is None:
+    if not request.question:
+        return {
+            "success": False,
+            "message": "Question cannot be empty."
+        }
+
+    question = request.question.strip()
+
+    if not question:
+        return {
+            "success": False,
+            "message": "Question cannot be empty."
+        }
+
+    # -----------------------------
+    # Detect metrics
+    # -----------------------------
+
+    metrics = get_metrics(question)
+
+    if not metrics:
         return {
             "success": False,
             "message": "Unable to identify requested metric."
         }
 
-    api_used = get_api(metric)
+    # -----------------------------
+    # Detect intent
+    # -----------------------------
 
-    analysis_map = {
-        "totalSales": "Revenue analysis requested.",
-        "profit": "Profit analysis requested.",
-        "orders": "Orders analysis requested.",
-        "customers": "Customer analysis requested.",
-        "products": "Product analysis requested.",
-        "monthlySales": "Monthly sales analysis requested."
+    question_lower = question.lower()
+
+    if any(word in question_lower for word in [
+        "compare",
+        "comparison"
+    ]):
+        intent = "comparison"
+
+    elif any(word in question_lower for word in [
+        "trend",
+        "growth",
+        "increase",
+        "decrease"
+    ]):
+        intent = "trend"
+
+    elif any(word in question_lower for word in [
+        "show",
+        "display",
+        "give",
+        "tell",
+        "what",
+        "how much",
+        "how many"
+    ]):
+        intent = "analysis"
+
+    else:
+        intent = "analysis"
+
+    # -----------------------------
+    # Build metric results
+    # -----------------------------
+
+    metric_results = []
+
+    for metric in metrics:
+
+        api_used = get_api(metric)
+        chart_type = get_chart_type(metric)
+
+        metric_results.append({
+            "metric": metric,
+            "api_used": api_used,
+            "chart_type": chart_type
+        })
+
+    # -----------------------------
+    # Metadata
+    # -----------------------------
+
+    metadata = {
+        "endpoint": "/ask",
+        "method": "POST",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "metric": metrics,
+        "chart_type": [
+            get_chart_type(metric)
+            for metric in metrics
+        ]
     }
 
-    chart_map = {
-        "totalSales": "bar",
-        "profit": "line",
-        "orders": "bar",
-        "customers": "pie",
-        "products": "bar",
-        "monthlySales": "line"
-    }
+    # -----------------------------
+    # Success response
+    # -----------------------------
 
     return {
         "success": True,
-        "message": "Metric identified successfully",
+        "message": "Question processed successfully",
         "data": {
-            "metric": metric,
-            "analysis": analysis_map.get(metric, ""),
-            "chart": chart_map.get(metric, ""),
-            "api_used": api_used
+            "question": question,
+            "intent": intent,
+            "metrics": metric_results,
+            "meta": metadata
         }
     }
