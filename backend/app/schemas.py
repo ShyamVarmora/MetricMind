@@ -5,6 +5,7 @@ from typing import Optional
 # -----------------------------
 # User Schemas
 # -----------------------------
+
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
@@ -18,7 +19,7 @@ class UserLogin(BaseModel):
 
 class ProfileUpdate(BaseModel):
     name: str
-    email: str
+    email: EmailStr
 
 
 class UserResponse(BaseModel):
@@ -33,6 +34,7 @@ class UserResponse(BaseModel):
 # -----------------------------
 # Authentication Schemas
 # -----------------------------
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -45,52 +47,43 @@ class TokenData(BaseModel):
 # -----------------------------
 # AI Ask Schemas
 # -----------------------------
+
 class AskRequest(BaseModel):
     question: str
 
     class Config:
         json_schema_extra = {
             "example": {
-                "question": "Show revenue"
+                "question": "Show revenue and profit"
             }
         }
+
+
+class AskMetricData(BaseModel):
+    metric: str
+    api_used: str
+    chart_type: str
+
+
+class AskMeta(BaseModel):
+    endpoint: str
+    method: str
+    timestamp: str
+    metric: list[str]
+    chart_type: list[str]
 
 
 class AskResponseData(BaseModel):
-    metric: str
-    analysis: str
-    chart: str
-    api_used: str
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "metric": "totalSales",
-                "analysis": "Revenue analysis requested.",
-                "chart": "bar",
-                "api_used": "/dashboard"
-            }
-        }
+    question: str
+    intent: str
+    metrics: list[AskMetricData]
+    meta: AskMeta
 
 
 class AskResponse(BaseModel):
     success: bool
     message: str
     data: Optional[AskResponseData] = None
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "success": True,
-                "message": "Metric identified successfully",
-                "data": {
-                    "metric": "totalSales",
-                    "analysis": "Revenue analysis requested.",
-                    "chart": "bar",
-                    "api_used": "/dashboard"
-                }
-            }
-        }
 
 
 class ErrorResponse(BaseModel):
