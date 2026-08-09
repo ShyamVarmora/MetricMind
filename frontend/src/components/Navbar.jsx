@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./Navbar.css";
 
 function Navbar() {
+  const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -12,7 +16,7 @@ function Navbar() {
   ];
 
   const handleLogoClick = () => {
-    window.location.href = "/";
+    navigate("/dashboard");
   };
 
   const handleSearch = (e) => {
@@ -21,15 +25,20 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left" onClick={handleLogoClick}>
-        <h2>MetricMind</h2>
+      <div
+        className="navbar-logo"
+        onClick={handleLogoClick}
+        role="button"
+        tabIndex={0}
+      >
+        MetricMind
       </div>
 
       <div className="navbar-center">
         <input
           type="text"
           placeholder="Search menu..."
-          className="search-box"
+          className="navbar-search"
           value={search}
           onChange={handleSearch}
         />
@@ -39,6 +48,7 @@ function Navbar() {
         <button
           className="icon-btn"
           onClick={() => setShowNotifications(!showNotifications)}
+          aria-label="Notifications"
         >
           🔔
         </button>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -7,10 +7,18 @@ import Footer from "../components/Footer";
 import ApiModal from "../components/ApiModal";
 import SqlModal from "../components/SqlModal";
 
+import LoadingState from "../components/LoadingState";
+
 import "./Dashboard.css";
 import "./Chat.css";
 
 function Chat() {
+  const [showSidebar, setShowSidebar] = useState(
+    window.innerWidth > 768
+  );
+
+  const [loading, setLoading] = useState(false);
+
   const [showApi, setShowApi] = useState(false);
   const [showSql, setShowSql] = useState(false);
 
@@ -26,12 +34,101 @@ function Chat() {
     },
   ]);
 
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowSidebar(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // =========================
+  // CLOSE MOBILE SIDEBAR
+  // =========================
+
+  const closeMobileSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setShowSidebar(false);
+    }
+  };
+
+  // =========================
+  // LOADING STATE
+  // =========================
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        {window.innerWidth <= 768 && (
+          <button
+            className="menu-btn"
+            onClick={() => setShowSidebar(!showSidebar)}
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="dashboard">
+          {showSidebar && (
+            <Sidebar
+              showSidebar={showSidebar}
+              closeSidebar={closeMobileSidebar}
+            />
+          )}
+
+          <div className="dashboard-content">
+            <LoadingState />
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
+      {/* TOP HEADER */}
+
       <Navbar />
 
+      {/* MOBILE MENU */}
+
+      {window.innerWidth <= 768 && (
+        <button
+          className="menu-btn"
+          onClick={() => setShowSidebar(!showSidebar)}
+          aria-label="Toggle sidebar"
+        >
+          ☰
+        </button>
+      )}
+
+      {/* DASHBOARD LAYOUT */}
+
       <div className="dashboard">
-        <Sidebar />
+
+        {/* SIDEBAR */}
+
+        {showSidebar && (
+          <Sidebar
+            showSidebar={showSidebar}
+            closeSidebar={closeMobileSidebar}
+          />
+        )}
+
+        {/* MAIN CONTENT */}
 
         <div className="dashboard-content">
 
@@ -46,7 +143,9 @@ function Chat() {
               <div className="empty-state">
                 <h2>🤖</h2>
                 <h3>Start a conversation</h3>
-                <p>Your AI assistant responses will appear here.</p>
+                <p>
+                  Your AI assistant responses will appear here.
+                </p>
               </div>
             ) : (
               <>
@@ -75,7 +174,9 @@ function Chat() {
                             Metric
                           </span>
 
-                          <strong>{msg.metric}</strong>
+                          <strong>
+                            {msg.metric}
+                          </strong>
                         </div>
 
                         <div className="result-box">
@@ -83,7 +184,9 @@ function Chat() {
                             Suggested Chart
                           </span>
 
-                          <strong>{msg.chart}</strong>
+                          <strong>
+                            {msg.chart}
+                          </strong>
                         </div>
 
                         <div className="result-box">
@@ -91,7 +194,9 @@ function Chat() {
                             Confidence
                           </span>
 
-                          <strong>{msg.confidence}</strong>
+                          <strong>
+                            {msg.confidence}
+                          </strong>
                         </div>
 
                       </div>
@@ -131,7 +236,6 @@ function Chat() {
                   </button>
 
                 </div>
-
               </>
             )}
 
@@ -139,6 +243,8 @@ function Chat() {
 
         </div>
       </div>
+
+      {/* MODALS */}
 
       <ApiModal
         open={showApi}
@@ -151,7 +257,6 @@ function Chat() {
       />
 
       <Footer />
-
     </>
   );
 }

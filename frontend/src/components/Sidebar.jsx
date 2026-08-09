@@ -9,9 +9,10 @@ function Sidebar({ showSidebar, closeSidebar }) {
   };
 
   return (
-    <div className={`sidebar ${showSidebar ? "active" : ""}`}>
-
-      <h2>MetricMind</h2>
+    <aside className={`sidebar ${showSidebar ? "active" : ""}`}>
+      <div className="sidebar-header">
+        <h2>MetricMind</h2>
+      </div>
 
       <input
         type="text"
@@ -20,7 +21,6 @@ function Sidebar({ showSidebar, closeSidebar }) {
       />
 
       <ul>
-
         <li>
           <NavLink
             to="/dashboard"
@@ -80,14 +80,12 @@ function Sidebar({ showSidebar, closeSidebar }) {
             ⚙️ Settings
           </NavLink>
         </li>
-
       </ul>
 
       <div className="sidebar-footer">
         MetricMind v1.0
       </div>
-
-    </div>
+    </aside>
   );
 }
 

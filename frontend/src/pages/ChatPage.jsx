@@ -1,40 +1,134 @@
+import { useState } from "react";
 import "./ChatPage.css";
 
 function ChatPage() {
+  const [message, setMessage] = useState("");
+
+  const handleSend = () => {
+    if (!message.trim()) return;
+
+    console.log("User message:", message);
+    setMessage("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <div className="chat-page">
 
+      {/* =========================
+          CHAT HEADER
+      ========================= */}
+
       <div className="chat-header">
-        <h2>🤖 MetricMind AI Assistant</h2>
-        <p>Ask anything about your business data</p>
+        <div className="chat-title">
+          <div className="ai-icon">🤖</div>
+
+          <div>
+            <h2>MetricMind AI Assistant</h2>
+            <p>Ask anything about your business data</p>
+          </div>
+        </div>
+
+        <div className="online-status">
+          <span></span>
+          AI Online
+        </div>
       </div>
+
+      {/* =========================
+          CHAT BODY
+      ========================= */}
 
       <div className="chat-body">
 
-        <div className="bot-message">
-          👋 Hello! How can I help you today?
+        {/* Welcome Message */}
+
+        <div className="message-row bot-row">
+          <div className="message-avatar">
+            🤖
+          </div>
+
+          <div className="message-content">
+            <span className="message-name">MetricMind AI</span>
+
+            <div className="bot-message">
+              👋 Hello! How can I help you today?
+            </div>
+          </div>
         </div>
 
-        <div className="user-message">
-          Show total sales this month.
+        {/* User Message */}
+
+        <div className="message-row user-row">
+
+          <div className="message-content">
+            <span className="message-name">You</span>
+
+            <div className="user-message">
+              Show total sales this month.
+            </div>
+          </div>
+
+          <div className="message-avatar user-avatar">
+            👤
+          </div>
+
         </div>
 
-        <div className="bot-message">
-          Total sales this month are <strong>₹1,20,000</strong>.
+        {/* AI Response */}
+
+        <div className="message-row bot-row">
+
+          <div className="message-avatar">
+            🤖
+          </div>
+
+          <div className="message-content">
+            <span className="message-name">MetricMind AI</span>
+
+            <div className="bot-message">
+              Total sales this month are
+              <strong> ₹1,20,000</strong>.
+            </div>
+          </div>
+
         </div>
 
       </div>
 
-      <div className="chat-input">
+      {/* =========================
+          INPUT AREA
+      ========================= */}
 
-        <input
-          type="text"
-          placeholder="Ask your question..."
-        />
+      <div className="chat-input-container">
 
-        <button>
-          Send
-        </button>
+        <div className="chat-input">
+
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask your question..."
+          />
+
+          <button
+            onClick={handleSend}
+            disabled={!message.trim()}
+          >
+            Send ➤
+          </button>
+
+        </div>
+
+        <p className="chat-hint">
+          Press Enter to send your message
+        </p>
 
       </div>
 
