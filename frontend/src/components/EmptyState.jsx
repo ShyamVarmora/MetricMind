@@ -1,14 +1,18 @@
-function EmptyState({ message }) {
+import "./LoadingState.css";
+
+function EmptyState({
+  title = "No Data",
+  message = "Nothing to display."
+}) {
   return (
-    <div
-      style={{
-        padding: "30px",
-        textAlign: "center",
-        color: "#64748b",
-        fontSize: "18px",
-      }}
-    >
-      {message || "No data available."}
+    <div className="state-container">
+
+      <h1>📭</h1>
+
+      <h2>{title}</h2>
+
+      <p>{message}</p>
+
     </div>
   );
 }

@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
-import Skeleton from "../components/Skeleton";
+
+import LoadingState from "../components/LoadingState";
+import EmptyState from "../components/EmptyState";
+import ErrorState from "../components/ErrorState";
 
 import {
   ResponsiveContainer,
@@ -39,7 +42,12 @@ const customerData = [
 const COLORS = ["#2563EB", "#22C55E"];
 
 function Analytics() {
+
   const [loading, setLoading] = useState(true);
+
+  const [error] = useState(false);
+
+  const [data] = useState(salesData);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,17 +58,19 @@ function Analytics() {
   }, []);
 
   if (loading) {
+    return <LoadingState />;
+  }
+
+  if (error) {
+    return <ErrorState />;
+  }
+
+  if (data.length === 0) {
     return (
-      <>
-        <Navbar />
-        <div className="dashboard">
-          <Sidebar />
-          <div className="dashboard-content">
-            <Skeleton />
-          </div>
-        </div>
-        <Footer />
-      </>
+      <EmptyState
+        title="No Analytics Available"
+        message="Analytics data will appear here after backend integration."
+      />
     );
   }
 
@@ -69,6 +79,7 @@ function Analytics() {
       <Navbar />
 
       <div className="dashboard">
+
         <Sidebar />
 
         <div className="dashboard-content">
@@ -79,6 +90,7 @@ function Analytics() {
           </div>
 
           <div className="analytics-topbar">
+
             <input type="date" />
 
             <select>
@@ -88,6 +100,7 @@ function Analytics() {
               <option>Customers</option>
               <option>Products</option>
             </select>
+
           </div>
 
           <div className="analytics-cards">
@@ -117,6 +130,7 @@ function Analytics() {
           <div className="analytics-grid">
 
             <div className="analytics-card">
+
               <h2>Sales Chart</h2>
 
               <ResponsiveContainer width="100%" height={250}>
@@ -125,12 +139,14 @@ function Analytics() {
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="sales" fill="#2563EB" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="sales" fill="#2563EB" />
                 </BarChart>
               </ResponsiveContainer>
+
             </div>
 
             <div className="analytics-card">
+
               <h2>Revenue Chart</h2>
 
               <ResponsiveContainer width="100%" height={250}>
@@ -146,9 +162,11 @@ function Analytics() {
                   />
                 </LineChart>
               </ResponsiveContainer>
+
             </div>
 
             <div className="analytics-card">
+
               <h2>Customer Chart</h2>
 
               <ResponsiveContainer width="100%" height={250}>
@@ -165,12 +183,15 @@ function Analytics() {
                       />
                     ))}
                   </Pie>
+
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
+
             </div>
 
             <div className="analytics-card">
+
               <h2>Product Chart</h2>
 
               <ResponsiveContainer width="100%" height={250}>
@@ -182,18 +203,20 @@ function Analytics() {
                   <Bar
                     dataKey="revenue"
                     fill="#F59E0B"
-                    radius={[8, 8, 0, 0]}
                   />
                 </BarChart>
               </ResponsiveContainer>
+
             </div>
 
           </div>
 
         </div>
+
       </div>
 
       <Footer />
+
     </>
   );
 }

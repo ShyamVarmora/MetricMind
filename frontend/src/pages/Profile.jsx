@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 import Skeleton from "../components/Skeleton";
+import ErrorState from "../components/ErrorState";
 
 import "./Dashboard.css";
 import "./Profile.css";
@@ -12,7 +12,7 @@ function Profile() {
   const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
 
   const [loading, setLoading] = useState(true);
-
+  const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
 
   const [profile, setProfile] = useState({
@@ -31,11 +31,14 @@ function Profile() {
 
     const timer = setTimeout(() => {
       setLoading(false);
+
+      // Uncomment to test error placeholder
+      // setError("Unable to load profile.");
     }, 1200);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
       clearTimeout(timer);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -54,10 +57,11 @@ function Profile() {
   if (loading) {
     return (
       <>
-        <Navbar />
-
         <div className="dashboard">
-          {showSidebar && <Sidebar />}
+          <Sidebar
+            showSidebar={showSidebar}
+            closeSidebar={() => setShowSidebar(false)}
+          />
 
           <div className="dashboard-content">
             <Skeleton />
@@ -71,8 +75,6 @@ function Profile() {
 
   return (
     <>
-      <Navbar />
-
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
@@ -83,75 +85,76 @@ function Profile() {
       )}
 
       <div className="dashboard">
-        {showSidebar && (
-          <Sidebar
-            closeSidebar={() => {
-              if (window.innerWidth <= 768) {
-                setShowSidebar(false);
-              }
-            }}
-          />
-        )}
+        <Sidebar
+          showSidebar={showSidebar}
+          closeSidebar={() => {
+            if (window.innerWidth <= 768) {
+              setShowSidebar(false);
+            }
+          }}
+        />
 
         <div className="dashboard-content">
-
           <div className="welcome-banner">
             <h1>👤 Profile</h1>
             <p>Manage your profile information.</p>
           </div>
 
-          <div className="profile-card">
-
-            <label htmlFor="name">Name</label>
-            <input
-              id="name"
-              name="name"
-              value={profile.name}
-              disabled={!editing}
-              onChange={handleChange}
-            />
-
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              value={profile.email}
-              disabled={!editing}
-              onChange={handleChange}
-            />
-
-            <label htmlFor="phone">Phone</label>
-            <input
-              id="phone"
-              name="phone"
-              value={profile.phone}
-              disabled={!editing}
-              onChange={handleChange}
-            />
-
-            <label htmlFor="role">Role</label>
-            <input
-              id="role"
-              name="role"
-              value={profile.role}
-              disabled={!editing}
-              onChange={handleChange}
-            />
-
-            <div className="profile-buttons">
-              {!editing ? (
-                <button onClick={() => setEditing(true)}>
-                  Edit
-                </button>
-              ) : (
-                <button onClick={handleSave}>
-                  Save
-                </button>
-              )}
+          {error ? (
+            <ErrorState message={error} />
+          ) : !profile ? (
+            <div className="empty-state">
+              <h2>👤</h2>
+              <h3>No profile found</h3>
+              <p>Your profile information will appear here.</p>
             </div>
+          ) : (
+            <div className="profile-card">
+              <label>Name</label>
+              <input
+                name="name"
+                value={profile.name}
+                disabled={!editing}
+                onChange={handleChange}
+              />
 
-          </div>
+              <label>Email</label>
+              <input
+                name="email"
+                value={profile.email}
+                disabled={!editing}
+                onChange={handleChange}
+              />
 
+              <label>Phone</label>
+              <input
+                name="phone"
+                value={profile.phone}
+                disabled={!editing}
+                onChange={handleChange}
+              />
+
+              <label>Role</label>
+              <input
+                name="role"
+                value={profile.role}
+                disabled={!editing}
+                onChange={handleChange}
+              />
+
+              <div className="profile-buttons">
+                {!editing ? (
+                  <button onClick={() => setEditing(true)}>
+                    Edit Profile
+                  </button>
+                ) : (
+                  <button onClick={handleSave}>
+                    Save Changes
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
