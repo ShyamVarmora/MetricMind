@@ -1,0 +1,262 @@
+/* =========================
+   CHATBOT
+========================= */
+
+.chatbot {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.chatbot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chatbot-header h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+}
+
+.chatbot-header span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.chatbot-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #16a34a !important;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.chatbot-body {
+  min-height: 280px;
+  padding: 30px;
+  background: #f8fafc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatbot-welcome {
+  text-align: center;
+  max-width: 500px;
+}
+
+.bot-icon {
+  width: 65px;
+  height: 65px;
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  border-radius: 50%;
+  font-size: 30px;
+}
+
+.chatbot-welcome h3 {
+  margin: 0 0 8px;
+  color: #111827;
+  font-size: 20px;
+}
+
+.chatbot-welcome p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.chatbot-loading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.chatbot-loading span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+  animation: chatbotBlink 1.4s infinite;
+}
+
+.chatbot-loading span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chatbot-loading span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.chatbot-loading p {
+  width: 100%;
+  text-align: center;
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+@keyframes chatbotBlink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+
+  40% {
+    opacity: 1;
+  }
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.chatbot-input-area {
+  display: flex;
+  gap: 12px;
+  padding: 18px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chatbot-input-area input {
+  flex: 1;
+  min-width: 0;
+
+  padding: 14px 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+
+  font-size: 14px;
+  color: #111827;
+
+  outline: none;
+}
+
+.chatbot-input-area input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.chatbot-input-area button {
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.chatbot-input-area button:hover {
+  background: #1d4ed8;
+}
+
+.chatbot-input-area button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+  .chatbot-header {
+    padding: 16px;
+  }
+
+  .chatbot-body {
+    min-height: 250px;
+    padding: 22px;
+  }
+
+  .chatbot-input-area {
+    padding: 15px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .chatbot-header {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .chatbot-header h3 {
+    font-size: 16px;
+  }
+
+  .chatbot-status {
+    font-size: 12px;
+  }
+
+  .chatbot-body {
+    min-height: 220px;
+    padding: 18px;
+  }
+
+  .chatbot-welcome h3 {
+    font-size: 18px;
+  }
+
+  .chatbot-input-area {
+    flex-direction: column;
+  }
+
+  .chatbot-input-area input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .chatbot-input-area button {
+    width: 100%;
+    min-height: 46px;
+  }
+}

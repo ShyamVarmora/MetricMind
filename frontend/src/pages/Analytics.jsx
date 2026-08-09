@@ -21,6 +21,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from "recharts";
 
 import "./Dashboard.css";
@@ -42,12 +43,35 @@ const customerData = [
 const COLORS = ["#2563EB", "#22C55E"];
 
 function Analytics() {
+  const [showSidebar, setShowSidebar] = useState(
+    window.innerWidth > 768
+  );
 
   const [loading, setLoading] = useState(true);
 
   const [error] = useState(false);
 
   const [data] = useState(salesData);
+
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowSidebar(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // =========================
+  // LOADING
+  // =========================
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,43 +81,184 @@ function Analytics() {
     return () => clearTimeout(timer);
   }, []);
 
+  // =========================
+  // LOADING STATE
+  // =========================
+
   if (loading) {
-    return <LoadingState />;
-  }
-
-  if (error) {
-    return <ErrorState />;
-  }
-
-  if (data.length === 0) {
     return (
-      <EmptyState
-        title="No Analytics Available"
-        message="Analytics data will appear here after backend integration."
-      />
+      <>
+        <Navbar />
+
+        {window.innerWidth <= 768 && (
+          <button
+            className="menu-btn"
+            onClick={() => setShowSidebar(!showSidebar)}
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="dashboard">
+          {showSidebar && (
+            <Sidebar
+              showSidebar={showSidebar}
+              closeSidebar={() => {
+                if (window.innerWidth <= 768) {
+                  setShowSidebar(false);
+                }
+              }}
+            />
+          )}
+
+          <div className="dashboard-content">
+            <LoadingState />
+          </div>
+        </div>
+
+        <Footer />
+      </>
     );
   }
 
+  // =========================
+  // ERROR STATE
+  // =========================
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+
+        {window.innerWidth <= 768 && (
+          <button
+            className="menu-btn"
+            onClick={() => setShowSidebar(!showSidebar)}
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="dashboard">
+          {showSidebar && (
+            <Sidebar
+              showSidebar={showSidebar}
+              closeSidebar={() => {
+                if (window.innerWidth <= 768) {
+                  setShowSidebar(false);
+                }
+              }}
+            />
+          )}
+
+          <div className="dashboard-content">
+            <ErrorState message="Unable to load analytics data." />
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
+
+  // =========================
+  // EMPTY STATE
+  // =========================
+
+  if (data.length === 0) {
+    return (
+      <>
+        <Navbar />
+
+        {window.innerWidth <= 768 && (
+          <button
+            className="menu-btn"
+            onClick={() => setShowSidebar(!showSidebar)}
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="dashboard">
+          {showSidebar && (
+            <Sidebar
+              showSidebar={showSidebar}
+              closeSidebar={() => {
+                if (window.innerWidth <= 768) {
+                  setShowSidebar(false);
+                }
+              }}
+            />
+          )}
+
+          <div className="dashboard-content">
+            <EmptyState
+              title="No Analytics Data"
+              message="Analytics data will appear here."
+            />
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
+
+  // =========================
+  // MAIN ANALYTICS PAGE
+  // =========================
+
   return (
     <>
+      {/* TOP HEADER */}
       <Navbar />
+
+      {/* MOBILE MENU BUTTON */}
+      {window.innerWidth <= 768 && (
+        <button
+          className="menu-btn"
+          onClick={() => setShowSidebar(!showSidebar)}
+          aria-label="Toggle sidebar"
+        >
+          ☰
+        </button>
+      )}
 
       <div className="dashboard">
 
-        <Sidebar />
+        {/* SIDEBAR */}
+        {showSidebar && (
+          <Sidebar
+            showSidebar={showSidebar}
+            closeSidebar={() => {
+              if (window.innerWidth <= 768) {
+                setShowSidebar(false);
+              }
+            }}
+          />
+        )}
 
+        {/* MAIN CONTENT */}
         <div className="dashboard-content">
 
+          {/* WELCOME BANNER */}
           <div className="welcome-banner">
             <h1>📊 Analytics Dashboard</h1>
             <p>Business Performance Overview</p>
           </div>
 
+          {/* FILTER BAR */}
           <div className="analytics-topbar">
 
-            <input type="date" />
+            <input
+              type="date"
+              aria-label="Select date"
+            />
 
-            <select>
+            <select defaultValue="All Categories">
               <option>All Categories</option>
               <option>Sales</option>
               <option>Revenue</option>
@@ -103,6 +268,7 @@ function Analytics() {
 
           </div>
 
+          {/* STAT CARDS */}
           <div className="analytics-cards">
 
             <div className="analytics-stat-card">
@@ -127,96 +293,141 @@ function Analytics() {
 
           </div>
 
+          {/* CHARTS */}
           <div className="analytics-grid">
 
+            {/* SALES */}
             <div className="analytics-card">
-
               <h2>Sales Chart</h2>
 
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={250}
+              >
                 <BarChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" />
+
                   <XAxis dataKey="month" />
+
                   <YAxis />
+
                   <Tooltip />
-                  <Bar dataKey="sales" fill="#2563EB" />
+
+                  <Legend />
+
+                  <Bar
+                    dataKey="sales"
+                    name="Sales"
+                    fill="#2563EB"
+                    radius={[6, 6, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
-
             </div>
 
+            {/* REVENUE */}
             <div className="analytics-card">
-
               <h2>Revenue Chart</h2>
 
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={250}
+              >
                 <LineChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" />
+
                   <XAxis dataKey="month" />
+
                   <YAxis />
+
                   <Tooltip />
+
+                  <Legend />
+
                   <Line
+                    type="monotone"
                     dataKey="revenue"
+                    name="Revenue"
                     stroke="#22C55E"
                     strokeWidth={4}
+                    dot={{ r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
-
             </div>
 
+            {/* CUSTOMERS */}
             <div className="analytics-card">
-
               <h2>Customer Chart</h2>
 
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={250}
+              >
                 <PieChart>
+
                   <Pie
                     data={customerData}
                     dataKey="value"
+                    nameKey="name"
                     outerRadius={80}
+                    label
                   >
-                    {customerData.map((entry, index) => (
-                      <Cell
-                        key={index}
-                        fill={COLORS[index]}
-                      />
-                    ))}
+                    {customerData.map(
+                      (entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index]}
+                        />
+                      )
+                    )}
                   </Pie>
 
                   <Tooltip />
+
+                  <Legend />
+
                 </PieChart>
               </ResponsiveContainer>
-
             </div>
 
+            {/* PRODUCTS */}
             <div className="analytics-card">
-
               <h2>Product Chart</h2>
 
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={250}
+              >
                 <BarChart data={salesData}>
+
                   <CartesianGrid strokeDasharray="3 3" />
+
                   <XAxis dataKey="month" />
+
                   <YAxis />
+
                   <Tooltip />
+
+                  <Legend />
+
                   <Bar
                     dataKey="revenue"
+                    name="Products"
                     fill="#F59E0B"
+                    radius={[6, 6, 0, 0]}
                   />
+
                 </BarChart>
               </ResponsiveContainer>
-
             </div>
 
           </div>
 
         </div>
-
       </div>
 
       <Footer />
-
     </>
   );
 }

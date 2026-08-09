@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
-import Skeleton from "../components/Skeleton";
-import ErrorState from "../components/ErrorState";
 
 import "./Dashboard.css";
 import "./Settings.css";
@@ -12,14 +11,17 @@ import "./Settings.css";
 function Settings() {
   const navigate = useNavigate();
 
-  const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [showSidebar, setShowSidebar] = useState(
+    window.innerWidth > 768
+  );
 
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
+
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,18 +30,14 @@ function Settings() {
 
     window.addEventListener("resize", handleResize);
 
-    const timer = setTimeout(() => {
-      setLoading(false);
-
-      // Uncomment to test error placeholder
-      // setError("Unable to load settings.");
-    }, 1200);
-
     return () => {
-      clearTimeout(timer);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // =========================
+  // THEME
+  // =========================
 
   useEffect(() => {
     if (darkMode) {
@@ -51,6 +49,20 @@ function Settings() {
     }
   }, [darkMode]);
 
+  // =========================
+  // CLOSE MOBILE SIDEBAR
+  // =========================
+
+  const closeMobileSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setShowSidebar(false);
+    }
+  };
+
+  // =========================
+  // LOGOUT
+  // =========================
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -60,101 +72,131 @@ function Settings() {
     navigate("/login");
   };
 
-  if (loading) {
-    return (
-      <>
-        <div className="dashboard">
-          <Sidebar
-            showSidebar={showSidebar}
-            closeSidebar={() => setShowSidebar(false)}
-          />
-
-          <div className="dashboard-content">
-            <Skeleton />
-          </div>
-        </div>
-
-        <Footer />
-      </>
-    );
-  }
-
   return (
     <>
+      {/* TOP HEADER */}
+
+      <Navbar />
+
+      {/* MOBILE MENU */}
+
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
           onClick={() => setShowSidebar(!showSidebar)}
+          aria-label="Toggle sidebar"
         >
           ☰
         </button>
       )}
 
       <div className="dashboard">
-        <Sidebar
-          showSidebar={showSidebar}
-          closeSidebar={() => {
-            if (window.innerWidth <= 768) {
-              setShowSidebar(false);
-            }
-          }}
-        />
+
+        {/* SIDEBAR */}
+
+        {showSidebar && (
+          <Sidebar
+            showSidebar={showSidebar}
+            closeSidebar={closeMobileSidebar}
+          />
+        )}
+
+        {/* MAIN CONTENT */}
 
         <div className="dashboard-content">
+
           <div className="welcome-banner">
             <h1>⚙️ Settings</h1>
-            <p>Manage your application settings.</p>
+            <p>
+              Manage your application settings.
+            </p>
           </div>
 
-          {error ? (
-            <ErrorState message={error} />
-          ) : (
-            <div className="settings-grid">
+          <div className="settings-grid">
 
-              <div className="setting-card">
-                <h2>👤 Account</h2>
-                <p>Manage your profile information.</p>
+            {/* ACCOUNT */}
 
-                <button onClick={() => navigate("/profile")}>
-                  Manage
-                </button>
-              </div>
+            <div className="setting-card">
 
-              <div className="setting-card">
-                <h2>🔔 Notifications</h2>
-                <p>Notification preferences.</p>
+              <h2>👤 Account</h2>
 
-                <button
-                  onClick={() =>
-                    alert("Notification settings coming soon.")
-                  }
-                >
-                  Configure
-                </button>
-              </div>
+              <p>
+                Manage your profile information.
+              </p>
 
-              <div className="setting-card">
-                <h2>🌙 Theme</h2>
-                <p>Switch between Light and Dark mode.</p>
-
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                >
-                  {darkMode ? "Light Mode" : "Dark Mode"}
-                </button>
-              </div>
-
-              <div className="setting-card">
-                <h2>🚪 Logout</h2>
-                <p>Sign out from MetricMind.</p>
-
-                <button onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  closeMobileSidebar();
+                  navigate("/profile");
+                }}
+              >
+                Manage
+              </button>
 
             </div>
-          )}
+
+            {/* NOTIFICATIONS */}
+
+            <div className="setting-card">
+
+              <h2>🔔 Notifications</h2>
+
+              <p>
+                Configure your notification preferences.
+              </p>
+
+              <button
+                onClick={() =>
+                  alert(
+                    "Notification settings coming soon."
+                  )
+                }
+              >
+                Configure
+              </button>
+
+            </div>
+
+            {/* THEME */}
+
+            <div className="setting-card">
+
+              <h2>🌙 Theme</h2>
+
+              <p>
+                Change the application appearance.
+              </p>
+
+              <button
+                onClick={() =>
+                  setDarkMode(!darkMode)
+                }
+              >
+                {darkMode
+                  ? "Light Mode"
+                  : "Dark Mode"}
+              </button>
+
+            </div>
+
+            {/* LOGOUT */}
+
+            <div className="setting-card">
+
+              <h2>🚪 Logout</h2>
+
+              <p>
+                Sign out from your MetricMind account.
+              </p>
+
+              <button onClick={handleLogout}>
+                Logout
+              </button>
+
+            </div>
+
+          </div>
+
         </div>
       </div>
 

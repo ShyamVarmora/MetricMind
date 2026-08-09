@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 
+import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
 import ChartSection from "../components/ChartSection";
 import RecentTransactions from "../components/RecentTransactions";
 import Footer from "../components/Footer";
 import Skeleton from "../components/Skeleton";
-import ErrorState from "../components/ErrorState";
 
 import "./Dashboard.css";
 
@@ -17,99 +17,129 @@ function Dashboard() {
 
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+
+  // =========================
+  // LOAD DASHBOARD DATA
+  // =========================
 
   useEffect(() => {
     fetchDashboard();
   }, []);
 
   const fetchDashboard = () => {
-    setLoading(true);
-    setError("");
-
     setTimeout(() => {
-      try {
-        setDashboardData({
-          totalSales: 250000,
-          orders: 180,
-          profit: 65000,
+      setDashboardData({
+        totalSales: 250000,
+        orders: 180,
+        profit: 65000,
 
-          salesChange: "+12%",
-          ordersChange: "+8%",
-          profitChange: "+15%",
+        salesChange: "+12%",
+        ordersChange: "+8%",
+        profitChange: "+15%",
 
-          chart: [
-            { month: "Jan", sales: 4000 },
-            { month: "Feb", sales: 5000 },
-            { month: "Mar", sales: 6500 },
-            { month: "Apr", sales: 6000 },
-            { month: "May", sales: 7200 },
-            { month: "Jun", sales: 8500 },
-          ],
+        chart: [
+          { month: "Jan", sales: 4000 },
+          { month: "Feb", sales: 5000 },
+          { month: "Mar", sales: 6500 },
+          { month: "Apr", sales: 6000 },
+          { month: "May", sales: 7200 },
+          { month: "Jun", sales: 8500 },
+        ],
 
-          transactions: [
-            {
-              id: 101,
-              customer: "Rahul Sharma",
-              amount: "₹5,000",
-              status: "Completed",
-            },
-            {
-              id: 102,
-              customer: "Priya Singh",
-              amount: "₹3,200",
-              status: "Pending",
-            },
-            {
-              id: 103,
-              customer: "Aman Gupta",
-              amount: "₹8,400",
-              status: "Completed",
-            },
-            {
-              id: 104,
-              customer: "Neha Verma",
-              amount: "₹2,700",
-              status: "Cancelled",
-            },
-          ],
-        });
+        transactions: [
+          {
+            id: 101,
+            customer: "Rahul Sharma",
+            amount: "₹5,000",
+            status: "Completed",
+          },
+          {
+            id: 102,
+            customer: "Priya Singh",
+            amount: "₹3,200",
+            status: "Pending",
+          },
+          {
+            id: 103,
+            customer: "Aman Gupta",
+            amount: "₹8,400",
+            status: "Completed",
+          },
+          {
+            id: 104,
+            customer: "Neha Verma",
+            amount: "₹2,700",
+            status: "Cancelled",
+          },
+        ],
+      });
 
-        setLoading(false);
-      } catch (err) {
-        setError("Unable to load dashboard.");
-        setLoading(false);
-      }
+      setLoading(false);
     }, 1200);
   };
 
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
+
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setShowSidebar(true);
-      } else {
-        setShowSidebar(false);
-      }
+      setShowSidebar(window.innerWidth > 768);
     };
 
     window.addEventListener("resize", handleResize);
 
-    return () =>
+    return () => {
       window.removeEventListener("resize", handleResize);
+    };
   }, []);
+
+  // =========================
+  // CLOSE MOBILE SIDEBAR
+  // =========================
+
+  const closeMobileSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setShowSidebar(false);
+    }
+  };
+
+  // =========================
+  // LOADING STATE
+  // =========================
 
   if (loading) {
     return (
       <>
-        <div className="dashboard">
-          <Sidebar
-            showSidebar={showSidebar}
-            closeSidebar={() => setShowSidebar(false)}
-          />
+        {/* TOP HEADER */}
+        <Navbar />
 
+        {/* MOBILE MENU */}
+        {window.innerWidth <= 768 && (
+          <button
+            className="menu-btn"
+            onClick={() => setShowSidebar(!showSidebar)}
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="dashboard">
+
+          {/* SIDEBAR */}
+          {showSidebar && (
+            <Sidebar
+              showSidebar={showSidebar}
+              closeSidebar={closeMobileSidebar}
+            />
+          )}
+
+          {/* CONTENT */}
           <div className="dashboard-content">
             <Skeleton />
           </div>
+
         </div>
 
         <Footer />
@@ -117,26 +147,59 @@ function Dashboard() {
     );
   }
 
+  // =========================
+  // MAIN DASHBOARD
+  // =========================
+
   return (
     <>
+      {/* =========================
+          TOP HEADER
+      ========================= */}
+
+      <Navbar />
+
+      {/* =========================
+          MOBILE MENU BUTTON
+      ========================= */}
+
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
-          onClick={() =>
-            setShowSidebar(!showSidebar)
-          }
+          onClick={() => setShowSidebar(!showSidebar)}
+          aria-label="Toggle sidebar"
         >
           ☰
         </button>
       )}
 
+      {/* =========================
+          DASHBOARD LAYOUT
+      ========================= */}
+
       <div className="dashboard">
-        <Sidebar
-          showSidebar={showSidebar}
-          closeSidebar={() => setShowSidebar(false)}
-        />
+
+        {/* =========================
+            SIDEBAR
+        ========================= */}
+
+        {showSidebar && (
+          <Sidebar
+            showSidebar={showSidebar}
+            closeSidebar={closeMobileSidebar}
+          />
+        )}
+
+        {/* =========================
+            MAIN CONTENT
+        ========================= */}
 
         <div className="dashboard-content">
+
+          {/* =========================
+              WELCOME BANNER
+          ========================= */}
+
           <div className="welcome-banner">
             <h1>Welcome to MetricMind 👋</h1>
             <p>
@@ -144,40 +207,38 @@ function Dashboard() {
             </p>
           </div>
 
-          {error ? (
-            <ErrorState message={error} />
-          ) : dashboardData === null ? (
-            <div className="empty-state">
-              <h2>📊</h2>
-              <h3>No Dashboard Data</h3>
-              <p>
-                Dashboard information will appear here.
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Dashboard Cards */}
-              <DashboardCard data={dashboardData} />
+          {/* =========================
+              DASHBOARD CARDS
+          ========================= */}
 
-              {/* Sales Chart */}
-              <div className="dashboard-section">
-                <ChartSection
-                  data={dashboardData.chart}
-                />
-              </div>
+          <DashboardCard data={dashboardData} />
 
-              {/* Transactions */}
-              <div className="dashboard-section">
-                <RecentTransactions
-                  transactions={
-                    dashboardData.transactions
-                  }
-                />
-              </div>
-            </>
-          )}
+          {/* =========================
+              SALES CHART
+          ========================= */}
+
+          <div className="dashboard-section">
+            <ChartSection
+              data={dashboardData.chart}
+            />
+          </div>
+
+          {/* =========================
+              RECENT TRANSACTIONS
+          ========================= */}
+
+          <div className="dashboard-section">
+            <RecentTransactions
+              transactions={dashboardData.transactions}
+            />
+          </div>
+
         </div>
       </div>
+
+      {/* =========================
+          FOOTER
+      ========================= */}
 
       <Footer />
     </>
