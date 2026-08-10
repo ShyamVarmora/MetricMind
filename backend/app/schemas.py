@@ -54,36 +54,54 @@ class AskRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "question": "Show revenue and profit"
+                "question": "What is the total revenue?"
             }
         }
 
 
-class AskMetricData(BaseModel):
-    metric: str
-    api_used: str
-    chart_type: str
-
-
-class AskMeta(BaseModel):
+class ApiTrace(BaseModel):
     endpoint: str
-    method: str
-    timestamp: str
-    metric: list[str]
-    chart_type: list[str]
+    metric: str
+    operation: str
 
 
 class AskResponseData(BaseModel):
-    question: str
-    intent: str
-    metrics: list[AskMetricData]
-    meta: AskMeta
+    answer: str
+
+    # Can contain either normal metric results
+    # or structured multi-step analysis results.
+    data: dict | list[dict]
+
+    api_trace: list[ApiTrace]
 
 
 class AskResponse(BaseModel):
     success: bool
     message: str
-    data: Optional[AskResponseData] = None
+    data: AskResponseData | None = None
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "success": True,
+                "message": "Question processed successfully",
+                "data": {
+                    "answer": "The total revenue is 29,358,677.22.",
+                    "data": [
+                        {
+                            "total_sales": 29358677.22
+                        }
+                    ],
+                    "api_trace": [
+                        {
+                            "endpoint": "/dashboard",
+                            "metric": "totalSales",
+                            "operation": "database_query"
+                        }
+                    ]
+                }
+            }
+        }
 
 
 class ErrorResponse(BaseModel):
@@ -94,6 +112,6 @@ class ErrorResponse(BaseModel):
         json_schema_extra = {
             "example": {
                 "success": False,
-                "message": "Unable to identify requested metric."
+                "message": "Unable to identify a supported metric."
             }
         }
