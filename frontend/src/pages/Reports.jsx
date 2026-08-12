@@ -12,17 +12,9 @@ import "./Dashboard.css";
 import "./Reports.css";
 
 function Reports() {
-  // =========================
-  // RESPONSIVE SIDEBAR
-  // =========================
-
   const [showSidebar, setShowSidebar] = useState(
     window.innerWidth > 768
   );
-
-  // =========================
-  // REPORT STATES
-  // =========================
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -59,14 +51,19 @@ function Reports() {
       console.log("Loading report:", type);
 
       // IMPORTANT:
-      // Backend endpoint is /api/reports/{type}
-      const response = await api.get(`/api/reports/${type}`);
+      // Backend route is /reports/{type}
+      const response = await api.get(`/reports/${type}`);
 
       console.log("Report response:", response.data);
 
       setReportData(response.data);
     } catch (err) {
       console.error("Report API error:", err);
+
+      if (err.response) {
+        console.error("Status:", err.response.status);
+        console.error("Data:", err.response.data);
+      }
 
       setError(true);
       setReportData(null);
@@ -76,7 +73,7 @@ function Reports() {
   };
 
   // =========================
-  // RETRY REPORT
+  // RETRY
   // =========================
 
   const retryReport = () => {
@@ -86,7 +83,7 @@ function Reports() {
   };
 
   // =========================
-  // LOADING SCREEN
+  // LOADING
   // =========================
 
   if (loading) {
@@ -94,12 +91,10 @@ function Reports() {
       <>
         <Navbar />
 
-        {/* Mobile menu */}
         {window.innerWidth <= 768 && (
           <button
             className="menu-btn"
             onClick={() => setShowSidebar(!showSidebar)}
-            aria-label="Toggle sidebar"
           >
             ☰
           </button>
@@ -135,10 +130,6 @@ function Reports() {
     <>
       <Navbar />
 
-      {/* =========================
-          MOBILE MENU
-      ========================= */}
-
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
@@ -149,15 +140,9 @@ function Reports() {
         </button>
       )}
 
-      {/* =========================
-          DASHBOARD LAYOUT
-      ========================= */}
-
       <div className="dashboard">
 
-        {/* =========================
-            SIDEBAR
-        ========================= */}
+        {/* SIDEBAR */}
 
         {showSidebar && (
           <Sidebar
@@ -170,28 +155,21 @@ function Reports() {
           />
         )}
 
-        {/* =========================
-            MAIN CONTENT
-        ========================= */}
+        {/* CONTENT */}
 
         <div className="dashboard-content">
 
-          {/* =========================
-              WELCOME BANNER
-          ========================= */}
+          {/* HEADER */}
 
           <div className="welcome-banner">
             <h1>📋 Reports</h1>
             <p>Business Reports Overview</p>
           </div>
 
-          {/* =========================
-              REPORT CARDS
-          ========================= */}
+          {/* REPORT CARDS */}
 
           <div className="reports-grid">
 
-            {/* SALES */}
             <div
               className={`report-card ${
                 selectedReport === "sales"
@@ -200,11 +178,10 @@ function Reports() {
               }`}
               onClick={() => loadReport("sales")}
             >
-              <h2>Sales Report</h2>
+              <h2>📊 Sales Report</h2>
               <p>Total Sales Performance</p>
             </div>
 
-            {/* REVENUE */}
             <div
               className={`report-card ${
                 selectedReport === "revenue"
@@ -213,11 +190,10 @@ function Reports() {
               }`}
               onClick={() => loadReport("revenue")}
             >
-              <h2>Revenue Report</h2>
+              <h2>💰 Revenue Report</h2>
               <p>Revenue Growth Analysis</p>
             </div>
 
-            {/* CUSTOMER */}
             <div
               className={`report-card ${
                 selectedReport === "customer"
@@ -226,11 +202,10 @@ function Reports() {
               }`}
               onClick={() => loadReport("customer")}
             >
-              <h2>Customer Report</h2>
+              <h2>👥 Customer Report</h2>
               <p>Customer Insights</p>
             </div>
 
-            {/* MONTHLY */}
             <div
               className={`report-card ${
                 selectedReport === "monthly"
@@ -239,19 +214,16 @@ function Reports() {
               }`}
               onClick={() => loadReport("monthly")}
             >
-              <h2>Monthly Report</h2>
+              <h2>📅 Monthly Report</h2>
               <p>Monthly Business Analysis</p>
             </div>
 
           </div>
 
-          {/* =========================
-              ERROR STATE
-          ========================= */}
+          {/* ERROR */}
 
           {error && (
             <div className="reports-state">
-
               <div className="error-card">
 
                 <div className="error-icon">
@@ -263,7 +235,7 @@ function Reports() {
                 </h2>
 
                 <p>
-                  Unable to load the report data.
+                  Unable to load the report.
                   Please try again.
                 </p>
 
@@ -275,13 +247,10 @@ function Reports() {
                 </button>
 
               </div>
-
             </div>
           )}
 
-          {/* =========================
-              REPORT RESULT / EMPTY
-          ========================= */}
+          {/* RESULT */}
 
           {!error && (
             <div className="report-result">
@@ -298,6 +267,7 @@ function Reports() {
                 <div className="report-output">
 
                   <div className="report-output-header">
+
                     <div>
                       <h3>📊 Report Result</h3>
 
@@ -311,6 +281,7 @@ function Reports() {
                           : "Report"}
                       </p>
                     </div>
+
                   </div>
 
                   <pre>
@@ -330,10 +301,6 @@ function Reports() {
 
         </div>
       </div>
-
-      {/* =========================
-          FOOTER
-      ========================= */}
 
       <Footer />
     </>

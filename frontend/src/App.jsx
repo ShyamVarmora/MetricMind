@@ -1,5 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import Analytics from "./pages/Analytics";
@@ -11,21 +17,56 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Login */}
+        <Route path="/login" element={<Login />} />
 
-        {/* Redirect Home */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* Default */}
+        <Route
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
 
-        {/* Pages */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
+        {/* Dashboard */}
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+        />
+
+        {/* Reports */}
+        <Route
+          path="/reports"
+          element={<Reports />}
+        />
+
+        {/* Analytics */}
+        <Route
+          path="/analytics"
+          element={<Analytics />}
+        />
+
+        {/* Chat */}
+        <Route
+          path="/chat"
+          element={<Chat />}
+        />
+
+        {/* Profile */}
+        <Route
+          path="/profile"
+          element={<Profile />}
+        />
+
+        {/* Settings */}
+        <Route
+          path="/settings"
+          element={<Settings />}
+        />
 
         {/* Invalid URL */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-
+        <Route
+          path="*"
+          element={<Navigate to="/login" replace />}
+        />
       </Routes>
     </BrowserRouter>
   );
