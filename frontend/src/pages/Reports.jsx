@@ -21,10 +21,6 @@ function Reports() {
   const [reportData, setReportData] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
 
-  // =========================
-  // RESPONSIVE SIDEBAR
-  // =========================
-
   useEffect(() => {
     const handleResize = () => {
       setShowSidebar(window.innerWidth > 768);
@@ -37,10 +33,6 @@ function Reports() {
     };
   }, []);
 
-  // =========================
-  // LOAD REPORT
-  // =========================
-
   const loadReport = async (type) => {
     try {
       setLoading(true);
@@ -48,22 +40,13 @@ function Reports() {
       setReportData(null);
       setSelectedReport(type);
 
-      console.log("Loading report:", type);
-
-      // IMPORTANT:
-      // Backend route is /reports/{type}
-      const response = await api.get(`/reports/${type}`);
+      const response = await api.get(`/api/reports/${type}`);
 
       console.log("Report response:", response.data);
 
       setReportData(response.data);
     } catch (err) {
       console.error("Report API error:", err);
-
-      if (err.response) {
-        console.error("Status:", err.response.status);
-        console.error("Data:", err.response.data);
-      }
 
       setError(true);
       setReportData(null);
@@ -72,19 +55,17 @@ function Reports() {
     }
   };
 
-  // =========================
-  // RETRY
-  // =========================
-
   const retryReport = () => {
     if (selectedReport) {
       loadReport(selectedReport);
     }
   };
 
-  // =========================
-  // LOADING
-  // =========================
+  const closeSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setShowSidebar(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -95,6 +76,7 @@ function Reports() {
           <button
             className="menu-btn"
             onClick={() => setShowSidebar(!showSidebar)}
+            aria-label="Toggle sidebar"
           >
             ☰
           </button>
@@ -104,11 +86,7 @@ function Reports() {
           {showSidebar && (
             <Sidebar
               showSidebar={showSidebar}
-              closeSidebar={() => {
-                if (window.innerWidth <= 768) {
-                  setShowSidebar(false);
-                }
-              }}
+              closeSidebar={closeSidebar}
             />
           )}
 
@@ -121,10 +99,6 @@ function Reports() {
       </>
     );
   }
-
-  // =========================
-  // MAIN PAGE
-  // =========================
 
   return (
     <>
@@ -142,31 +116,27 @@ function Reports() {
 
       <div className="dashboard">
 
-        {/* SIDEBAR */}
-
         {showSidebar && (
           <Sidebar
             showSidebar={showSidebar}
-            closeSidebar={() => {
-              if (window.innerWidth <= 768) {
-                setShowSidebar(false);
-              }
-            }}
+            closeSidebar={closeSidebar}
           />
         )}
 
-        {/* CONTENT */}
-
         <div className="dashboard-content">
 
-          {/* HEADER */}
+          {/* =========================
+              PAGE HEADER
+          ========================= */}
 
           <div className="welcome-banner">
             <h1>📋 Reports</h1>
             <p>Business Reports Overview</p>
           </div>
 
-          {/* REPORT CARDS */}
+          {/* =========================
+              REPORT CARDS
+          ========================= */}
 
           <div className="reports-grid">
 
@@ -178,7 +148,7 @@ function Reports() {
               }`}
               onClick={() => loadReport("sales")}
             >
-              <h2>📊 Sales Report</h2>
+              <h2>Sales Report</h2>
               <p>Total Sales Performance</p>
             </div>
 
@@ -190,7 +160,7 @@ function Reports() {
               }`}
               onClick={() => loadReport("revenue")}
             >
-              <h2>💰 Revenue Report</h2>
+              <h2>Revenue Report</h2>
               <p>Revenue Growth Analysis</p>
             </div>
 
@@ -202,7 +172,7 @@ function Reports() {
               }`}
               onClick={() => loadReport("customer")}
             >
-              <h2>👥 Customer Report</h2>
+              <h2>Customer Report</h2>
               <p>Customer Insights</p>
             </div>
 
@@ -214,16 +184,19 @@ function Reports() {
               }`}
               onClick={() => loadReport("monthly")}
             >
-              <h2>📅 Monthly Report</h2>
+              <h2>Monthly Report</h2>
               <p>Monthly Business Analysis</p>
             </div>
 
           </div>
 
-          {/* ERROR */}
+          {/* =========================
+              ERROR STATE
+          ========================= */}
 
           {error && (
             <div className="reports-state">
+
               <div className="error-card">
 
                 <div className="error-icon">
@@ -235,7 +208,7 @@ function Reports() {
                 </h2>
 
                 <p>
-                  Unable to load the report.
+                  Unable to load the report data.
                   Please try again.
                 </p>
 
@@ -247,10 +220,13 @@ function Reports() {
                 </button>
 
               </div>
+
             </div>
           )}
 
-          {/* RESULT */}
+          {/* =========================
+              REPORT RESULT
+          ========================= */}
 
           {!error && (
             <div className="report-result">
@@ -265,6 +241,8 @@ function Reports() {
               ) : (
 
                 <div className="report-output">
+
+                  {/* HEADER */}
 
                   <div className="report-output-header">
 
@@ -284,13 +262,169 @@ function Reports() {
 
                   </div>
 
-                  <pre>
-                    {JSON.stringify(
-                      reportData,
-                      null,
-                      2
+                  {/* =========================
+                      SALES REPORT
+                  ========================= */}
+
+                  {selectedReport === "sales" &&
+                    reportData.data && (
+                      <div className="report-stats">
+
+                        <div className="stat-box">
+                          <h4>Total Orders</h4>
+                          <strong>
+                            {reportData.data.total_orders}
+                          </strong>
+                        </div>
+
+                        <div className="stat-box">
+                          <h4>Total Sales</h4>
+                          <strong>
+                            ₹
+                            {Number(
+                              reportData.data.total_sales || 0
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+
+                        <div className="stat-box">
+                          <h4>Average Order Value</h4>
+                          <strong>
+                            ₹
+                            {Number(
+                              reportData.data.average_order_value || 0
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+
+                      </div>
                     )}
-                  </pre>
+
+                  {/* =========================
+                      REVENUE REPORT
+                  ========================= */}
+
+                  {selectedReport === "revenue" &&
+                    reportData.data && (
+                      <div className="report-stats">
+
+                        <div className="stat-box">
+                          <h4>Total Revenue</h4>
+                          <strong>
+                            ₹
+                            {Number(
+                              reportData.data.total_revenue || 0
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+
+                        <div className="stat-box">
+                          <h4>Average Revenue</h4>
+                          <strong>
+                            ₹
+                            {Number(
+                              reportData.data.average_revenue || 0
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+
+                      </div>
+                    )}
+
+                  {/* =========================
+                      CUSTOMER REPORT
+                  ========================= */}
+
+                  {selectedReport === "customer" &&
+                    reportData.data && (
+                      <div className="report-stats">
+
+                        <div className="stat-box">
+                          <h4>Total Customers</h4>
+                          <strong>
+                            {reportData.data.total_customers}
+                          </strong>
+                        </div>
+
+                        <div className="stat-box">
+                          <h4>Total Orders</h4>
+                          <strong>
+                            {reportData.data.total_orders}
+                          </strong>
+                        </div>
+
+                        <div className="stat-box">
+                          <h4>Average Order Value</h4>
+                          <strong>
+                            ₹
+                            {Number(
+                              reportData.data.average_order_value || 0
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+
+                      </div>
+                    )}
+
+                  {/* =========================
+                      MONTHLY REPORT
+                  ========================= */}
+
+                  {selectedReport === "monthly" &&
+                    Array.isArray(reportData.data) && (
+                      <div className="monthly-table">
+
+                        <table>
+
+                          <thead>
+                            <tr>
+                              <th>Month</th>
+                              <th>Orders</th>
+                              <th>Sales</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+
+                            {reportData.data.length > 0 ? (
+
+                              reportData.data.map((item) => (
+                                <tr key={item.month}>
+
+                                  <td>
+                                    {item.month}
+                                  </td>
+
+                                  <td>
+                                    {item.orders}
+                                  </td>
+
+                                  <td>
+                                    ₹
+                                    {Number(
+                                      item.sales || 0
+                                    ).toLocaleString()}
+                                  </td>
+
+                                </tr>
+                              ))
+
+                            ) : (
+
+                              <tr>
+                                <td colSpan="3">
+                                  No monthly data available.
+                                </td>
+                              </tr>
+
+                            )}
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+                    )}
 
                 </div>
 
