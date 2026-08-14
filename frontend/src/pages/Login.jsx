@@ -17,7 +17,7 @@ function Login() {
 
     setError("");
 
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       setError("Please enter email and password.");
       return;
     }
@@ -25,71 +25,49 @@ function Login() {
     try {
       setLoading(true);
 
-      console.log("Sending login request...");
-
       const formData = new URLSearchParams();
 
       formData.append("username", email.trim());
       formData.append("password", password);
       formData.append("grant_type", "password");
 
-      const response = await api.post(
-        "/login",
-        formData,
-        {
-          headers: {
-            "Content-Type":
-              "application/x-www-form-urlencoded",
-          },
-        }
-      );
+      console.log("Sending login request...");
 
-      console.log(
-        "Login response:",
-        response.data
-      );
+      const response = await api.post("/login", formData, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
 
-      // Check token
-      if (!response.data?.access_token) {
-        throw new Error(
-          "Access token was not received."
-        );
+      console.log("Login response:", response.data);
+
+      const token = response.data?.access_token;
+
+      if (!token) {
+        throw new Error("Access token was not received.");
       }
 
-      // Save token
-      localStorage.setItem(
-        "token",
-        response.data.access_token
-      );
+      // Save JWT token
+      localStorage.setItem("token", token);
 
-      // Optional: save user email
-      localStorage.setItem(
-        "userEmail",
-        email.trim()
-      );
+      // Save email
+      localStorage.setItem("userEmail", email.trim());
 
       console.log("Login successful!");
 
-      // Go to dashboard
-      navigate("/dashboard");
+      // Redirect to dashboard
+      navigate("/dashboard", { replace: true });
 
     } catch (err) {
       console.error("Login error:", err);
 
       if (err.response) {
-        console.error(
-          "Status:",
-          err.response.status
-        );
-
-        console.error(
-          "Response:",
-          err.response.data
-        );
+        console.error("Status:", err.response.status);
+        console.error("Response:", err.response.data);
 
         setError(
           err.response.data?.detail ||
-            "Invalid email or password."
+            "Incorrect email or password."
         );
       } else if (err.request) {
         setError(
@@ -97,8 +75,7 @@ function Login() {
         );
       } else {
         setError(
-          err.message ||
-            "Something went wrong."
+          err.message || "Something went wrong."
         );
       }
     } finally {
@@ -108,17 +85,11 @@ function Login() {
 
   return (
     <div className="login-page">
-
       <div className="login-card">
 
         <div className="login-header">
-
           <h1>MetricMind</h1>
-
-          <p>
-            Login to your dashboard
-          </p>
-
+          <p>Login to your dashboard</p>
         </div>
 
         {error && (
@@ -130,9 +101,7 @@ function Login() {
         <form onSubmit={handleLogin}>
 
           {/* EMAIL */}
-
           <div className="form-group">
-
             <label htmlFor="email">
               Email
             </label>
@@ -142,20 +111,15 @@ function Login() {
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               autoComplete="email"
               required
             />
-
           </div>
 
           {/* PASSWORD */}
-
           <div className="form-group">
-
             <label htmlFor="password">
               Password
             </label>
@@ -165,32 +129,36 @@ function Login() {
               type="password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               autoComplete="current-password"
               required
             />
-
           </div>
 
           {/* LOGIN BUTTON */}
-
           <button
             type="submit"
             className="login-button"
             disabled={loading}
           >
-            {loading
-              ? "Logging in..."
-              : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
 
         </form>
 
-      </div>
+        <div className="register-link">
+          <span>Don't have an account?</span>{" "}
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            disabled={loading}
+          >
+            Register
+          </button>
+        </div>
 
+      </div>
     </div>
   );
 }

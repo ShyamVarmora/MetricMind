@@ -39,6 +39,10 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:5175",
+        "http://127.0.0.1:5175",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -112,8 +116,6 @@ def login(
             detail="Incorrect email or password",
         )
 
-    # IMPORTANT:
-    # User model uses hashed_password, not password.
     if not verify_password(
         form_data.password,
         user.hashed_password,
@@ -170,8 +172,6 @@ def dashboard(
                 "customers": 0
             }
 
-        # Profit is not currently available
-        # in the database table.
         profit = 0
         profit_change = "0%"
 
@@ -239,23 +239,17 @@ def dashboard(
                 "total_sales": float(
                     summary.get("total_sales", 0) or 0
                 ),
-
                 "orders": int(
                     summary.get("orders", 0) or 0
                 ),
-
                 "customers": int(
                     summary.get("customers", 0) or 0
                 ),
-
                 "profit": profit,
-
                 "salesChange": "0%",
                 "ordersChange": "0%",
                 "profitChange": profit_change,
-
                 "chart": chart,
-
                 "transactions": transactions
             }
         }
@@ -522,3 +516,82 @@ def monthly_report(
 
         if conn:
             conn.close()
+
+
+# ============================================================
+# PROFILE - GET
+# ============================================================
+
+@app.get("/profile")
+def get_profile(
+    current_user: User = Depends(get_current_user),
+):
+    return {
+        "success": True,
+        "data": {
+            "id": current_user.id,
+            "name": current_user.name,
+            "email": current_user.email,
+            "created_at": (
+                current_user.created_at.isoformat()
+                if current_user.created_at
+                else None
+            ),
+        },
+    }
+
+
+# ============================================================
+# PROFILE - UPDATE
+# ============================================================
+
+@app.put("/profile")
+def update_profile(
+    profile_data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        new_name = profile_data.get(
+            "name",
+            current_user.name
+        ).strip()
+
+        if not new_name:
+            raise HTTPException(
+                status_code=400,
+                detail="Name cannot be empty"
+            )
+
+        current_user.name = new_name
+
+        db.commit()
+        db.refresh(current_user)
+
+        return {
+            "success": True,
+            "message": "Profile updated successfully",
+            "data": {
+                "id": current_user.id,
+                "name": current_user.name,
+                "email": current_user.email,
+                "created_at": (
+                    current_user.created_at.isoformat()
+                    if current_user.created_at
+                    else None
+                ),
+            },
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        db.rollback()
+
+        print("Profile update error:", e)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to update profile"
+        )
