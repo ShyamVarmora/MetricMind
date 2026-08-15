@@ -3,10 +3,10 @@ from app.database import get_connection
 
 def execute_metric_query(metric: str):
     """
-    Execute a trusted metric query against the existing MySQL database.
+    Execute a governed metric query against the existing MySQL database.
 
-    The agent supplies only a validated metric name.
-    It never supplies raw SQL.
+    The agent provides only a validated metric name.
+    The agent never provides or executes raw SQL.
     """
 
     conn = get_connection()
@@ -15,22 +15,104 @@ def execute_metric_query(metric: str):
     try:
 
         # --------------------------------
-        # Total Sales / Revenue
+        # Total Revenue
         # --------------------------------
-        if metric == "totalSales":
+        if metric == "totalRevenue":
+
             cursor.execute("""
                 SELECT
-                    ROUND(SUM(SalesAmount), 2) AS total_sales
+                    ROUND(SUM(SalesAmount), 2) AS total_revenue
                 FROM factinternetsales;
             """)
 
         # --------------------------------
-        # Orders
+        # Total Cost
         # --------------------------------
-        elif metric == "orders":
+        elif metric == "totalCost":
+
             cursor.execute("""
                 SELECT
-                    COUNT(DISTINCT SalesOrderNumber) AS total_orders
+                    ROUND(
+                        SUM(TotalProductCost) + SUM(Freight),
+                        2
+                    ) AS total_cost
+                FROM factinternetsales;
+            """)
+
+        # --------------------------------
+        # Shipping Cost
+        # --------------------------------
+        elif metric == "shippingCost":
+
+            cursor.execute("""
+                SELECT
+                    ROUND(SUM(Freight), 2) AS shipping_cost
+                FROM factinternetsales;
+            """)
+
+        # --------------------------------
+        # Material Cost
+        # --------------------------------
+        elif metric == "materialCost":
+
+            # The current database does not contain
+            # a separate material-cost column.
+            return [{
+                "material_cost": None,
+                "available": False,
+                "message": "Required data unavailable."
+            }]
+
+        # --------------------------------
+        # Other Cost
+        # --------------------------------
+        elif metric == "otherCost":
+
+            # The current database does not contain
+            # a separate other-cost column.
+            return [{
+                "other_cost": None,
+                "available": False,
+                "message": "Required data unavailable."
+            }]
+
+        # --------------------------------
+        # Margin Percent
+        # --------------------------------
+        elif metric == "marginPercent":
+
+            cursor.execute("""
+                SELECT
+                    ROUND(
+                        (
+                            SUM(SalesAmount)
+                            -
+                            (
+                                SUM(TotalProductCost)
+                                +
+                                SUM(Freight)
+                            )
+                        )
+                        /
+                        NULLIF(
+                            SUM(SalesAmount),
+                            0
+                        )
+                        * 100,
+                        2
+                    ) AS margin_percent
+                FROM factinternetsales;
+            """)
+
+        # --------------------------------
+        # Transaction Count
+        # --------------------------------
+        elif metric == "transactionCount":
+
+            cursor.execute("""
+                SELECT
+                    COUNT(DISTINCT SalesOrderNumber)
+                    AS transaction_count
                 FROM factinternetsales;
             """)
 
@@ -38,9 +120,11 @@ def execute_metric_query(metric: str):
         # Customers
         # --------------------------------
         elif metric == "customers":
+
             cursor.execute("""
                 SELECT
-                    COUNT(DISTINCT CustomerKey) AS total_customers
+                    COUNT(DISTINCT CustomerKey)
+                    AS total_customers
                 FROM factinternetsales;
             """)
 
@@ -48,47 +132,19 @@ def execute_metric_query(metric: str):
         # Products
         # --------------------------------
         elif metric == "products":
+
             cursor.execute("""
                 SELECT
-                    COUNT(DISTINCT ProductKey) AS total_products
+                    COUNT(DISTINCT ProductKey)
+                    AS total_products
                 FROM factinternetsales;
             """)
 
         # --------------------------------
-        # Profit
-        # --------------------------------
-        elif metric == "profit":
-            cursor.execute("""
-                SELECT
-                    ROUND(
-                        SUM(SalesAmount - TotalProductCost),
-                        2
-                    ) AS profit
-                FROM factinternetsales;
-            """)
-
-        # --------------------------------
-        # Monthly Sales
-        # --------------------------------
-        elif metric == "monthlySales":
-            cursor.execute("""
-                SELECT
-                    d.EnglishMonthName AS month,
-                    ROUND(SUM(f.SalesAmount), 2) AS sales
-                FROM factinternetsales f
-                JOIN dimdate d
-                    ON f.OrderDateKey = d.DateKey
-                GROUP BY
-                    d.MonthNumberOfYear,
-                    d.EnglishMonthName
-                ORDER BY
-                    d.MonthNumberOfYear;
-            """)
-
-        # --------------------------------
-        # Unsupported metric
+        # Unsupported Metric
         # --------------------------------
         else:
+
             raise ValueError(
                 f"Metric '{metric}' is not currently "
                 "supported by the backend data layer."
@@ -99,25 +155,44 @@ def execute_metric_query(metric: str):
         return result
 
     finally:
+
         cursor.close()
         conn.close()
+
+
+# --------------------------------
+# European Margin Analysis
+# --------------------------------
 
 def execute_europe_margin_analysis():
     """
     Analyze European margin across the latest two
     available quarters.
 
-    Europe is represented by France, Germany,
-    and United Kingdom in the current dataset.
+    Europe is represented by:
+    France, Germany and United Kingdom.
 
-    Only fields that actually exist in the database
-    are used.
+    The calculation uses only fields that actually
+    exist in the current MySQL database.
+
+    Margin formula:
+
+    (Revenue - Total Cost) / Revenue * 100
+
+    Current available cost fields:
+
+    TotalProductCost
+    Freight
+
+    Separate materialCost and otherCost fields
+    are not available.
     """
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
+
         cursor.execute("""
             SELECT
                 d.CalendarYear,
@@ -129,32 +204,51 @@ def execute_europe_margin_analysis():
                 ) AS revenue,
 
                 ROUND(
+                    SUM(f.TotalProductCost)
+                    +
+                    SUM(f.Freight),
+                    2
+                ) AS total_cost,
+
+                ROUND(
                     SUM(f.TotalProductCost),
                     2
                 ) AS product_cost,
 
                 ROUND(
-                    SUM(
-                        f.SalesAmount - f.TotalProductCost
+                    SUM(f.Freight),
+                    2
+                ) AS shipping_cost,
+
+                ROUND(
+                    SUM(f.SalesAmount)
+                    -
+                    (
+                        SUM(f.TotalProductCost)
+                        +
+                        SUM(f.Freight)
                     ),
                     2
                 ) AS profit,
 
                 ROUND(
-                    SUM(
-                        f.SalesAmount - f.TotalProductCost
+                    (
+                        SUM(f.SalesAmount)
+                        -
+                        (
+                            SUM(f.TotalProductCost)
+                            +
+                            SUM(f.Freight)
+                        )
                     )
-                    / NULLIF(
+                    /
+                    NULLIF(
                         SUM(f.SalesAmount),
                         0
-                    ) * 100,
+                    )
+                    * 100,
                     2
-                ) AS margin_percent,
-
-                ROUND(
-                    SUM(f.Freight),
-                    2
-                ) AS freight
+                ) AS margin_percent
 
             FROM factinternetsales f
 
@@ -188,6 +282,7 @@ def execute_europe_margin_analysis():
         quarters = cursor.fetchall()
 
         if len(quarters) < 2:
+
             raise ValueError(
                 "Insufficient European quarterly data "
                 "for margin comparison."
@@ -198,22 +293,35 @@ def execute_europe_margin_analysis():
 
         margin_change = round(
             latest["margin_percent"]
-            - previous["margin_percent"],
+            -
+            previous["margin_percent"],
             2
         )
 
         return {
+
             "latest_quarter": latest,
+
             "previous_quarter": previous,
-            "margin_change_percentage_points": margin_change,
+
+            "margin_change_percentage_points":
+                margin_change,
+
             "cost_breakdown_available": {
+
+                "total_cost": True,
+
                 "product_cost": True,
-                "freight": True,
+
+                "shipping_cost": True,
+
                 "material_cost": False,
+
                 "other_cost": False
             }
         }
 
     finally:
+
         cursor.close()
         conn.close()

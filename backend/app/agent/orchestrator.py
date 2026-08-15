@@ -55,9 +55,14 @@ class AgentOrchestrator:
         ]
 
         for pattern in sql_patterns:
-            if re.search(pattern, question.lower()):
+
+            if re.search(
+                pattern,
+                question.lower()
+            ):
                 raise ValueError(
-                    "Direct SQL or database commands are not supported."
+                    "Direct SQL or database commands "
+                    "are not supported."
                 )
 
         # --------------------------------
@@ -109,12 +114,19 @@ class AgentOrchestrator:
 
         if not data:
             return (
-                "No data was found for the requested metric."
+                "No data was found for the "
+                "requested metric."
             )
 
-        # Total Sales / Revenue
-        if metric == "totalSales":
-            value = data[0].get("total_sales")
+        # --------------------------------
+        # Total Revenue
+        # --------------------------------
+
+        if metric == "totalRevenue":
+
+            value = data[0].get(
+                "total_revenue"
+            )
 
             if value is not None:
                 return (
@@ -122,51 +134,125 @@ class AgentOrchestrator:
                     f"{value:,.2f}."
                 )
 
-        # Orders
-        if metric == "orders":
-            value = data[0].get("total_orders")
+        # --------------------------------
+        # Total Cost
+        # --------------------------------
+
+        if metric == "totalCost":
+
+            value = data[0].get(
+                "total_cost"
+            )
 
             if value is not None:
                 return (
-                    f"The total number of orders is "
-                    f"{value:,}."
-                )
-
-        # Customers
-        if metric == "customers":
-            value = data[0].get("total_customers")
-
-            if value is not None:
-                return (
-                    f"The total number of customers is "
-                    f"{value:,}."
-                )
-
-        # Products
-        if metric == "products":
-            value = data[0].get("total_products")
-
-            if value is not None:
-                return (
-                    f"The total number of products is "
-                    f"{value:,}."
-                )
-
-        # Profit
-        if metric == "profit":
-            value = data[0].get("profit")
-
-            if value is not None:
-                return (
-                    f"The total profit is "
+                    f"The total cost is "
                     f"{value:,.2f}."
                 )
 
-        # Monthly Sales
-        if metric == "monthlySales":
-            return (
-                "Here is the monthly sales breakdown."
+        # --------------------------------
+        # Shipping Cost
+        # --------------------------------
+
+        if metric == "shippingCost":
+
+            value = data[0].get(
+                "shipping_cost"
             )
+
+            if value is not None:
+                return (
+                    f"The total shipping cost is "
+                    f"{value:,.2f}."
+                )
+
+        # --------------------------------
+        # Material Cost
+        # --------------------------------
+
+        if metric == "materialCost":
+
+            if data[0].get("available") is False:
+                return (
+                    "Required material cost data "
+                    "is unavailable."
+                )
+
+        # --------------------------------
+        # Other Cost
+        # --------------------------------
+
+        if metric == "otherCost":
+
+            if data[0].get("available") is False:
+                return (
+                    "Required other cost data "
+                    "is unavailable."
+                )
+
+        # --------------------------------
+        # Margin Percent
+        # --------------------------------
+
+        if metric == "marginPercent":
+
+            value = data[0].get(
+                "margin_percent"
+            )
+
+            if value is not None:
+                return (
+                    f"The overall margin is "
+                    f"{value:.2f}%."
+                )
+
+        # --------------------------------
+        # Transaction Count
+        # --------------------------------
+
+        if metric == "transactionCount":
+
+            value = data[0].get(
+                "transaction_count"
+            )
+
+            if value is not None:
+                return (
+                    f"The total number of transactions "
+                    f"is {value:,}."
+                )
+
+        # --------------------------------
+        # Customers
+        # --------------------------------
+
+        if metric == "customers":
+
+            value = data[0].get(
+                "total_customers"
+            )
+
+            if value is not None:
+                return (
+                    f"The total number of customers "
+                    f"is {value:,}."
+                )
+
+        # --------------------------------
+        # Products
+        # --------------------------------
+
+        if metric == "products":
+
+            value = data[0].get(
+                "total_products"
+            )
+
+            if value is not None:
+                return (
+                    f"The total number of products "
+                    f"is {value:,}."
+                )
 
         return (
             f"The requested {metric} data "
@@ -179,20 +265,21 @@ class AgentOrchestrator:
 
     def execute_europe_margin_analysis(self):
         """
-        Execute the multi-step Europe margin analysis.
+        Execute the governed Europe margin analysis.
 
-        Uses only data that actually exists in the
-        current MySQL database.
+        Uses only data that actually exists
+        in the current MySQL database.
         """
 
-        # Query 1: Retrieve latest two European quarters
+        # --------------------------------
+        # Query 1
+        # --------------------------------
+
         self.governance.record_query()
 
         result = execute_europe_margin_analysis()
 
-        self.governance.validate_row_count(
-            2
-        )
+        self.governance.validate_row_count(2)
 
         latest = result["latest_quarter"]
         previous = result["previous_quarter"]
@@ -217,11 +304,23 @@ class AgentOrchestrator:
                 f"{latest['CalendarYear']}, "
                 f"a decline of {abs(change):.2f} "
                 "percentage points. "
-                "The available cost data includes "
-                "product cost and freight, but separate "
-                "material and other cost breakdowns "
-                "are not available."
             )
+
+            if result[
+                "cost_breakdown_available"
+            ]["material_cost"]:
+
+                answer += (
+                    "Material cost data was available "
+                    "and was included in the analysis."
+                )
+
+            else:
+
+                answer += (
+                    "Separate material cost and other "
+                    "cost breakdowns are unavailable."
+                )
 
         else:
 
@@ -237,14 +336,14 @@ class AgentOrchestrator:
                 f"an improvement of {change:.2f} "
                 "percentage points. "
                 "The available cost data includes "
-                "product cost and freight; separate "
-                "material and other cost breakdowns "
-                "are not available."
+                "product cost and shipping cost. "
+                "Separate material cost and other "
+                "cost breakdowns are unavailable."
             )
 
         return {
             "query": {
-                "metric": "profit",
+                "metric": "marginPercent",
                 "filters": ["Europe"],
                 "group_by": ["quarter"],
                 "time_range": (
@@ -262,7 +361,7 @@ class AgentOrchestrator:
                         "data_service."
                         "execute_europe_margin_analysis"
                     ),
-                    "metric": "profit",
+                    "metric": "marginPercent",
                     "operation": "database_query"
                 }
             ]
@@ -278,7 +377,7 @@ class AgentOrchestrator:
         """
 
         # --------------------------------
-        # Step 1: Validate input
+        # Validate input
         # --------------------------------
 
         if not question or not question.strip():
@@ -287,8 +386,7 @@ class AgentOrchestrator:
             )
 
         # --------------------------------
-        # Step 2: Detect special
-        # Europe margin question
+        # Europe Margin Question
         # --------------------------------
 
         question_lower = question.lower()
@@ -300,22 +398,20 @@ class AgentOrchestrator:
             return self.execute_europe_margin_analysis()
 
         # --------------------------------
-        # Step 3: Create validated query
+        # Create validated query
         # --------------------------------
 
-        query = self.create_query(
-            question
-        )
+        query = self.create_query(question)
 
         # --------------------------------
-        # Step 4: Enforce query limit
+        # Enforce query limit
         # --------------------------------
 
         self.governance.record_query()
 
         # --------------------------------
-        # Step 5: Execute through
-        # trusted data layer
+        # Execute through trusted
+        # data layer
         # --------------------------------
 
         result = execute_metric_query(
@@ -323,7 +419,7 @@ class AgentOrchestrator:
         )
 
         # --------------------------------
-        # Step 6: Enforce row limit
+        # Enforce row limit
         # --------------------------------
 
         self.governance.validate_row_count(
@@ -331,7 +427,7 @@ class AgentOrchestrator:
         )
 
         # --------------------------------
-        # Step 7: Determine API endpoint
+        # Determine API endpoint
         # --------------------------------
 
         api_endpoint = get_api(
@@ -339,7 +435,7 @@ class AgentOrchestrator:
         )
 
         # --------------------------------
-        # Step 8: Generate final answer
+        # Generate final answer
         # --------------------------------
 
         answer = self.generate_answer(
@@ -348,7 +444,7 @@ class AgentOrchestrator:
         )
 
         # --------------------------------
-        # Step 9: Return structured result
+        # Return structured result
         # --------------------------------
 
         return {
