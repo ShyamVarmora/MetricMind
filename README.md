@@ -1,213 +1,51 @@
-# MetricMind
+# MetricMind — Agentic Semantic BI Engine
 
-##  Project Description
+## Project Overview
 
-MetricMind is a Sales Analytics Dashboard built with FastAPI, React, MySQL, and Python. It helps users analyze sales data through interactive charts and dashboards, providing meaningful insights for better business decisions.
+MetricMind is a conversational Business Intelligence and Sales Analytics platform designed to help users understand business performance through dashboards, reports, analytics, and natural-language interaction.
 
-## Technologies
+The project combines a FastAPI backend, React frontend, MySQL database, analytics services, and an agent/orchestration layer to provide governed business insights.
 
-- FastAPI
-- React
-- MySQL
-- Python
-- Pandas
-- HTML
-- CSS
-- JavaScript
+## Problem Statement
 
-## Team Members
+Traditional business analytics often requires users to understand databases, SQL queries, and complex reporting systems.
 
-- Shyam – Team Lead & DevOps
-- Mansi – Data Engineer
-- Chetan – Backend Developer
-- Himesh – Frontend Developer
-- Yoshita – UI/UX Developer
-- Prashant – QA & Documentation
+Direct text-to-SQL approaches can also produce incorrect joins, inconsistent business metrics, and uncontrolled access to data.
 
-## Installation Guide
+MetricMind addresses this problem by introducing a governed analytics workflow where business questions are processed through defined metrics and controlled data access before producing the final result.
 
-### 1. Clone the Repository
+## Objective
 
-```bash
-git clone <repository-url>
-cd MetricMind
-```
+The main objectives of MetricMind are:
 
-### 2. Create a Virtual Environment
+- Provide an interactive business analytics dashboard.
+- Display sales, revenue, orders, profit, and related KPIs.
+- Provide reports and analytical views.
+- Support natural-language business questions through the agent/orchestration layer.
+- Use governed business metrics instead of unrestricted SQL access.
+- Provide transparent API responses and API traces where applicable.
+- Provide responsive and user-friendly UI.
+- Maintain controlled query and data access.
 
-```bash
-python -m venv venv
-```
-
-### 3. Activate the Virtual Environment
-
-**Windows**
-
-```bash
-venv\Scripts\activate
-```
-
-**Linux/macOS**
-
-```bash
-source venv/bin/activate
-```
-
-### 4. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Configure MySQL Database
-
-- Create a MySQL database named `metricmind`.
-- Import the `metricmind.sql` file.
-- Update the database username and password in the backend configuration.
-
-### 6. Start the Backend
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### 7. Start the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 8. Open the Application
-
-Frontend:
-http://localhost:5173
-
-Backend:
-http://localhost:8000
-
-
-## Project Structure
+## Core Architecture
 
 ```text
-MetricMind/
-├── backend/
-├── frontend/
-├── mysql/
-├── datasets/
-├── python/
-├── requirements.txt
-├── README.md
-├── API.md
-└── TESTING.md
-```
-## Features
-
-- Sales Dashboard
-- Interactive Charts
-- MySQL Database
-- FastAPI Backend
-- React Frontend
-- Responsive UI
-- Sales Analysis
-## Dashboard Screenshot
-
-(Add a screenshot of the dashboard after the UI is finalized.)
-
-
-
-
-
-=======
-
-## ## Installation Guide
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd MetricMind
-```
-
-### 2. Create a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-### 3. Activate the Virtual Environment
-
-**Windows**
-
-```bash
-venv\Scripts\activate
-```
-
-**Linux/macOS**
-
-```bash
-source venv/bin/activate
-```
-
-### 4. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Configure MySQL Database
-
-- Create a MySQL database named `metricmind`.
-- Import the `metricmind.sql` file.
-- Update the database username and password in the backend configuration.
-
-### 6. Start the Backend
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### 7. Start the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 8. Open the Application
-
-Frontend:
-http://localhost:5173
-
-Backend:
-http://localhost:8000
-
-## Project Structure
-
-```text
-MetricMind/
-├── backend/
-├── frontend/
-├── mysql/
-├── datasets/
-├── python/
-├── requirements.txt
-├── README.md
-├── API.md
-└── TESTING.md
-```
-## Features
-
-- Sales Dashboard
-- Interactive Charts
-- MySQL Database
-- FastAPI Backend
-- React Frontend
-- Responsive UI
-- Sales Analysis
-
-## Dashboard Screenshot
-
-(Add a screenshot of the dashboard after the UI is finalized.)
+User Question
+      |
+      v
+Frontend / UI
+      |
+      v
+Agent / Orchestrator
+      |
+      v
+Semantic / Metric Layer
+      |
+      v
+Database
+      |
+      v
+Data Result
+      |
+      v
+Final Answer + Chart + API Trace

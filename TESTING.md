@@ -1,53 +1,103 @@
-# MetricMind Testing Report
+# MetricMind — Testing Report
 
-## Project Information
+## 1. Project Information
 
-- **Project Name:** MetricMind - Sales Analytics Dashboard
-- **Testing Type:** Manual Testing
-- **Tested By:** Prashant Bhavimani
-- **Date:** 03 August 2026
-- **Environment:** Windows 11, Google Chrome, FastAPI, React, MySQL
+| Item | Details |
+|---|---|
+| Project Name | MetricMind — Agentic Semantic BI Engine |
+| Testing Type | Manual Testing |
+| Tested By | Prashant Bhavimani |
+| Testing Environment | Windows 11 |
+| Browser | Google Chrome |
+| Backend | FastAPI |
+| Frontend | React + Vite |
+| Database | MySQL |
+| API Testing | Swagger / OpenAPI |
 
 ---
 
-# Testing Objective
+## 2. Testing Objective
 
-The objective of this testing was to verify that the frontend, backend, APIs, authentication, dashboard, reports, and analytics modules are functioning correctly and to identify any defects before deployment.
+The objective of testing was to verify the functionality, reliability, and integration of the MetricMind application.
 
----
-
-# Test Scope
-
-The following modules were tested:
+The testing covered:
 
 - Authentication
-- Dashboard
+- User registration and login
+- Profile management
+- Home APIs
+- Dashboard UI
 - Reports
 - Analytics
-- Home APIs
-- Frontend User Interface
 - Backend APIs
-- Database Connectivity
+- Database connectivity
+- Charts and UI components
+- Responsive user interface
+- API error handling
+
+The testing was also used to identify issues requiring further developer investigation before production deployment.
 
 ---
 
-# Test Environment
+## 3. Test Scope
+
+The following application areas were tested:
+
+### Authentication
+
+- User registration
+- User login
+- Access token generation
+- Protected profile access
+
+### Backend
+
+- Backend server startup
+- API availability
+- API responses
+- Error responses
+
+### Frontend
+
+- Dashboard
+- KPI cards
+- Sales chart
+- Recent transactions
+- Sidebar navigation
+- Reports
+- Analytics
+- User interface
+
+### Database
+
+- MySQL connectivity
+- Backend database interaction
+
+### Integration
+
+- Frontend-to-backend communication
+- API data retrieval
+- Dashboard data rendering
+
+---
+
+## 4. Test Environment
 
 | Component | Technology |
-|----------|------------|
+|---|---|
 | Operating System | Windows 11 |
 | Backend | FastAPI |
 | Frontend | React + Vite |
 | Database | MySQL |
-| API Testing | Swagger UI |
+| API Testing | Swagger / OpenAPI |
 | Browser | Google Chrome |
 
 ---
 
-# Test Execution Summary
+## 5. Test Execution Summary
 
 | Test Module | Result |
-|-------------|--------|
+|---|---|
 | Backend Server | PASS |
 | Frontend Server | PASS |
 | Authentication | PASS |
@@ -67,49 +117,98 @@ The following modules were tested:
 
 ---
 
-# Test Statistics
+## 6. API Test Statistics
 
-| Item | Count |
-|------|------:|
+Based on the detailed API testing performed through Swagger:
+
+| Item | Result |
+|---|---:|
 | Total APIs Tested | 14 |
-| Passed | 8 |
-| Failed | 6 |
+| Passed | 6 |
+| Failed | 8 |
+| Pass Rate | 42.86% |
+| Fail Rate | 57.14% |
 
 ---
 
-# Issues Identified
+## 7. Successful API Tests
 
-The following issues were identified during testing:
+The following APIs were successfully tested:
 
-- Home Dashboard API returns **500 Internal Server Error**
-- Reports APIs return **500 Internal Server Error**
-- Analytics APIs return **500 Internal Server Error**
+- `POST /register`
+- `POST /login`
+- `GET /profile`
+- `PUT /profile`
+- `GET /home`
+- `GET /home/health`
 
-These issues have been documented in **BUG_REPORT.md**.
-
----
-
-# Screenshots Collected
-
-The following screenshots were captured during testing:
-
-- Dashboard
-- KPI Cards
-- Sales Chart
-- Recent Transactions
-- Sidebar
-- Swagger Home
-- Register API
-- Login API
-- Profile API
-- API Error Responses
+These APIs returned the expected successful responses during testing.
 
 ---
 
-# Conclusion
+## 8. Failed API Tests
 
-Manual testing of the MetricMind application has been completed successfully.
+The following APIs returned HTTP `500 Internal Server Error`:
 
-The frontend, authentication module, and core user interface are functioning correctly. However, the Home Dashboard, Reports, and Analytics APIs are currently returning **HTTP 500 Internal Server Error** responses and require developer review before production deployment.
+- `GET /home/dashboard`
+- `GET /reports/sales`
+- `GET /reports/revenue`
+- `GET /reports/customer`
+- `GET /reports/monthly`
+- `GET /analytics`
+- `GET /analytics/sales`
+- `GET /analytics/products`
 
-**Overall Testing Status:** **Partially Passed**
+These failures require further investigation by the backend/development team.
+
+---
+
+## 9. Frontend Testing
+
+The following frontend components were manually verified:
+
+| Component | Result |
+|---|---|
+| Dashboard UI | PASS |
+| KPI Cards | PASS |
+| Sales Chart | PASS |
+| Recent Transactions | PASS |
+| Sidebar Navigation | PASS |
+| Main Dashboard Layout | PASS |
+
+The dashboard interface loaded successfully and the major visible UI components were verified during testing.
+
+---
+
+## 10. Responsive UI Testing
+
+The frontend interface was checked for basic responsive behavior using the browser environment.
+
+The following areas were reviewed:
+
+- Dashboard layout
+- Navigation/sidebar
+- KPI cards
+- Charts
+- Main content area
+
+Responsive behavior was reviewed during manual UI testing.
+
+---
+
+## 11. Database Testing
+
+Database connectivity was verified as part of backend testing.
+
+The backend successfully connected to the MySQL database during application startup and API testing.
+
+Database-related failures were not identified during the successful authentication and Home API tests.
+
+---
+
+## 12. Error Handling
+
+The failed Dashboard, Reports, and Analytics endpoints returned:
+
+```text
+500 Internal Server Error
