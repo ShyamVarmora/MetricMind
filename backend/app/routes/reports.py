@@ -4,10 +4,14 @@ from app.auth import get_current_user
 from app.models import User
 
 router = APIRouter(
-    prefix="/reports",
+    prefix="/api/reports",
     tags=["Reports"]
 )
 
+
+# =========================
+# SALES REPORT
+# =========================
 
 @router.get("/sales")
 def sales_report(
@@ -18,16 +22,11 @@ def sales_report(
 
     cursor.execute("""
         SELECT
-            d.EnglishMonthName AS month,
-            ROUND(SUM(f.SalesAmount),2) AS revenue
-        FROM factinternetsales f
-        JOIN dimdate d
-            ON f.OrderDateKey = d.DateKey
-        GROUP BY
-            d.MonthNumberOfYear,
-            d.EnglishMonthName
-        ORDER BY
-            d.MonthNumberOfYear;
+            order_date AS date,
+            ROUND(SUM(sales_amount), 2) AS sales
+        FROM factinternetsales
+        GROUP BY order_date
+        ORDER BY order_date;
     """)
 
     data = cursor.fetchall()
@@ -42,6 +41,10 @@ def sales_report(
     }
 
 
+# =========================
+# REVENUE REPORT
+# =========================
+
 @router.get("/revenue")
 def revenue_report(
     current_user: User = Depends(get_current_user)
@@ -51,7 +54,7 @@ def revenue_report(
 
     cursor.execute("""
         SELECT
-            ROUND(SUM(SalesAmount),2) AS totalRevenue
+            ROUND(SUM(sales_amount), 2) AS totalRevenue
         FROM factinternetsales;
     """)
 
@@ -67,6 +70,10 @@ def revenue_report(
     }
 
 
+# =========================
+# CUSTOMER REPORT
+# =========================
+
 @router.get("/customer")
 def customer_report(
     current_user: User = Depends(get_current_user)
@@ -76,7 +83,7 @@ def customer_report(
 
     cursor.execute("""
         SELECT
-            COUNT(DISTINCT CustomerKey) AS totalCustomers
+            COUNT(DISTINCT customer_name) AS totalCustomers
         FROM factinternetsales;
     """)
 
@@ -92,6 +99,10 @@ def customer_report(
     }
 
 
+# =========================
+# MONTHLY REPORT
+# =========================
+
 @router.get("/monthly")
 def monthly_report(
     current_user: User = Depends(get_current_user)
@@ -101,16 +112,11 @@ def monthly_report(
 
     cursor.execute("""
         SELECT
-            d.EnglishMonthName AS month,
-            ROUND(SUM(f.SalesAmount),2) AS sales
-        FROM factinternetsales f
-        JOIN dimdate d
-            ON f.OrderDateKey = d.DateKey
-        GROUP BY
-            d.MonthNumberOfYear,
-            d.EnglishMonthName
-        ORDER BY
-            d.MonthNumberOfYear;
+            DATE_FORMAT(order_date, '%Y-%m') AS month,
+            ROUND(SUM(sales_amount), 2) AS sales
+        FROM factinternetsales
+        GROUP BY DATE_FORMAT(order_date, '%Y-%m')
+        ORDER BY month;
     """)
 
     data = cursor.fetchall()

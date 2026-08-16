@@ -17,70 +17,70 @@ function Dashboard() {
 
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // =========================
-  // LOAD DASHBOARD DATA
-  // =========================
+  // ==========================================
+  // LOAD DASHBOARD DATA FROM BACKEND
+  // ==========================================
 
   useEffect(() => {
     fetchDashboard();
   }, []);
 
-  const fetchDashboard = () => {
-    setTimeout(() => {
-      setDashboardData({
-        totalSales: 250000,
-        orders: 180,
-        profit: 65000,
+  const fetchDashboard = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        salesChange: "+12%",
-        ordersChange: "+8%",
-        profitChange: "+15%",
+      // Get JWT token saved during login
+      const token = localStorage.getItem("token");
 
-        chart: [
-          { month: "Jan", sales: 4000 },
-          { month: "Feb", sales: 5000 },
-          { month: "Mar", sales: 6500 },
-          { month: "Apr", sales: 6000 },
-          { month: "May", sales: 7200 },
-          { month: "Jun", sales: 8500 },
-        ],
+      if (!token) {
+        setError("You are not logged in.");
+        return;
+      }
 
-        transactions: [
-          {
-            id: 101,
-            customer: "Rahul Sharma",
-            amount: "₹5,000",
-            status: "Completed",
+      const response = await fetch(
+        "http://localhost:8000/dashboard",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          {
-            id: 102,
-            customer: "Priya Singh",
-            amount: "₹3,200",
-            status: "Pending",
-          },
-          {
-            id: 103,
-            customer: "Aman Gupta",
-            amount: "₹8,400",
-            status: "Completed",
-          },
-          {
-            id: 104,
-            customer: "Neha Verma",
-            amount: "₹2,700",
-            status: "Cancelled",
-          },
-        ],
-      });
+        }
+      );
 
+      if (response.status === 401) {
+        setError("Session expired. Please login again.");
+        localStorage.removeItem("token");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          `Dashboard request failed: ${response.status}`
+        );
+      }
+
+      const data = await response.json();
+
+      console.log("Dashboard API response:", data);
+
+      setDashboardData(data);
+    } catch (err) {
+      console.error("Dashboard error:", err);
+      setError(
+        "Unable to load dashboard data. Please try again."
+      );
+    } finally {
       setLoading(false);
-    }, 1200);
+    }
   };
 
-  // =========================
+  // ==========================================
   // RESPONSIVE SIDEBAR
-  // =========================
+  // ==========================================
 
   useEffect(() => {
     const handleResize = () => {
@@ -94,9 +94,9 @@ function Dashboard() {
     };
   }, []);
 
-  // =========================
+  // ==========================================
   // CLOSE MOBILE SIDEBAR
-  // =========================
+  // ==========================================
 
   const closeMobileSidebar = () => {
     if (window.innerWidth <= 768) {
@@ -104,21 +104,21 @@ function Dashboard() {
     }
   };
 
-  // =========================
+  // ==========================================
   // LOADING STATE
-  // =========================
+  // ==========================================
 
   if (loading) {
     return (
       <>
-        {/* TOP HEADER */}
         <Navbar />
 
-        {/* MOBILE MENU */}
         {window.innerWidth <= 768 && (
           <button
             className="menu-btn"
-            onClick={() => setShowSidebar(!showSidebar)}
+            onClick={() =>
+              setShowSidebar(!showSidebar)
+            }
             aria-label="Toggle sidebar"
           >
             ☰
@@ -126,8 +126,6 @@ function Dashboard() {
         )}
 
         <div className="dashboard">
-
-          {/* SIDEBAR */}
           {showSidebar && (
             <Sidebar
               showSidebar={showSidebar}
@@ -135,11 +133,9 @@ function Dashboard() {
             />
           )}
 
-          {/* CONTENT */}
           <div className="dashboard-content">
             <Skeleton />
           </div>
-
         </div>
 
         <Footer />
@@ -147,41 +143,83 @@ function Dashboard() {
     );
   }
 
-  // =========================
+  // ==========================================
+  // ERROR STATE
+  // ==========================================
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+
+        {window.innerWidth <= 768 && (
+          <button
+            className="menu-btn"
+            onClick={() =>
+              setShowSidebar(!showSidebar)
+            }
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
+        )}
+
+        <div className="dashboard">
+          {showSidebar && (
+            <Sidebar
+              showSidebar={showSidebar}
+              closeSidebar={closeMobileSidebar}
+            />
+          )}
+
+          <div className="dashboard-content">
+            <div className="dashboard-error">
+              <h2>Unable to load dashboard</h2>
+
+              <p>{error}</p>
+
+              <button
+                onClick={fetchDashboard}
+                className="retry-btn"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
+
+  // ==========================================
   // MAIN DASHBOARD
-  // =========================
+  // ==========================================
 
   return (
     <>
-      {/* =========================
-          TOP HEADER
-      ========================= */}
-
       <Navbar />
 
-      {/* =========================
-          MOBILE MENU BUTTON
-      ========================= */}
+      {/* MOBILE MENU BUTTON */}
 
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
-          onClick={() => setShowSidebar(!showSidebar)}
+          onClick={() =>
+            setShowSidebar(!showSidebar)
+          }
           aria-label="Toggle sidebar"
         >
           ☰
         </button>
       )}
 
-      {/* =========================
-          DASHBOARD LAYOUT
-      ========================= */}
+      {/* DASHBOARD LAYOUT */}
 
       <div className="dashboard">
 
-        {/* =========================
-            SIDEBAR
-        ========================= */}
+        {/* SIDEBAR */}
 
         {showSidebar && (
           <Sidebar
@@ -190,55 +228,50 @@ function Dashboard() {
           />
         )}
 
-        {/* =========================
-            MAIN CONTENT
-        ========================= */}
+        {/* MAIN CONTENT */}
 
         <div className="dashboard-content">
 
-          {/* =========================
-              WELCOME BANNER
-          ========================= */}
+          {/* WELCOME BANNER */}
 
           <div className="welcome-banner">
-            <h1>Welcome to MetricMind 👋</h1>
+            <h1>
+              Welcome to MetricMind 👋
+            </h1>
+
             <p>
               Monitor your business from one dashboard.
             </p>
           </div>
 
-          {/* =========================
-              DASHBOARD CARDS
-          ========================= */}
+          {/* DASHBOARD CARDS */}
 
-          <DashboardCard data={dashboardData} />
+          <DashboardCard
+            data={dashboardData}
+          />
 
-          {/* =========================
-              SALES CHART
-          ========================= */}
+          {/* SALES CHART */}
 
           <div className="dashboard-section">
             <ChartSection
-              data={dashboardData.chart}
+              data={
+                dashboardData?.chart || []
+              }
             />
           </div>
 
-          {/* =========================
-              RECENT TRANSACTIONS
-          ========================= */}
+          {/* RECENT TRANSACTIONS */}
 
           <div className="dashboard-section">
             <RecentTransactions
-              transactions={dashboardData.transactions}
+              transactions={
+                dashboardData?.transactions || []
+              }
             />
           </div>
 
         </div>
       </div>
-
-      {/* =========================
-          FOOTER
-      ========================= */}
 
       <Footer />
     </>
