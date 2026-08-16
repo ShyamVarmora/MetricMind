@@ -12,14 +12,26 @@ import "./Dashboard.css";
 import "./Reports.css";
 
 function Reports() {
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
+
   const [showSidebar, setShowSidebar] = useState(
     window.innerWidth > 768
   );
+
+  // =========================
+  // REPORT STATES
+  // =========================
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
+
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,6 +45,10 @@ function Reports() {
     };
   }, []);
 
+  // =========================
+  // LOAD REPORT
+  // =========================
+
   const loadReport = async (type) => {
     try {
       setLoading(true);
@@ -40,6 +56,10 @@ function Reports() {
       setReportData(null);
       setSelectedReport(type);
 
+      console.log("Loading report:", type);
+
+      // IMPORTANT:
+      // Backend endpoint is /api/reports/{type}
       const response = await api.get(`/api/reports/${type}`);
 
       console.log("Report response:", response.data);
@@ -55,23 +75,26 @@ function Reports() {
     }
   };
 
+  // =========================
+  // RETRY REPORT
+  // =========================
+
   const retryReport = () => {
     if (selectedReport) {
       loadReport(selectedReport);
     }
   };
 
-  const closeSidebar = () => {
-    if (window.innerWidth <= 768) {
-      setShowSidebar(false);
-    }
-  };
+  // =========================
+  // LOADING SCREEN
+  // =========================
 
   if (loading) {
     return (
       <>
         <Navbar />
 
+        {/* Mobile menu */}
         {window.innerWidth <= 768 && (
           <button
             className="menu-btn"
@@ -86,7 +109,11 @@ function Reports() {
           {showSidebar && (
             <Sidebar
               showSidebar={showSidebar}
-              closeSidebar={closeSidebar}
+              closeSidebar={() => {
+                if (window.innerWidth <= 768) {
+                  setShowSidebar(false);
+                }
+              }}
             />
           )}
 
@@ -100,9 +127,17 @@ function Reports() {
     );
   }
 
+  // =========================
+  // MAIN PAGE
+  // =========================
+
   return (
     <>
       <Navbar />
+
+      {/* =========================
+          MOBILE MENU
+      ========================= */}
 
       {window.innerWidth <= 768 && (
         <button
@@ -114,19 +149,35 @@ function Reports() {
         </button>
       )}
 
+      {/* =========================
+          DASHBOARD LAYOUT
+      ========================= */}
+
       <div className="dashboard">
+
+        {/* =========================
+            SIDEBAR
+        ========================= */}
 
         {showSidebar && (
           <Sidebar
             showSidebar={showSidebar}
-            closeSidebar={closeSidebar}
+            closeSidebar={() => {
+              if (window.innerWidth <= 768) {
+                setShowSidebar(false);
+              }
+            }}
           />
         )}
+
+        {/* =========================
+            MAIN CONTENT
+        ========================= */}
 
         <div className="dashboard-content">
 
           {/* =========================
-              PAGE HEADER
+              WELCOME BANNER
           ========================= */}
 
           <div className="welcome-banner">
@@ -140,6 +191,7 @@ function Reports() {
 
           <div className="reports-grid">
 
+            {/* SALES */}
             <div
               className={`report-card ${
                 selectedReport === "sales"
@@ -152,6 +204,7 @@ function Reports() {
               <p>Total Sales Performance</p>
             </div>
 
+            {/* REVENUE */}
             <div
               className={`report-card ${
                 selectedReport === "revenue"
@@ -164,6 +217,7 @@ function Reports() {
               <p>Revenue Growth Analysis</p>
             </div>
 
+            {/* CUSTOMER */}
             <div
               className={`report-card ${
                 selectedReport === "customer"
@@ -176,6 +230,7 @@ function Reports() {
               <p>Customer Insights</p>
             </div>
 
+            {/* MONTHLY */}
             <div
               className={`report-card ${
                 selectedReport === "monthly"
@@ -225,7 +280,7 @@ function Reports() {
           )}
 
           {/* =========================
-              REPORT RESULT
+              REPORT RESULT / EMPTY
           ========================= */}
 
           {!error && (
@@ -242,10 +297,7 @@ function Reports() {
 
                 <div className="report-output">
 
-                  {/* HEADER */}
-
                   <div className="report-output-header">
-
                     <div>
                       <h3>📊 Report Result</h3>
 
@@ -259,172 +311,15 @@ function Reports() {
                           : "Report"}
                       </p>
                     </div>
-
                   </div>
 
-                  {/* =========================
-                      SALES REPORT
-                  ========================= */}
-
-                  {selectedReport === "sales" &&
-                    reportData.data && (
-                      <div className="report-stats">
-
-                        <div className="stat-box">
-                          <h4>Total Orders</h4>
-                          <strong>
-                            {reportData.data.total_orders}
-                          </strong>
-                        </div>
-
-                        <div className="stat-box">
-                          <h4>Total Sales</h4>
-                          <strong>
-                            ₹
-                            {Number(
-                              reportData.data.total_sales || 0
-                            ).toLocaleString()}
-                          </strong>
-                        </div>
-
-                        <div className="stat-box">
-                          <h4>Average Order Value</h4>
-                          <strong>
-                            ₹
-                            {Number(
-                              reportData.data.average_order_value || 0
-                            ).toLocaleString()}
-                          </strong>
-                        </div>
-
-                      </div>
+                  <pre>
+                    {JSON.stringify(
+                      reportData,
+                      null,
+                      2
                     )}
-
-                  {/* =========================
-                      REVENUE REPORT
-                  ========================= */}
-
-                  {selectedReport === "revenue" &&
-                    reportData.data && (
-                      <div className="report-stats">
-
-                        <div className="stat-box">
-                          <h4>Total Revenue</h4>
-                          <strong>
-                            ₹
-                            {Number(
-                              reportData.data.total_revenue || 0
-                            ).toLocaleString()}
-                          </strong>
-                        </div>
-
-                        <div className="stat-box">
-                          <h4>Average Revenue</h4>
-                          <strong>
-                            ₹
-                            {Number(
-                              reportData.data.average_revenue || 0
-                            ).toLocaleString()}
-                          </strong>
-                        </div>
-
-                      </div>
-                    )}
-
-                  {/* =========================
-                      CUSTOMER REPORT
-                  ========================= */}
-
-                  {selectedReport === "customer" &&
-                    reportData.data && (
-                      <div className="report-stats">
-
-                        <div className="stat-box">
-                          <h4>Total Customers</h4>
-                          <strong>
-                            {reportData.data.total_customers}
-                          </strong>
-                        </div>
-
-                        <div className="stat-box">
-                          <h4>Total Orders</h4>
-                          <strong>
-                            {reportData.data.total_orders}
-                          </strong>
-                        </div>
-
-                        <div className="stat-box">
-                          <h4>Average Order Value</h4>
-                          <strong>
-                            ₹
-                            {Number(
-                              reportData.data.average_order_value || 0
-                            ).toLocaleString()}
-                          </strong>
-                        </div>
-
-                      </div>
-                    )}
-
-                  {/* =========================
-                      MONTHLY REPORT
-                  ========================= */}
-
-                  {selectedReport === "monthly" &&
-                    Array.isArray(reportData.data) && (
-                      <div className="monthly-table">
-
-                        <table>
-
-                          <thead>
-                            <tr>
-                              <th>Month</th>
-                              <th>Orders</th>
-                              <th>Sales</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-
-                            {reportData.data.length > 0 ? (
-
-                              reportData.data.map((item) => (
-                                <tr key={item.month}>
-
-                                  <td>
-                                    {item.month}
-                                  </td>
-
-                                  <td>
-                                    {item.orders}
-                                  </td>
-
-                                  <td>
-                                    ₹
-                                    {Number(
-                                      item.sales || 0
-                                    ).toLocaleString()}
-                                  </td>
-
-                                </tr>
-                              ))
-
-                            ) : (
-
-                              <tr>
-                                <td colSpan="3">
-                                  No monthly data available.
-                                </td>
-                              </tr>
-
-                            )}
-
-                          </tbody>
-
-                        </table>
-
-                      </div>
-                    )}
+                  </pre>
 
                 </div>
 
@@ -435,6 +330,10 @@ function Reports() {
 
         </div>
       </div>
+
+      {/* =========================
+          FOOTER
+      ========================= */}
 
       <Footer />
     </>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import api from "../api";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -16,17 +15,19 @@ function Profile() {
   );
 
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [editing, setEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    created_at: "",
+    name: "Yoshita Chaudhary",
+    email: "yoshita@email.com",
+    phone: "+91 9876543210",
+    role: "UI Developer",
   });
+
+  // =========================
+  // RESPONSIVE SIDEBAR
+  // =========================
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,37 +36,19 @@ function Profile() {
 
     window.addEventListener("resize", handleResize);
 
-    loadProfile();
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
     };
   }, []);
 
-  const loadProfile = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await api.get("/profile");
-
-      console.log("Profile response:", response.data);
-
-      const data = response.data?.data || response.data;
-
-      setProfile({
-        name: data.name || "",
-        email: data.email || "",
-        created_at: data.created_at || "",
-      });
-    } catch (err) {
-      console.error("Profile loading error:", err);
-
-      setError("Unable to load profile information.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // =========================
+  // CLOSE MOBILE SIDEBAR
+  // =========================
 
   const closeMobileSidebar = () => {
     if (window.innerWidth <= 768) {
@@ -73,51 +56,30 @@ function Profile() {
     }
   };
 
+  // =========================
+  // INPUT CHANGE
+  // =========================
+
   const handleChange = (e) => {
     setProfile({
       ...profile,
       [e.target.name]: e.target.value,
     });
-
-    setMessage("");
-    setError("");
   };
 
-  const handleSave = async () => {
-    try {
-      setSaving(true);
-      setMessage("");
-      setError("");
+  // =========================
+  // SAVE PROFILE
+  // =========================
 
-      const response = await api.put("/profile", {
-        name: profile.name,
-      });
-
-      console.log("Profile update response:", response.data);
-
-      setEditing(false);
-      setMessage("Profile updated successfully!");
-
-      await loadProfile();
-    } catch (err) {
-      console.error("Profile update error:", err);
-
-      setError(
-        err.response?.data?.detail ||
-          "Unable to update profile. Please try again."
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
+  const handleSave = () => {
     setEditing(false);
-    setMessage("");
-    setError("");
 
-    loadProfile();
+    alert("Profile updated successfully!");
   };
+
+  // =========================
+  // LOADING
+  // =========================
 
   if (loading) {
     return (
@@ -135,6 +97,7 @@ function Profile() {
         )}
 
         <div className="dashboard">
+
           {showSidebar && (
             <Sidebar
               showSidebar={showSidebar}
@@ -145,6 +108,7 @@ function Profile() {
           <div className="dashboard-content">
             <LoadingState />
           </div>
+
         </div>
 
         <Footer />
@@ -154,7 +118,11 @@ function Profile() {
 
   return (
     <>
+      {/* TOP HEADER */}
+
       <Navbar />
+
+      {/* MOBILE MENU */}
 
       {window.innerWidth <= 768 && (
         <button
@@ -168,6 +136,8 @@ function Profile() {
 
       <div className="dashboard">
 
+        {/* SIDEBAR */}
+
         {showSidebar && (
           <Sidebar
             showSidebar={showSidebar}
@@ -175,30 +145,16 @@ function Profile() {
           />
         )}
 
+        {/* MAIN CONTENT */}
+
         <div className="dashboard-content">
 
           <div className="welcome-banner">
             <h1>👤 Profile</h1>
-            <p>Manage your profile information.</p>
+            <p>
+              Manage your profile information.
+            </p>
           </div>
-
-          {error && (
-            <div className="error-card">
-              <div className="error-icon">⚠️</div>
-
-              <p>{error}</p>
-
-              <button onClick={loadProfile}>
-                Try Again
-              </button>
-            </div>
-          )}
-
-          {message && (
-            <div className="success-message">
-              ✅ {message}
-            </div>
-          )}
 
           <div className="profile-card">
 
@@ -209,9 +165,8 @@ function Profile() {
             <input
               id="name"
               name="name"
-              type="text"
               value={profile.name}
-              disabled={!editing || saving}
+              disabled={!editing}
               onChange={handleChange}
             />
 
@@ -222,55 +177,47 @@ function Profile() {
             <input
               id="email"
               name="email"
-              type="email"
               value={profile.email}
-              disabled
+              disabled={!editing}
+              onChange={handleChange}
             />
 
-            <label htmlFor="created_at">
-              Account Created
+            <label htmlFor="phone">
+              Phone
             </label>
 
             <input
-              id="created_at"
-              type="text"
-              value={
-                profile.created_at
-                  ? new Date(
-                      profile.created_at
-                    ).toLocaleString()
-                  : "Not available"
-              }
-              disabled
+              id="phone"
+              name="phone"
+              value={profile.phone}
+              disabled={!editing}
+              onChange={handleChange}
+            />
+
+            <label htmlFor="role">
+              Role
+            </label>
+
+            <input
+              id="role"
+              name="role"
+              value={profile.role}
+              disabled={!editing}
+              onChange={handleChange}
             />
 
             <div className="profile-buttons">
 
               {!editing ? (
                 <button
-                  onClick={() => {
-                    setEditing(true);
-                    setMessage("");
-                  }}
+                  onClick={() => setEditing(true)}
                 >
                   Edit
                 </button>
               ) : (
-                <>
-                  <button
-                    onClick={handleSave}
-                    disabled={saving}
-                  >
-                    {saving ? "Saving..." : "Save"}
-                  </button>
-
-                  <button
-                    onClick={handleCancel}
-                    disabled={saving}
-                  >
-                    Cancel
-                  </button>
-                </>
+                <button onClick={handleSave}>
+                  Save
+                </button>
               )}
 
             </div>
