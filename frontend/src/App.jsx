@@ -1,30 +1,96 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
-import Analytics from "./pages/Analytics";
-import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+
+import "./App.css";
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Redirect Home */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* =========================
+            LOGIN
+        ========================= */}
+        <Route path="/login" element={<Login />} />
 
-        {/* Pages */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
+        {/* =========================
+            DASHBOARD
+        ========================= */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Invalid URL */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        {/* =========================
+            REPORTS
+        ========================= */}
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* =========================
+            PROFILE
+        ========================= */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* =========================
+            SETTINGS
+        ========================= */}
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* =========================
+            ROOT
+        ========================= */}
+        <Route
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
+
+        {/* =========================
+            INVALID ROUTE
+        ========================= */}
+        <Route
+          path="*"
+          element={<Navigate to="/login" replace />}
+        />
 
       </Routes>
     </BrowserRouter>
