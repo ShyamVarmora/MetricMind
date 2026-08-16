@@ -1,36 +1,39 @@
-# Installation Guide
+# MetricMind — Installation Guide
 
-## Prerequisites
+## 1. Overview
 
-- Python 3.11 or later
-- MySQL
-- Git
-- VS Code
+This document explains how to set up and run the MetricMind project in a local development environment.
 
-## Installation Steps
+MetricMind consists of:
 
-### 1. Clone Repository
+- React + Vite frontend
+- FastAPI backend
+- MySQL database
+- Python-based backend services
+- REST APIs documented through Swagger/OpenAPI
+
+---
+
+## 2. Prerequisites
+
+Before installing MetricMind, make sure the following software is installed:
+
+| Requirement | Recommended Version |
+|---|---|
+| Python | 3.11 or later |
+| Node.js | LTS version |
+| npm | Compatible with installed Node.js |
+| MySQL | 8.x or compatible |
+| Git | Latest stable version |
+| VS Code | Latest stable version |
+| Web Browser | Google Chrome or equivalent |
+
+---
+
+## 3. Clone the Repository
+
+Open a terminal and run:
 
 ```bash
 git clone <repository-url>
-```
-
-### 2. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Import Database
-
-Import the `metricmind.sql` file into MySQL.
-
-### 4. Run Backend
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### 5. Open Frontend
-
-Open the frontend in your web browser.
+cd MetricMind
