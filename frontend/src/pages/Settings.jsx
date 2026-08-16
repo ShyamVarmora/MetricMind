@@ -19,9 +19,6 @@ function Settings() {
     localStorage.getItem("theme") === "dark"
   );
 
-  const [notificationMessage, setNotificationMessage] =
-    useState("");
-
   // =========================
   // RESPONSIVE SIDEBAR
   // =========================
@@ -63,33 +60,6 @@ function Settings() {
   };
 
   // =========================
-  // ACCOUNT
-  // =========================
-
-  const handleAccount = () => {
-    closeMobileSidebar();
-    navigate("/profile");
-  };
-
-  // =========================
-  // NOTIFICATIONS
-  // =========================
-
-  const handleNotifications = () => {
-    setNotificationMessage(
-      "Notification settings are coming soon."
-    );
-  };
-
-  // =========================
-  // THEME
-  // =========================
-
-  const handleTheme = () => {
-    setDarkMode((previous) => !previous);
-  };
-
-  // =========================
   // LOGOUT
   // =========================
 
@@ -97,11 +67,15 @@ function Settings() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    navigate("/login", { replace: true });
+    alert("Logged out successfully!");
+
+    navigate("/login");
   };
 
   return (
     <>
+      {/* TOP HEADER */}
+
       <Navbar />
 
       {/* MOBILE MENU */}
@@ -109,9 +83,7 @@ function Settings() {
       {window.innerWidth <= 768 && (
         <button
           className="menu-btn"
-          onClick={() =>
-            setShowSidebar(!showSidebar)
-          }
+          onClick={() => setShowSidebar(!showSidebar)}
           aria-label="Toggle sidebar"
         >
           ☰
@@ -133,33 +105,12 @@ function Settings() {
 
         <div className="dashboard-content">
 
-          {/* PAGE HEADER */}
-
           <div className="welcome-banner">
             <h1>⚙️ Settings</h1>
-
             <p>
               Manage your application settings.
             </p>
           </div>
-
-          {/* NOTIFICATION MESSAGE */}
-
-          {notificationMessage && (
-            <div className="success-message">
-              🔔 {notificationMessage}
-
-              <button
-                onClick={() =>
-                  setNotificationMessage("")
-                }
-              >
-                ×
-              </button>
-            </div>
-          )}
-
-          {/* SETTINGS */}
 
           <div className="settings-grid">
 
@@ -173,7 +124,12 @@ function Settings() {
                 Manage your profile information.
               </p>
 
-              <button onClick={handleAccount}>
+              <button
+                onClick={() => {
+                  closeMobileSidebar();
+                  navigate("/profile");
+                }}
+              >
                 Manage
               </button>
 
@@ -190,7 +146,11 @@ function Settings() {
               </p>
 
               <button
-                onClick={handleNotifications}
+                onClick={() =>
+                  alert(
+                    "Notification settings coming soon."
+                  )
+                }
               >
                 Configure
               </button>
@@ -207,20 +167,15 @@ function Settings() {
                 Change the application appearance.
               </p>
 
-              <button onClick={handleTheme}>
+              <button
+                onClick={() =>
+                  setDarkMode(!darkMode)
+                }
+              >
                 {darkMode
-                  ? "☀️ Light Mode"
-                  : "🌙 Dark Mode"}
+                  ? "Light Mode"
+                  : "Dark Mode"}
               </button>
-
-              <p className="theme-status">
-                Current theme:{" "}
-                <strong>
-                  {darkMode
-                    ? "Dark"
-                    : "Light"}
-                </strong>
-              </p>
 
             </div>
 
@@ -234,9 +189,7 @@ function Settings() {
                 Sign out from your MetricMind account.
               </p>
 
-              <button
-                onClick={handleLogout}
-              >
+              <button onClick={handleLogout}>
                 Logout
               </button>
 
