@@ -14,13 +14,10 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(
-    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
-)
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
 
 def hash_password(password: str):
     return pwd_context.hash(password)
@@ -63,7 +60,6 @@ def verify_token(token: str):
 
     except JWTError:
         return None
-
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
