@@ -1,71 +1,114 @@
 # --------------------------------
-# Semantic Layer
+# Governed Semantic Layer
+# --------------------------------
+
+# --------------------------------
+# Metric Aliases
 # --------------------------------
 
 SEMANTIC_MAP = {
-    # Sales / Revenue
-    "revenue": "totalSales",
-    "sales": "totalSales",
-    "income": "totalSales",
-    "turnover": "totalSales",
 
-    # Profit
-    "profit": "profit",
-    "margin": "profit",
-    "earnings": "profit",
-
-    # Orders
-    "order": "orders",
-    "orders": "orders",
-    "purchase": "orders",
-    "purchases": "orders",
+    # Revenue / Sales
+    "revenue": "totalRevenue",
+    "sales": "totalRevenue",
+    "income": "totalRevenue",
+    "turnover": "totalRevenue",
 
     # Cost
-    "cost": "cost",
-    "costs": "cost",
+    "cost": "totalCost",
+    "costs": "totalCost",
+    "total cost": "totalCost",
 
-    # Expenses
-    "expense": "expenses",
-    "expenses": "expenses",
+    # Material Cost
+    "material cost": "materialCost",
+    "material costs": "materialCost",
 
-    # Customers
+    # Shipping Cost
+    "shipping": "shippingCost",
+    "shipping cost": "shippingCost",
+    "shipping costs": "shippingCost",
+    "freight": "shippingCost",
+
+    # Other Cost
+    "other cost": "otherCost",
+    "other costs": "otherCost",
+
+    # Margin
+    "margin": "marginPercent",
+    "margin percent": "marginPercent",
+    "margin percentage": "marginPercent",
+    "profit margin": "marginPercent",
+
+    # Transactions / Orders
+    "transaction": "transactionCount",
+    "transactions": "transactionCount",
+    "transaction count": "transactionCount",
+    "order": "transactionCount",
+    "orders": "transactionCount",
+    "purchase": "transactionCount",
+    "purchases": "transactionCount",
+
+    # Existing business terms
+    "profit": "marginPercent",
+    "earnings": "marginPercent",
+
+    # Time-based sales
+    "monthly": "totalRevenue",
+    "monthly sales": "totalRevenue",
+    "monthly revenue": "totalRevenue",
+
+    "quarterly": "totalRevenue",
+    "quarterly sales": "totalRevenue",
+    "quarterly revenue": "totalRevenue",
+
+    "yearly": "totalRevenue",
+    "yearly sales": "totalRevenue",
+    "yearly revenue": "totalRevenue",
+
+    # Customers / Products
     "customer": "customers",
     "customers": "customers",
     "client": "customers",
     "clients": "customers",
 
-    # Products
     "product": "products",
     "products": "products",
     "item": "products",
     "items": "products",
+}
 
-    # Regions
-    "region": "regions",
-    "regions": "regions",
-    "area": "regions",
-    "areas": "regions",
 
-    # Categories
-    "category": "categories",
-    "categories": "categories",
-    "type": "categories",
+# --------------------------------
+# Governed Metrics
+# --------------------------------
 
-    # Time
-    "monthly": "monthlySales",
-    "month": "monthlySales",
+GOVERNED_METRICS = {
+    "totalRevenue",
+    "totalCost",
+    "materialCost",
+    "shippingCost",
+    "otherCost",
+    "marginPercent",
+    "transactionCount",
 
-    "quarterly": "quarterlySales",
-    "quarter": "quarterlySales",
+    # Existing backend metrics
+    "customers",
+    "products",
+}
 
-    "yearly": "yearlySales",
-    "year": "yearlySales",
 
-    # Growth
-    "growth": "growth",
+# --------------------------------
+# Governed Dimensions
+# --------------------------------
 
-    # Average
-    "average": "average"
+GOVERNED_DIMENSIONS = {
+    "quarter",
+    "year",
+    "quarterNum",
+    "region",
+    "country",
+    "productName",
+    "category",
 }
 
 
@@ -74,20 +117,16 @@ SEMANTIC_MAP = {
 # --------------------------------
 
 API_ROUTES = {
-    "totalSales": "/dashboard",
-    "profit": "/dashboard",
-    "orders": "/dashboard",
-    "cost": "/analytics",
-    "expenses": "/analytics",
+    "totalRevenue": "/dashboard",
+    "totalCost": "/analytics",
+    "materialCost": "/analytics",
+    "shippingCost": "/analytics",
+    "otherCost": "/analytics",
+    "marginPercent": "/dashboard",
+    "transactionCount": "/dashboard",
+
     "customers": "/reports/customer",
     "products": "/analytics/products",
-    "regions": "/analytics",
-    "categories": "/analytics",
-    "monthlySales": "/dashboard",
-    "quarterlySales": "/analytics/monthly",
-    "yearlySales": "/analytics/monthly",
-    "growth": "/analytics/monthly",
-    "average": "/analytics"
 }
 
 
@@ -96,43 +135,17 @@ API_ROUTES = {
 # --------------------------------
 
 CHART_TYPES = {
-    "totalSales": "bar",
-    "profit": "line",
-    "orders": "bar",
-    "cost": "bar",
-    "expenses": "bar",
+    "totalRevenue": "bar",
+    "totalCost": "bar",
+    "materialCost": "bar",
+    "shippingCost": "bar",
+    "otherCost": "bar",
+    "marginPercent": "line",
+    "transactionCount": "bar",
+
     "customers": "pie",
     "products": "bar",
-    "regions": "bar",
-    "categories": "pie",
-    "monthlySales": "line",
-    "quarterlySales": "line",
-    "yearlySales": "line",
-    "growth": "line",
-    "average": "bar"
 }
-
-
-# --------------------------------
-# Allowed Metric Catalog
-# --------------------------------
-
-ALLOWED_METRICS = set(API_ROUTES.keys())
-
-
-def get_allowed_metrics():
-    """
-    Return the metrics that the agent is allowed to request.
-    The agent must not invent metrics outside this catalog.
-    """
-    return sorted(ALLOWED_METRICS)
-
-
-def is_allowed_metric(metric: str) -> bool:
-    """
-    Check whether a metric exists in the governed metric catalog.
-    """
-    return metric in ALLOWED_METRICS
 
 
 # --------------------------------
@@ -141,28 +154,26 @@ def is_allowed_metric(metric: str) -> bool:
 
 def get_metric(question: str):
     """
-    Detect the most specific metric from a question.
-
-    Specific phrases are checked before generic keywords
-    such as 'sales'.
+    Detect the first supported metric
+    from a natural-language question.
     """
+
+    if not question:
+        return None
 
     question = question.lower().strip()
 
-    # Specific time-based phrases first
-    if "monthly sales" in question or "monthly revenue" in question:
-        return "monthlySales"
+    # Check longer phrases first
+    keywords = sorted(
+        SEMANTIC_MAP.keys(),
+        key=len,
+        reverse=True
+    )
 
-    if "quarterly sales" in question or "quarterly revenue" in question:
-        return "quarterlySales"
+    for keyword in keywords:
 
-    if "yearly sales" in question or "yearly revenue" in question:
-        return "yearlySales"
-
-    # Then check normal semantic mappings
-    for keyword, metric in SEMANTIC_MAP.items():
         if keyword in question:
-            return metric
+            return SEMANTIC_MAP[keyword]
 
     return None
 
@@ -173,44 +184,80 @@ def get_metric(question: str):
 
 def get_metrics(question: str):
     """
-    Detect all relevant metrics from a question
-    while avoiding generic matches when a more
-    specific metric is already detected.
+    Detect all supported metrics.
     """
+
+    if not question:
+        return []
 
     question = question.lower().strip()
 
     metrics = []
 
-    # Specific time-based phrases
-    if "monthly sales" in question or "monthly revenue" in question:
-        metrics.append("monthlySales")
+    keywords = sorted(
+        SEMANTIC_MAP.keys(),
+        key=len,
+        reverse=True
+    )
 
-    if "quarterly sales" in question or "quarterly revenue" in question:
-        metrics.append("quarterlySales")
+    for keyword in keywords:
 
-    if "yearly sales" in question or "yearly revenue" in question:
-        metrics.append("yearlySales")
-
-    # Check remaining semantic mappings
-    for keyword, metric in SEMANTIC_MAP.items():
-
-        # Avoid adding totalSales when a time-based
-        # sales metric was already detected.
-        if metric == "totalSales" and any(
-            time_metric in metrics
-            for time_metric in [
-                "monthlySales",
-                "quarterlySales",
-                "yearlySales"
-            ]
-        ):
-            continue
+        metric = SEMANTIC_MAP[keyword]
 
         if keyword in question and metric not in metrics:
             metrics.append(metric)
 
     return metrics
+
+
+# --------------------------------
+# Metric Validation
+# --------------------------------
+
+def is_allowed_metric(metric: str) -> bool:
+    """
+    Check whether a metric belongs
+    to the governed metric catalog.
+    """
+
+    return metric in GOVERNED_METRICS
+
+
+# --------------------------------
+# Dimension Validation
+# --------------------------------
+
+def is_allowed_dimension(dimension: str) -> bool:
+    """
+    Check whether a dimension belongs
+    to the governed dimension catalog.
+    """
+
+    return dimension in GOVERNED_DIMENSIONS
+
+
+# --------------------------------
+# Get Allowed Metrics
+# --------------------------------
+
+def get_allowed_metrics():
+    """
+    Return all governed metrics.
+    """
+
+    return sorted(GOVERNED_METRICS)
+
+
+# --------------------------------
+# Get Allowed Dimensions
+# --------------------------------
+
+def get_allowed_dimensions():
+    """
+    Return all governed dimensions.
+    """
+
+    return sorted(GOVERNED_DIMENSIONS)
 
 
 # --------------------------------
