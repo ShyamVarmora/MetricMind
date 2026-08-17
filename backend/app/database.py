@@ -1,51 +1,30 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
-import mysql.connector
 import os
 from urllib.parse import quote_plus
 
+import mysql.connector
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Load environment variables
+
 load_dotenv()
 
-# Read database credentials
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
+DB_PORT = int(os.getenv("DB_PORT", "3306"))
 DB_NAME = os.getenv("DB_NAME", "metricmind")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-DB_PASSWORD = quote_plus(DB_PASSWORD)
-print("DB_HOST =", DB_HOST)
-print("DB_PORT =", DB_PORT)
-print("DB_NAME =", DB_NAME)
-print("DB_USER =", DB_USER)
-print("DB_PASSWORD =", DB_PASSWORD)
-# SQLAlchemy connection URL
+
 DATABASE_URL = (
-    f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    f"mysql+mysqlconnector://{DB_USER}:{quote_plus(DB_PASSWORD)}@"
+    f"{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-print("DATABASE_URL =", DATABASE_URL)
-
-# Create SQLAlchemy engine
-engine = create_engine(
-    DATABASE_URL,
-    echo=True
-)
-
-# Session factory
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
-
-# Base class for models
+engine = create_engine(DATABASE_URL, echo=False)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-# Dependency for FastAPI
 def get_db():
     db = SessionLocal()
     try:
@@ -54,12 +33,11 @@ def get_db():
         db.close()
 
 
-# Legacy MySQL connection (used by /sales and /dashboard)
 def get_connection():
     return mysql.connector.connect(
         host=DB_HOST,
-        port=int(DB_PORT),
+        port=DB_PORT,
         user=DB_USER,
         password=DB_PASSWORD,
-        database=DB_NAME
+        database=DB_NAME,
     )

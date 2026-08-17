@@ -1,32 +1,14 @@
 import "./SqlModal.css";
 
-function SqlModal({ open, onClose }) {
+function SqlModal({ open, onClose, sql = "" }) {
   if (!open) return null;
-
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-
-        <h2>SQL Query</h2>
-
-        <pre>
-{`SELECT
-    month,
-    SUM(total_sales) AS total_sales,
-    SUM(profit) AS profit,
-    COUNT(order_id) AS orders
-FROM sales
-GROUP BY month
-ORDER BY month;`}
-        </pre>
-
-        <button
-          className="close-btn"
-          onClick={onClose}
-        >
-          Close
-        </button>
-
+    <div className="modal-overlay" onMouseDown={onClose}>
+      <div className="modal" onMouseDown={(event) => event.stopPropagation()}>
+        <h2>SQL Transparency</h2>
+        <p>The chat layer does not generate SQL. Database queries remain inside the trusted backend data service.</p>
+        <pre>{sql || "No SQL trace was returned."}</pre>
+        <button className="close-btn" onClick={onClose}>Close</button>
       </div>
     </div>
   );

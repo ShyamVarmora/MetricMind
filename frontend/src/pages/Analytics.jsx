@@ -1,432 +1,153 @@
-import { useState, useEffect } from "react";
-
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
-
 import LoadingState from "../components/LoadingState";
-import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
-
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
-
+import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import "./Dashboard.css";
 import "./Analytics.css";
 
-const salesData = [
-  { month: "Jan", sales: 4000, revenue: 2400 },
-  { month: "Feb", sales: 3000, revenue: 1800 },
-  { month: "Mar", sales: 5000, revenue: 3200 },
-  { month: "Apr", sales: 4200, revenue: 2800 },
-  { month: "May", sales: 6100, revenue: 4500 },
-];
-
-const customerData = [
-  { name: "New", value: 55 },
-  { name: "Returning", value: 45 },
-];
-
-const COLORS = ["#2563EB", "#22C55E"];
+const categories = ["All Categories", "Sales", "Revenue", "Customers", "Products"];
+const money = (value) => `₹${Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
 
 function Analytics() {
-  const [showSidebar, setShowSidebar] = useState(
-    window.innerWidth > 768
-  );
-
+  const navigate = useNavigate();
+  const [showSidebar, setShowSidebar] = useState(window.innerWidth > 768);
+  const [category, setCategory] = useState("All Categories");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const [error] = useState(false);
-
-  const [data] = useState(salesData);
-
-  // =========================
-  // RESPONSIVE SIDEBAR
-  // =========================
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const handleResize = () => {
-      setShowSidebar(window.innerWidth > 768);
-    };
-
+    const handleResize = () => setShowSidebar(window.innerWidth > 768);
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // =========================
-  // LOADING
-  // =========================
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const params = { category };
+      if (startDate) params.start_date = startDate;
+      if (endDate) params.end_date = endDate;
+      const response = await api.get("/analytics/overview", { params });
+      if (!response.data?.success) throw new Error(response.data?.message || "Analytics request failed.");
+      setData(response.data.data || null);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login", { replace: true });
+        return;
+      }
+      setData(null);
+      setError(err.response?.data?.detail || err.message || "Unable to load analytics data.");
+    } finally {
       setLoading(false);
-    }, 1200);
+    }
+  }, [category, startDate, endDate, navigate]);
 
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => { loadData(); }, [loadData]);
 
-  // =========================
-  // LOADING STATE
-  // =========================
+  const series = data?.series || [];
+  const chartKey = category === "Customers" ? "customers" : category === "Products" ? "products" : "sales";
+  const topProducts = useMemo(() => data?.products || [], [data]);
+  const breakdown = data?.breakdown || [];
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
+  const closeSidebar = () => {
+    if (window.innerWidth <= 768) setShowSidebar(false);
+  };
 
-        {window.innerWidth <= 768 && (
-          <button
-            className="menu-btn"
-            onClick={() => setShowSidebar(!showSidebar)}
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
-        )}
-
-        <div className="dashboard">
-          {showSidebar && (
-            <Sidebar
-              showSidebar={showSidebar}
-              closeSidebar={() => {
-                if (window.innerWidth <= 768) {
-                  setShowSidebar(false);
-                }
-              }}
-            />
-          )}
-
-          <div className="dashboard-content">
-            <LoadingState />
-          </div>
-        </div>
-
-        <Footer />
-      </>
-    );
-  }
-
-  // =========================
-  // ERROR STATE
-  // =========================
-
-  if (error) {
-    return (
-      <>
-        <Navbar />
-
-        {window.innerWidth <= 768 && (
-          <button
-            className="menu-btn"
-            onClick={() => setShowSidebar(!showSidebar)}
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
-        )}
-
-        <div className="dashboard">
-          {showSidebar && (
-            <Sidebar
-              showSidebar={showSidebar}
-              closeSidebar={() => {
-                if (window.innerWidth <= 768) {
-                  setShowSidebar(false);
-                }
-              }}
-            />
-          )}
-
-          <div className="dashboard-content">
-            <ErrorState message="Unable to load analytics data." />
-          </div>
-        </div>
-
-        <Footer />
-      </>
-    );
-  }
-
-  // =========================
-  // EMPTY STATE
-  // =========================
-
-  if (data.length === 0) {
-    return (
-      <>
-        <Navbar />
-
-        {window.innerWidth <= 768 && (
-          <button
-            className="menu-btn"
-            onClick={() => setShowSidebar(!showSidebar)}
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
-        )}
-
-        <div className="dashboard">
-          {showSidebar && (
-            <Sidebar
-              showSidebar={showSidebar}
-              closeSidebar={() => {
-                if (window.innerWidth <= 768) {
-                  setShowSidebar(false);
-                }
-              }}
-            />
-          )}
-
-          <div className="dashboard-content">
-            <EmptyState
-              title="No Analytics Data"
-              message="Analytics data will appear here."
-            />
-          </div>
-        </div>
-
-        <Footer />
-      </>
-    );
-  }
-
-  // =========================
-  // MAIN ANALYTICS PAGE
-  // =========================
+  const clearFilters = () => {
+    setCategory("All Categories");
+    setStartDate("");
+    setEndDate("");
+  };
 
   return (
     <>
-      {/* TOP HEADER */}
       <Navbar />
-
-      {/* MOBILE MENU BUTTON */}
-      {window.innerWidth <= 768 && (
-        <button
-          className="menu-btn"
-          onClick={() => setShowSidebar(!showSidebar)}
-          aria-label="Toggle sidebar"
-        >
-          ☰
-        </button>
-      )}
-
+      {window.innerWidth <= 768 && <button className="menu-btn" onClick={() => setShowSidebar(!showSidebar)} aria-label="Toggle sidebar">☰</button>}
       <div className="dashboard">
-
-        {/* SIDEBAR */}
-        {showSidebar && (
-          <Sidebar
-            showSidebar={showSidebar}
-            closeSidebar={() => {
-              if (window.innerWidth <= 768) {
-                setShowSidebar(false);
-              }
-            }}
-          />
-        )}
-
-        {/* MAIN CONTENT */}
+        {showSidebar && <Sidebar showSidebar={showSidebar} closeSidebar={closeSidebar} />}
         <div className="dashboard-content">
-
-          {/* WELCOME BANNER */}
           <div className="welcome-banner">
             <h1>📊 Analytics Dashboard</h1>
-            <p>Business Performance Overview</p>
+            <p>Filter the real database by date range and category.</p>
           </div>
 
-          {/* FILTER BAR */}
           <div className="analytics-topbar">
-
-            <input
-              type="date"
-              aria-label="Select date"
-            />
-
-            <select defaultValue="All Categories">
-              <option>All Categories</option>
-              <option>Sales</option>
-              <option>Revenue</option>
-              <option>Customers</option>
-              <option>Products</option>
-            </select>
-
+            <label>From <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></label>
+            <label>To <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></label>
+            <label>Category
+              <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                {categories.map((item) => <option key={item}>{item}</option>)}
+              </select>
+            </label>
+            <button className="retry-btn" onClick={clearFilters}>Clear Filters</button>
           </div>
 
-          {/* STAT CARDS */}
-          <div className="analytics-cards">
+          {loading ? <LoadingState /> : error ? <ErrorState message={error} onRetry={loadData} /> : !data ? <ErrorState message="No analytics data is available." onRetry={loadData} /> : (
+            <>
+              <div className="analytics-cards">
+                <div className="analytics-stat-card"><h3>Total Sales</h3><h1>{money(data.total_sales)}</h1></div>
+                <div className="analytics-stat-card"><h3>Orders</h3><h1>{Number(data.total_orders || 0).toLocaleString("en-IN")}</h1></div>
+                <div className="analytics-stat-card"><h3>Customers</h3><h1>{Number(data.total_customers || 0).toLocaleString("en-IN")}</h1></div>
+                <div className="analytics-stat-card"><h3>Products</h3><h1>{Number(data.total_products || 0).toLocaleString("en-IN")}</h1></div>
+              </div>
 
-            <div className="analytics-stat-card">
-              <h3>Total Sales</h3>
-              <h1>₹1,25,000</h1>
-            </div>
+              <div className="analytics-grid">
+                <div className="analytics-card">
+                  <h2>{category === "Customers" ? "Customers by Month" : category === "Products" ? "Products by Month" : "Sales by Month"}</h2>
+                  <ResponsiveContainer width="100%" height={280}>
+                    <LineChart data={series}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey={chartKey} name={category === "Customers" ? "Customers" : category === "Products" ? "Products" : "Sales"} stroke="#2563EB" strokeWidth={3} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
 
-            <div className="analytics-stat-card">
-              <h3>Revenue</h3>
-              <h1>₹82,000</h1>
-            </div>
+                <div className="analytics-card">
+                  <h2>Top Products</h2>
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={topProducts.slice(0, 8)} layout="vertical" margin={{ left: 20, right: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis type="category" dataKey="product" width={130} />
+                      <Tooltip />
+                      <Bar dataKey="sales" name="Sales" fill="#2563EB" radius={[0, 6, 6, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
 
-            <div className="analytics-stat-card">
-              <h3>Customers</h3>
-              <h1>845</h1>
-            </div>
-
-            <div className="analytics-stat-card">
-              <h3>Products</h3>
-              <h1>230</h1>
-            </div>
-
-          </div>
-
-          {/* CHARTS */}
-          <div className="analytics-grid">
-
-            {/* SALES */}
-            <div className="analytics-card">
-              <h2>Sales Chart</h2>
-
-              <ResponsiveContainer
-                width="100%"
-                height={250}
-              >
-                <BarChart data={salesData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-
-                  <XAxis dataKey="month" />
-
-                  <YAxis />
-
-                  <Tooltip />
-
-                  <Legend />
-
-                  <Bar
-                    dataKey="sales"
-                    name="Sales"
-                    fill="#2563EB"
-                    radius={[6, 6, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* REVENUE */}
-            <div className="analytics-card">
-              <h2>Revenue Chart</h2>
-
-              <ResponsiveContainer
-                width="100%"
-                height={250}
-              >
-                <LineChart data={salesData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-
-                  <XAxis dataKey="month" />
-
-                  <YAxis />
-
-                  <Tooltip />
-
-                  <Legend />
-
-                  <Line
-                    type="monotone"
-                    dataKey="revenue"
-                    name="Revenue"
-                    stroke="#22C55E"
-                    strokeWidth={4}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* CUSTOMERS */}
-            <div className="analytics-card">
-              <h2>Customer Chart</h2>
-
-              <ResponsiveContainer
-                width="100%"
-                height={250}
-              >
-                <PieChart>
-
-                  <Pie
-                    data={customerData}
-                    dataKey="value"
-                    nameKey="name"
-                    outerRadius={80}
-                    label
-                  >
-                    {customerData.map(
-                      (entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index]}
-                        />
-                      )
-                    )}
-                  </Pie>
-
-                  <Tooltip />
-
-                  <Legend />
-
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* PRODUCTS */}
-            <div className="analytics-card">
-              <h2>Product Chart</h2>
-
-              <ResponsiveContainer
-                width="100%"
-                height={250}
-              >
-                <BarChart data={salesData}>
-
-                  <CartesianGrid strokeDasharray="3 3" />
-
-                  <XAxis dataKey="month" />
-
-                  <YAxis />
-
-                  <Tooltip />
-
-                  <Legend />
-
-                  <Bar
-                    dataKey="revenue"
-                    name="Products"
-                    fill="#F59E0B"
-                    radius={[6, 6, 0, 0]}
-                  />
-
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-          </div>
-
+              <div className="analytics-card analytics-breakdown-card">
+                <div className="analytics-breakdown-header">
+                  <div><h2>{data.breakdown_title || "Category Breakdown"}</h2><p>Results use the selected date range and category.</p></div>
+                  <span className="analytics-filter-summary">{startDate || "Earliest"} → {endDate || "Latest"}</span>
+                </div>
+                {breakdown.length === 0 ? <p className="analytics-empty">No matching records were found.</p> : (
+                  <div className="analytics-breakdown-table-wrap">
+                    <table className="analytics-breakdown-table">
+                      <thead><tr><th>#</th><th>Name</th><th>Value</th></tr></thead>
+                      <tbody>{breakdown.map((item, index) => <tr key={`${item.label}-${index}`}><td>{index + 1}</td><td>{item.label}</td><td>{category === "Customers" ? Number(item.value).toLocaleString("en-IN") : money(item.value)}</td></tr>)}</tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
-
       <Footer />
     </>
   );

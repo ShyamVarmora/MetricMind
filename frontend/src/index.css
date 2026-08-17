@@ -1,246 +1,101 @@
-/* ===========================
-   Global Reset
-=========================== */
-
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ===========================
-   Root
-=========================== */
-
-html,
-body,
-#root {
-  width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
-  font-family: "Inter", "Segoe UI", sans-serif;
+:root {
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  color: #111827;
   background: #f5f7fb;
-  color: #1f2937;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --page: #f5f7fb;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --text: #111827;
+  --text-soft: #374151;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --shadow: rgba(15, 23, 42, .08);
+  --shadow-strong: rgba(15, 23, 42, .18);
 }
 
-/* ===========================
-   Body
-=========================== */
-
-body {
-  line-height: 1.5;
+:root[data-theme="dark"] {
+  --page: #0f172a;
+  --surface: #111827;
+  --surface-muted: #1f2937;
+  --text: #f8fafc;
+  --text-soft: #e5e7eb;
+  --muted: #9ca3af;
+  --border: #334155;
+  --primary: #60a5fa;
+  --shadow: rgba(0, 0, 0, .25);
+  --shadow-strong: rgba(0, 0, 0, .45);
 }
 
-/* ===========================
-   Links
-=========================== */
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; min-height: 100%; margin: 0; }
+body { min-height: 100vh; overflow-x: hidden; background: var(--page); color: var(--text); line-height: 1.5; transition: background .2s ease, color .2s ease; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { border: 0; outline: 0; cursor: pointer; font: inherit; transition: all .2s ease; }
+button:hover { transform: translateY(-1px); }
+button:disabled { cursor: not-allowed; opacity: .6; transform: none; }
+input, select, textarea { font: inherit; outline: none; background: var(--surface); color: var(--text); border-color: var(--border); }
+h1 { font-size: 32px; font-weight: 700; }
+h2 { font-size: 24px; font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; }
+p { font-size: 15px; color: var(--muted); }
 
-a {
-  text-decoration: none;
-  color: inherit;
+.card, .dashboard-card, .analytics-card, .report-card, .profile-card, .chart-container,
+.transactions-card, .setting-card, .chat-container, .ai-result-card, .report-output,
+.analytics-stat-card, .error-card, .empty-state, .modal, .state-container {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
 }
 
-/* ===========================
-   Images
-=========================== */
+.dashboard-content h1, .dashboard-content h2, .dashboard-content h3, .dashboard-content h4,
+.dashboard-content h5, .dashboard-content h6 { color: var(--text) !important; }
+.dashboard-content p, .dashboard-content label { color: var(--muted) !important; }
+.dashboard-content table, .dashboard-content td, .dashboard-content th { color: var(--text) !important; }
+.dashboard-content .card h1, .dashboard-content .card h2, .dashboard-content .card h3,
+.dashboard-content .card p { color: rgba(255,255,255,.92) !important; }
 
-img {
-  max-width: 100%;
-  display: block;
-}
+:root[data-theme="dark"] .report-card,
+:root[data-theme="dark"] .report-output,
+:root[data-theme="dark"] .analytics-card,
+:root[data-theme="dark"] .analytics-stat-card,
+:root[data-theme="dark"] .chart-container,
+:root[data-theme="dark"] .transactions-card,
+:root[data-theme="dark"] .chat-container,
+:root[data-theme="dark"] .ai-result-card,
+:root[data-theme="dark"] .result-box,
+:root[data-theme="dark"] .modal,
+:root[data-theme="dark"] .state-container,
+:root[data-theme="dark"] .setting-card,
+:root[data-theme="dark"] .profile-card { background: var(--surface) !important; color: var(--text) !important; border-color: var(--border) !important; }
 
-/* ===========================
-   Buttons
-=========================== */
+:root[data-theme="dark"] .report-card h2,
+:root[data-theme="dark"] .report-output h3,
+:root[data-theme="dark"] .result-box strong,
+:root[data-theme="dark"] .modal h2,
+:root[data-theme="dark"] .modal h4,
+:root[data-theme="dark"] .setting-card h2,
+:root[data-theme="dark"] .profile-card h2 { color: var(--text) !important; }
 
-button {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.25s ease;
-}
+:root[data-theme="dark"] .report-card p,
+:root[data-theme="dark"] .report-output-header p,
+:root[data-theme="dark"] .setting-card p,
+:root[data-theme="dark"] .profile-card p { color: var(--muted) !important; }
 
-button:hover {
-  transform: translateY(-2px);
-}
+:root[data-theme="dark"] .analytics-topbar,
+:root[data-theme="dark"] .analytics-breakdown-table th,
+:root[data-theme="dark"] .analytics-breakdown-table td { background: var(--surface) !important; color: var(--text) !important; border-color: var(--border) !important; }
+:root[data-theme="dark"] .analytics-topbar input,
+:root[data-theme="dark"] .analytics-topbar select,
+:root[data-theme="dark"] .chat-input-area input { background: var(--surface-muted) !important; color: var(--text) !important; border-color: var(--border) !important; }
+:root[data-theme="dark"] .analytics-filter-summary { background: var(--surface-muted) !important; color: var(--text-soft) !important; }
 
-/* ===========================
-   Inputs
-=========================== */
+body.dark, body.dark #root { background: var(--page); color: var(--text); }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #64748b; border-radius: 10px; }
 
-input,
-select,
-textarea {
-  font-family: inherit;
-  outline: none;
-}
-
-/* ===========================
-   Headings
-=========================== */
-
-h1 {
-  font-size: 32px;
-  font-weight: 700;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-h3 {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-p {
-  font-size: 15px;
-  color: #6b7280;
-}
-
-/* ===========================
-   Scrollbar
-=========================== */
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* ===========================
-   Responsive Typography
-=========================== */
-
-@media (max-width: 768px) {
-
-  h1 {
-    font-size: 26px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  h3 {
-    font-size: 17px;
-  }
-
-  p {
-    font-size: 14px;
-  }
-
-}
-
-@media (max-width: 480px) {
-
-  h1 {
-    font-size: 22px;
-  }
-
-  h2 {
-    font-size: 18px;
-  }
-
-}
-/* ===========================
-   Global Text Colors
-=========================== */
-
-body {
-  background: #f5f7fb;
-  color: #111827;
-}
-
-/* White cards */
-.card,
-.dashboard-card,
-.analytics-card,
-.report-card,
-.profile-card,
-.chart-container,
-.transactions-container {
-  color: #111827;
-}
-
-.card h1,
-.card h2,
-.card h3,
-.dashboard-card h1,
-.dashboard-card h2,
-.dashboard-card h3,
-.analytics-card h1,
-.analytics-card h2,
-.analytics-card h3,
-.report-card h1,
-.report-card h2,
-.report-card h3,
-.profile-card h1,
-.profile-card h2,
-.profile-card h3 {
-  color: #111827;
-}
-
-.card p,
-.dashboard-card p,
-.analytics-card p,
-.report-card p,
-.profile-card p {
-  color: #4b5563;
-}
-
-/* Tables */
-table,
-th,
-td {
-  color: #111827;
-}
-
-thead {
-  color: #111827;
-}
-
-tbody {
-  color: #374151;
-}
-/* ===========================
-   Force Text Visibility
-=========================== */
-
-.dashboard-content h1,
-.dashboard-content h2,
-.dashboard-content h3,
-.dashboard-content h4,
-.dashboard-content h5,
-.dashboard-content h6{
-    color:#111827 !important;
-}
-
-.dashboard-content p{
-    color:#4b5563 !important;
-}
-
-.dashboard-content label{
-    color:#374151 !important;
-}
-
-.dashboard-content span{
-    color:inherit;
-}
-
-.dashboard-content table,
-.dashboard-content td,
-.dashboard-content th{
-    color:#111827 !important;
-}
+@media (max-width: 768px) { h1 { font-size: 26px; } h2 { font-size: 20px; } h3 { font-size: 17px; } p { font-size: 14px; } }
+@media (max-width: 480px) { h1 { font-size: 22px; } h2 { font-size: 18px; } }

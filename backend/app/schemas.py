@@ -1,10 +1,6 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Any, Optional
 
-
-# -----------------------------
-# User Schemas
-# -----------------------------
 
 class UserCreate(BaseModel):
     name: str
@@ -31,10 +27,6 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
-# -----------------------------
-# Authentication Schemas
-# -----------------------------
-
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -44,35 +36,28 @@ class TokenData(BaseModel):
     email: Optional[str] = None
 
 
-# -----------------------------
-# AI Ask Schemas
-# -----------------------------
-
 class AskRequest(BaseModel):
     question: str
 
     class Config:
-        json_schema_extra = {
-            "example": {
-                "question": "What is the total revenue?"
-            }
-        }
+        json_schema_extra = {"example": {"question": "What is the total revenue?"}}
 
 
 class ApiTrace(BaseModel):
     endpoint: str
     metric: str
     operation: str
+    group_by: Optional[str] = None
 
 
 class AskResponseData(BaseModel):
     answer: str
-
-    # Can contain either normal metric results
-    # or structured multi-step analysis results.
     data: dict | list[dict]
-
     api_trace: list[ApiTrace]
+    query: dict[str, Any] = {}
+    sql: Optional[str] = None
+    params: list[Any] = []
+    reasoning_steps: list[str] = []
 
 
 class AskResponse(BaseModel):
@@ -80,38 +65,7 @@ class AskResponse(BaseModel):
     message: str
     data: AskResponseData | None = None
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "success": True,
-                "message": "Question processed successfully",
-                "data": {
-                    "answer": "The total revenue is 29,358,677.22.",
-                    "data": [
-                        {
-                            "total_sales": 29358677.22
-                        }
-                    ],
-                    "api_trace": [
-                        {
-                            "endpoint": "/dashboard",
-                            "metric": "totalSales",
-                            "operation": "database_query"
-                        }
-                    ]
-                }
-            }
-        }
-
 
 class ErrorResponse(BaseModel):
     success: bool
     message: str
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "success": False,
-                "message": "Unable to identify a supported metric."
-            }
-        }

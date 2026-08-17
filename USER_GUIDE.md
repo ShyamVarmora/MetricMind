@@ -1,36 +1,97 @@
-# MetricMind — User Guide
+# MetricMind User Guide
 
-## 1. Overview
+## Dashboard
 
-MetricMind is an Agentic Semantic Business Intelligence platform designed to help users understand business performance through dashboards, reports, analytics, charts, and natural-language interaction.
+The Dashboard summarizes the current business data with:
 
-The application provides a user-friendly interface for viewing business metrics and interacting with analytics functionality.
+- Total Sales
+- Orders
+- Profit
+- Month-over-month percentage indicators
+- Monthly sales chart
+- Recent transactions
 
----
+## Reports
 
-## 2. Main Features
+Open **Reports** and select:
 
-MetricMind provides the following major features:
+- Sales Report
+- Revenue Report
+- Customer Report
+- Monthly Report
 
-- User registration and login
-- Protected user profile
-- Business dashboard
-- KPI cards
-- Sales charts
-- Reports
-- Analytics
-- Natural-language business interaction
-- API trace and backend integration
-- Responsive user interface
+The report result area updates after selecting a report.
 
----
+## Analytics
 
-## 3. Starting the Application
+Open **Analytics** to filter the database by:
 
-Before using MetricMind, make sure both the backend and frontend servers are running.
+- From date
+- To date
+- Category
 
-### Backend
+Available categories are Sales, Revenue, Customers and Products. The page displays KPI summaries, a monthly chart, top products and a category/country/product breakdown.
 
-```bash
-cd backend
-uvicorn app.main:app --reload
+Use **Clear Filters** to restore the default view.
+
+## Chat / Ask AI
+
+The Chat page accepts natural-language business questions. Do not type SQL.
+
+### Basic questions
+
+```text
+Hello
+Q3 Revenue
+Show European sales
+Show sales by country
+Top products by sales
+What is the average order value?
+```
+
+### Why-analysis questions
+
+```text
+Why did sales go up?
+Why did European sales increase in Q3?
+Why did our European margins drop last quarter?
+```
+
+A sales-increase question compares the relevant periods and automatically drills down by geography and product. A European margin-drop question compares quarters and performs a secondary cost breakdown using product cost and shipping data.
+
+The answer card can display:
+
+- Answer
+- Reasoning path
+- Visual result
+- Returned data
+- Governance trace
+- View API Call
+- View SQL when available
+
+## Dark mode
+
+Open **Settings** and switch the theme. Dashboard, Reports, Analytics, Chat, Profile and Settings surfaces are theme-aware.
+
+If a page appears partly white after a cached deployment, hard-refresh the browser (`Ctrl+F5`) once.
+
+## Profile
+
+Open **Profile** to view/edit profile information when authenticated.
+
+## Governance behavior
+
+The AI rejects direct SQL/database commands. The application routes supported business questions through governed metrics, dimensions and filters. Complex `why` questions may perform multiple bounded analysis steps.
+
+## Good questions
+
+Be specific about the business concept when possible:
+
+- `Q3 Revenue`
+- `European sales in Q3`
+- `sales by country`
+- `margin by quarter`
+- `top products by sales`
+- `why did European margins drop last quarter?`
+
+The assistant will state when the database does not contain enough information to support a causal conclusion.

@@ -1,12 +1,22 @@
+import { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
+const items = [
+  ["📊", "Dashboard", "/dashboard"],
+  ["📋", "Reports", "/reports"],
+  ["💬", "Chat", "/chat"],
+  ["📈", "Analytics", "/analytics"],
+  ["👤", "Profile", "/profile"],
+  ["⚙️", "Settings", "/settings"],
+];
+
 function Sidebar({ showSidebar, closeSidebar }) {
-  const handleClick = () => {
-    if (closeSidebar) {
-      closeSidebar();
-    }
-  };
+  const [search, setSearch] = useState("");
+  const filteredItems = useMemo(
+    () => items.filter(([, label]) => label.toLowerCase().includes(search.trim().toLowerCase())),
+    [search]
+  );
 
   return (
     <aside className={`sidebar ${showSidebar ? "active" : ""}`}>
@@ -15,76 +25,31 @@ function Sidebar({ showSidebar, closeSidebar }) {
       </div>
 
       <input
-        type="text"
-        placeholder="🔍 Search..."
+        type="search"
+        placeholder="🔍 Filter menu..."
         className="search-box"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        aria-label="Filter navigation"
       />
 
       <ul>
-        <li>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleClick}
-          >
-            📊 Dashboard
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/reports"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleClick}
-          >
-            📋 Reports
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/chat"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleClick}
-          >
-            💬 Chat
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/analytics"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleClick}
-          >
-            📈 Analytics
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleClick}
-          >
-            👤 Profile
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/settings"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleClick}
-          >
-            ⚙️ Settings
-          </NavLink>
-        </li>
+        {filteredItems.map(([icon, label, path]) => (
+          <li key={path}>
+            <NavLink
+              to={path}
+              className={({ isActive }) => (isActive ? "active" : "")}
+              onClick={closeSidebar}
+            >
+              {icon} {label}
+            </NavLink>
+          </li>
+        ))}
       </ul>
 
-      <div className="sidebar-footer">
-        MetricMind v1.0
-      </div>
+      {filteredItems.length === 0 && <div className="sidebar-no-results">No page found.</div>}
+
+      <div className="sidebar-footer">MetricMind v1.0</div>
     </aside>
   );
 }

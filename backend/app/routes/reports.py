@@ -1,131 +1,105 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_connection
 from app.auth import get_current_user
 from app.models import User
 
-router = APIRouter(
-    prefix="/api/reports",
-    tags=["Reports"]
-)
+router = APIRouter(prefix="/api/reports", tags=["Reports"])
 
 
-# =========================
-# SALES REPORT
-# =========================
+def _close(conn, cursor):
+    if cursor:
+        cursor.close()
+    if conn:
+        conn.close()
+
 
 @router.get("/sales")
-def sales_report(
-    current_user: User = Depends(get_current_user)
-):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+def sales_report(current_user: User = Depends(get_current_user)):
+    conn = cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT
+                COUNT(DISTINCT SalesOrderNumber) AS total_orders,
+                ROUND(COALESCE(SUM(SalesAmount), 0), 2) AS total_sales,
+                ROUND(COALESCE(SUM(SalesAmount), 0) / NULLIF(COUNT(DISTINCT SalesOrderNumber), 0), 2)
+                    AS average_order_value
+            FROM factinternetsales
+        """)
+        data = cursor.fetchone() or {}
+        return {"success": True, "message": "Sales report fetched successfully", "data": data}
+    except Exception as exc:
+        print("Sales report error:", exc)
+        raise HTTPException(status_code=500, detail="Unable to load sales report")
+    finally:
+        _close(conn, cursor)
 
-    cursor.execute("""
-        SELECT
-            order_date AS date,
-            ROUND(SUM(sales_amount), 2) AS sales
-        FROM factinternetsales
-        GROUP BY order_date
-        ORDER BY order_date;
-    """)
-
-    data = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return {
-        "success": True,
-        "message": "Sales report fetched successfully",
-        "data": data
-    }
-
-
-# =========================
-# REVENUE REPORT
-# =========================
 
 @router.get("/revenue")
-def revenue_report(
-    current_user: User = Depends(get_current_user)
-):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+def revenue_report(current_user: User = Depends(get_current_user)):
+    conn = cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT
+                ROUND(COALESCE(SUM(SalesAmount), 0), 2) AS total_revenue,
+                ROUND(COALESCE(AVG(SalesAmount), 0), 2) AS average_revenue
+            FROM factinternetsales
+        """)
+        data = cursor.fetchone() or {}
+        return {"success": True, "message": "Revenue report fetched successfully", "data": data}
+    except Exception as exc:
+        print("Revenue report error:", exc)
+        raise HTTPException(status_code=500, detail="Unable to load revenue report")
+    finally:
+        _close(conn, cursor)
 
-    cursor.execute("""
-        SELECT
-            ROUND(SUM(sales_amount), 2) AS totalRevenue
-        FROM factinternetsales;
-    """)
-
-    data = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return {
-        "success": True,
-        "message": "Revenue report fetched successfully",
-        "data": data
-    }
-
-
-# =========================
-# CUSTOMER REPORT
-# =========================
 
 @router.get("/customer")
-def customer_report(
-    current_user: User = Depends(get_current_user)
-):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+def customer_report(current_user: User = Depends(get_current_user)):
+    conn = cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT
+                COUNT(DISTINCT CustomerKey) AS total_customers,
+                COUNT(DISTINCT SalesOrderNumber) AS total_orders,
+                ROUND(COALESCE(SUM(SalesAmount), 0) / NULLIF(COUNT(DISTINCT SalesOrderNumber), 0), 2)
+                    AS average_order_value
+            FROM factinternetsales
+        """)
+        data = cursor.fetchone() or {}
+        return {"success": True, "message": "Customer report fetched successfully", "data": data}
+    except Exception as exc:
+        print("Customer report error:", exc)
+        raise HTTPException(status_code=500, detail="Unable to load customer report")
+    finally:
+        _close(conn, cursor)
 
-    cursor.execute("""
-        SELECT
-            COUNT(DISTINCT customer_name) AS totalCustomers
-        FROM factinternetsales;
-    """)
-
-    data = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return {
-        "success": True,
-        "message": "Customer report fetched successfully",
-        "data": data
-    }
-
-
-# =========================
-# MONTHLY REPORT
-# =========================
 
 @router.get("/monthly")
-def monthly_report(
-    current_user: User = Depends(get_current_user)
-):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT
-            DATE_FORMAT(order_date, '%Y-%m') AS month,
-            ROUND(SUM(sales_amount), 2) AS sales
-        FROM factinternetsales
-        GROUP BY DATE_FORMAT(order_date, '%Y-%m')
-        ORDER BY month;
-    """)
-
-    data = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return {
-        "success": True,
-        "message": "Monthly report fetched successfully",
-        "data": data
-    }
+def monthly_report(current_user: User = Depends(get_current_user)):
+    conn = cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT
+                CONCAT(d.CalendarYear, '-', LPAD(d.MonthNumberOfYear, 2, '0')) AS month,
+                COUNT(DISTINCT f.SalesOrderNumber) AS orders,
+                ROUND(COALESCE(SUM(f.SalesAmount), 0), 2) AS sales
+            FROM factinternetsales f
+            JOIN dimdate d ON f.OrderDateKey = d.DateKey
+            GROUP BY d.CalendarYear, d.MonthNumberOfYear
+            ORDER BY d.CalendarYear, d.MonthNumberOfYear
+        """)
+        data = cursor.fetchall()
+        return {"success": True, "message": "Monthly report fetched successfully", "data": data}
+    except Exception as exc:
+        print("Monthly report error:", exc)
+        raise HTTPException(status_code=500, detail="Unable to load monthly report")
+    finally:
+        _close(conn, cursor)
