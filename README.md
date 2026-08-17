@@ -1,51 +1,122 @@
 # MetricMind — Agentic Semantic BI Engine
 
-## Project Overview
+## Project 1 — Enterprise Analytics & Agentic AI
 
-MetricMind is a conversational Business Intelligence and Sales Analytics platform designed to help users understand business performance through dashboards, reports, analytics, and natural-language interaction.
+MetricMind is a governed conversational business intelligence platform that allows users to ask business questions in natural language and receive analytical results, visualizations, and transparent API/query traces.
 
-The project combines a FastAPI backend, React frontend, MySQL database, analytics services, and an agent/orchestration layer to provide governed business insights.
+The system combines a React frontend, FastAPI backend, Python-based governed semantic layer, MySQL database, authentication, analytics, reports, and conversational AI.
 
-## Problem Statement
+---
 
-Traditional business analytics often requires users to understand databases, SQL queries, and complex reporting systems.
+# 1. Problem Statement
 
-Direct text-to-SQL approaches can also produce incorrect joins, inconsistent business metrics, and uncontrolled access to data.
+Traditional Text-to-SQL systems allow an LLM to generate SQL directly against raw warehouse tables.
 
-MetricMind addresses this problem by introducing a governed analytics workflow where business questions are processed through defined metrics and controlled data access before producing the final result.
+This approach can result in:
 
-## Objective
+- Incorrect joins
+- Inconsistent business metrics
+- Metric definition drift
+- Uncontrolled database queries
+- Difficult-to-audit analytical results
+
+MetricMind addresses this problem by introducing a governed semantic layer between the AI agent and the database.
+
+The agent works with governed metrics, dimensions, filters, and query structures instead of allowing unrestricted raw SQL generation.
+
+---
+
+# 2. Project Objectives
 
 The main objectives of MetricMind are:
 
-- Provide an interactive business analytics dashboard.
-- Display sales, revenue, orders, profit, and related KPIs.
-- Provide reports and analytical views.
-- Support natural-language business questions through the agent/orchestration layer.
-- Use governed business metrics instead of unrestricted SQL access.
-- Provide transparent API responses and API traces where applicable.
-- Provide responsive and user-friendly UI.
-- Maintain controlled query and data access.
+- Provide natural-language business analytics.
+- Provide governed business metrics.
+- Prevent unrestricted SQL generation by the agent.
+- Support multi-step analytical reasoning.
+- Provide transparent API/query traces.
+- Provide interactive charts and dashboards.
+- Support reports and analytics.
+- Provide responsive web interfaces.
+- Provide authentication and protected user functionality.
 
-## Core Architecture
+---
+
+# 3. Key Features
+
+- Interactive Sales Dashboard
+- KPI Cards
+- Sales and Revenue Charts
+- Reports
+- Analytics
+- Conversational AI
+- Governed Semantic Layer
+- Multi-step Business Analysis
+- API Trace
+- View SQL
+- JWT Authentication
+- User Profile
+- Responsive UI
+- Light/Dark UI support where implemented
+- MySQL database integration
+
+---
+
+# 4. Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite |
+| Backend | FastAPI + Python |
+| Database | MySQL |
+| Charts | Recharts |
+| Authentication | JWT |
+| Semantic Layer | Python governed semantic layer |
+| API Documentation | Swagger / OpenAPI |
+| Styling | HTML / CSS |
+| Data Processing | Python / Pandas |
+
+---
+
+# 5. Source-Stack Substitution
+
+The original project specification references technologies such as:
+
+- Next.js
+- Tremor
+- Cube.dev / dbt
+- LangChain / Llama 3
+- Snowflake / Databricks
+
+The current repository uses:
+
+- React + Vite instead of Next.js
+- Recharts for visualizations
+- FastAPI + Python for backend and orchestration
+- MySQL as the database
+- Python-based governed semantic layer
+
+These substitutions were made while preserving the core architectural requirement: the agent must interact with governed business semantics rather than directly generating unrestricted SQL.
+
+---
+
+# 6. System Architecture
 
 ```text
 User Question
-      |
-      v
-Frontend / UI
-      |
-      v
-Agent / Orchestrator
-      |
-      v
-Semantic / Metric Layer
-      |
-      v
-Database
-      |
-      v
-Data Result
-      |
-      v
-Final Answer + Chart + API Trace
+      ↓
+React + Vite Frontend
+      ↓
+FastAPI REST API
+      ↓
+Agent Orchestrator
+      ↓
+Governed Semantic Layer
+      ↓
+Parameterized MySQL Queries
+      ↓
+Business Data
+      ↓
+Result
+      ↓
+Answer + Chart + API Trace
