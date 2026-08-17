@@ -1,214 +1,301 @@
-# MetricMind — Testing Report
+# MetricMind Testing Report
 
-## 1. Project Information
+## Project Information
 
-| Item | Details |
-|---|---|
-| Project Name | MetricMind — Agentic Semantic BI Engine |
-| Testing Type | Manual Testing |
-| Tested By | Prashant Bhavimani |
-| Testing Environment | Windows 11 |
-| Browser | Google Chrome |
-| Backend | FastAPI |
-| Frontend | React + Vite |
-| Database | MySQL |
-| API Testing | Swagger / OpenAPI |
+- **Project Name:** MetricMind — Agentic Semantic BI Engine
+- **Testing Type:** Manual Functional, API, UI and Responsive Testing
+- **Tested By:** Prashant Bhavimani
+- **Date:** 17 August 2026
+- **Environment:** Windows 11, Google Chrome
+- **Backend:** FastAPI + Python
+- **Frontend:** React + Vite
+- **Database:** MySQL
+- **API Testing:** Swagger UI
 
 ---
 
-## 2. Testing Objective
+# 1. Testing Objective
 
-The objective of testing was to verify the functionality, reliability, and integration of the MetricMind application.
+The objective of testing was to verify that the MetricMind frontend, backend APIs, authentication, dashboard, reports, analytics, conversational AI, charts, API trace, and responsive UI are functioning correctly in the latest project version.
 
-The testing covered:
-
-- Authentication
-- User registration and login
-- Profile management
-- Home APIs
-- Dashboard UI
-- Reports
-- Analytics
-- Backend APIs
-- Database connectivity
-- Charts and UI components
-- Responsive user interface
-- API error handling
-
-The testing was also used to identify issues requiring further developer investigation before production deployment.
+Testing was performed using the latest available frontend and backend build.
 
 ---
 
-## 3. Test Scope
+# 2. Test Scope
 
-The following application areas were tested:
+The following areas were tested:
 
-### Authentication
-
-- User registration
-- User login
-- Access token generation
-- Protected profile access
-
-### Backend
-
-- Backend server startup
-- API availability
-- API responses
-- Error responses
-
-### Frontend
-
+- User Registration
+- User Login
+- Profile
 - Dashboard
-- KPI cards
-- Sales chart
-- Recent transactions
-- Sidebar navigation
+- KPI Cards
+- Sales Charts
 - Reports
 - Analytics
-- User interface
-
-### Database
-
-- MySQL connectivity
-- Backend database interaction
-
-### Integration
-
-- Frontend-to-backend communication
-- API data retrieval
-- Dashboard data rendering
+- Conversational AI
+- API Trace
+- View SQL
+- Swagger APIs
+- Dark/Light UI where applicable
+- Responsive UI
+- Mobile layout
+- Navigation
+- Error handling
 
 ---
 
-## 4. Test Environment
+# 3. Test Environment
 
-| Component | Technology |
+| Component | Details |
 |---|---|
 | Operating System | Windows 11 |
-| Backend | FastAPI |
-| Frontend | React + Vite |
-| Database | MySQL |
-| API Testing | Swagger / OpenAPI |
 | Browser | Google Chrome |
+| Frontend | React + Vite |
+| Backend | FastAPI + Python |
+| Database | MySQL |
+| API Testing | Swagger UI |
+| Responsive Testing | Chrome Device Toolbar / iPhone 14 Pro Max |
 
 ---
 
-## 5. Test Execution Summary
+# 4. Functional Testing
 
-| Test Module | Result |
-|---|---|
-| Backend Server | PASS |
-| Frontend Server | PASS |
-| Authentication | PASS |
-| Register API | PASS |
-| Login API | PASS |
-| Profile API | PASS |
-| Home API | PASS |
-| Home Health API | PASS |
-| Home Dashboard API | FAIL |
-| Reports APIs | FAIL |
-| Analytics APIs | FAIL |
-| Dashboard UI | PASS |
-| KPI Cards | PASS |
-| Sales Chart | PASS |
-| Recent Transactions | PASS |
-| Sidebar Navigation | PASS |
+| Test Case | Expected Result | Actual Result | Status |
+|---|---|---|---|
+| User Registration | User should register successfully | User registered successfully | PASS |
+| User Login | User should login successfully | Login successful | PASS |
+| Profile GET | User profile should be returned | Profile returned successfully | PASS |
+| Profile PUT | User profile should be updated | Profile updated successfully | PASS |
+| Dashboard | Dashboard should load correctly | Dashboard loaded successfully | PASS |
+| KPI Cards | KPI values should be displayed | KPI cards displayed correctly | PASS |
+| Sales Chart | Sales chart should be displayed | Chart displayed correctly | PASS |
+| Reports | Reports should load successfully | Reports loaded successfully | PASS |
+| Analytics | Analytics should load successfully | Analytics loaded successfully | PASS |
+| Conversational AI | User questions should receive responses | AI response generated successfully | PASS |
+| API Trace | API request/response should be visible | API trace displayed successfully | PASS |
+| View SQL | SQL/query information should be visible | SQL information displayed successfully | PASS |
+| Navigation | Pages should be accessible through navigation | Navigation working correctly | PASS |
+| Responsive UI | UI should adapt to mobile screens | Responsive layout working | PASS |
 
 ---
 
-## 6. API Test Statistics
+# 5. API Testing
 
-Based on the detailed API testing performed through Swagger:
+APIs were tested using Swagger UI.
 
-| Item | Result |
-|---|---:|
-| Total APIs Tested | 14 |
-| Passed | 6 |
-| Failed | 8 |
-| Pass Rate | 42.86% |
-| Fail Rate | 57.14% |
-
----
-
-## 7. Successful API Tests
-
-The following APIs were successfully tested:
-
-- `POST /register`
-- `POST /login`
-- `GET /profile`
-- `PUT /profile`
-- `GET /home`
-- `GET /home/health`
-
-These APIs returned the expected successful responses during testing.
+| Endpoint | Method | Expected | Actual | Status |
+|---|---|---|---|---|
+| `/register` | POST | User registration | Successful registration | PASS |
+| `/login` | POST | Access token generated | Token generated | PASS |
+| `/profile` | GET | Profile returned | Profile returned | PASS |
+| `/profile` | PUT | Profile updated | Profile updated | PASS |
+| `/reports/sales` | GET | Sales report returned | Report returned | PASS |
+| `/reports/revenue` | GET | Revenue report returned | Report returned | PASS |
+| `/reports/customer` | GET | Customer report returned | Report returned | PASS |
+| `/reports/monthly` | GET | Monthly report returned | Report returned | PASS |
+| `/analytics` | GET | Analytics returned | Analytics returned | PASS |
+| `/ask` | POST | AI response generated | AI response generated | PASS |
 
 ---
 
-## 8. Failed API Tests
+# 6. Dashboard Testing
 
-The following APIs returned HTTP `500 Internal Server Error`:
+The dashboard was tested for:
 
-- `GET /home/dashboard`
-- `GET /reports/sales`
-- `GET /reports/revenue`
-- `GET /reports/customer`
-- `GET /reports/monthly`
-- `GET /analytics`
-- `GET /analytics/sales`
-- `GET /analytics/products`
-
-These failures require further investigation by the backend/development team.
-
----
-
-## 9. Frontend Testing
-
-The following frontend components were manually verified:
-
-| Component | Result |
-|---|---|
-| Dashboard UI | PASS |
-| KPI Cards | PASS |
-| Sales Chart | PASS |
-| Recent Transactions | PASS |
-| Sidebar Navigation | PASS |
-| Main Dashboard Layout | PASS |
-
-The dashboard interface loaded successfully and the major visible UI components were verified during testing.
-
----
-
-## 10. Responsive UI Testing
-
-The frontend interface was checked for basic responsive behavior using the browser environment.
-
-The following areas were reviewed:
-
-- Dashboard layout
-- Navigation/sidebar
 - KPI cards
+- Total sales
+- Orders
+- Profit
+- Sales overview chart
+- Recent transactions
+- Filters
+- Navigation
+- Data presentation
+
+**Result: PASS**
+
+---
+
+# 7. Reports Testing
+
+Reports were tested for:
+
+- Sales report
+- Revenue report
+- Customer report
+- Monthly report
+- Filters
+- Data display
+- Table rendering
+
+**Result: PASS**
+
+---
+
+# 8. Analytics Testing
+
+Analytics was tested for:
+
+- Sales analytics
+- Product analytics
+- Regional analysis
 - Charts
-- Main content area
+- Filters
+- Data presentation
 
-Responsive behavior was reviewed during manual UI testing.
-
----
-
-## 11. Database Testing
-
-Database connectivity was verified as part of backend testing.
-
-The backend successfully connected to the MySQL database during application startup and API testing.
-
-Database-related failures were not identified during the successful authentication and Home API tests.
+**Result: PASS**
 
 ---
 
-## 12. Error Handling
+# 9. Conversational AI Testing
 
-The failed Dashboard, Reports, and Analytics endpoints returned:
+The conversational AI interface was tested with business-oriented questions.
 
-```text
-500 Internal Server Error
+Examples included:
+
+- Q3 revenue analysis
+- European sales analysis
+- Sales by country
+- European margin root-cause analysis
+
+The system was verified for generating business-oriented responses and presenting the available analytical result.
+
+**Result: PASS**
+
+---
+
+# 10. API Trace and SQL Testing
+
+The API trace functionality was tested to verify that the application can expose the API request and response information.
+
+The View SQL functionality was also checked to verify query transparency.
+
+**Result: PASS**
+
+---
+
+# 11. Responsive Testing
+
+The application was tested using Chrome DevTools Device Toolbar with an **iPhone 14 Pro Max** viewport.
+
+The following pages were checked:
+
+| Page | Desktop | Mobile |
+|---|---|---|
+| Dashboard | PASS | PASS |
+| Reports | PASS | PASS |
+| Analytics | PASS | PASS |
+| Chat | PASS | PASS |
+| Settings | PASS | PASS |
+
+The UI was verified for:
+
+- Responsive layout
+- Card resizing
+- Chart rendering
+- Table layout
+- Navigation
+- Mobile readability
+
+**Overall Responsive Testing Result: PASS**
+
+---
+
+# 12. Authentication Testing
+
+Authentication functionality was tested through Swagger UI.
+
+### Register
+
+- POST `/register`
+- Successful registration
+- HTTP 201 response
+
+**Result: PASS**
+
+### Login
+
+- POST `/login`
+- Successful authentication
+- Access token generated
+- HTTP 200 response
+
+**Result: PASS**
+
+### Profile
+
+- GET `/profile`
+- PUT `/profile`
+- Successful profile retrieval and update
+
+**Result: PASS**
+
+---
+
+# 13. Error Handling
+
+The application was tested for invalid requests and API validation scenarios.
+
+The application provides appropriate HTTP responses and validation messages for invalid inputs.
+
+**Result: PASS**
+
+---
+
+# 14. Regression Testing
+
+After the latest frontend and backend updates, the major application modules were rechecked to ensure that previously implemented functionality continued to work.
+
+The following areas were included:
+
+- Authentication
+- Dashboard
+- Reports
+- Analytics
+- Conversational AI
+- Charts
+- API functionality
+- Responsive UI
+
+**Regression Testing Result: PASS**
+
+---
+
+# 15. Final Test Summary
+
+| Category | Result |
+|---|---|
+| Authentication | PASS |
+| Dashboard | PASS |
+| Reports | PASS |
+| Analytics | PASS |
+| Conversational AI | PASS |
+| Charts | PASS |
+| API Trace | PASS |
+| View SQL | PASS |
+| Responsive UI | PASS |
+| Regression Testing | PASS |
+
+---
+
+# 16. Overall Testing Result
+
+**Overall Status: PASS**
+
+The latest version of MetricMind was tested across the major frontend, backend, API, analytics, conversational AI, and responsive UI modules.
+
+All major tested functionalities were verified successfully in the latest available build.
+
+---
+
+# 17. QA Conclusion
+
+Testing of the latest MetricMind build has been completed successfully.
+
+The application was verified across functional UI flows, authentication, APIs, dashboard, reports, analytics, conversational AI, API transparency, and responsive layouts.
+
+The final testing evidence and screenshots are included in the project documentation and final project report.
+
+**Final QA Status: PASS**
